@@ -1,0 +1,16 @@
+{
+  "name": "jsonforms-vuetify-renderers",
+  "private": true,
+  "scripts": {
+    "init": "lerna bootstrap --hoist",
+    "build": "lerna run --scope \"**/*vuetify\" build",
+    "watch": "cd vue2-vuetify && npm run watch",
+    "test": "lerna run --scope \"**/*vuetify\" test",
+    "clean": "lerna run clean",
+    "example:serve": "cd example && npm run serve",
+    "example:build": "cd example && npm run build"
+  },
+  "devDependencies": {
+    "lerna": "^4.0.0"
+  }
+}
