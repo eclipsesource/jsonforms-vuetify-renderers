@@ -50,6 +50,40 @@ const schema = {
       type: 'integer',
       description: 'Amount of days until recurrence',
     },
+    myNestedObject: {
+      type: 'object',
+      properties: {
+        name: {
+          type: 'string',
+          minLength: 1,
+          description: "The task's name",
+        },
+        description: {
+          title: 'Long Description',
+          type: 'string',
+        },
+        done: {
+          type: 'boolean',
+        },
+        dueDate: {
+          type: 'string',
+          format: 'date',
+          description: "The task's due date",
+        },
+        rating: {
+          type: 'integer',
+          maximum: 5,
+        },
+        recurrence: {
+          type: 'string',
+          enum: ['Never', 'Daily', 'Weekly', 'Monthly'],
+        },
+        recurrenceInterval: {
+          type: 'integer',
+          description: 'Amount of days until recurrence',
+        },
+      },
+    },
   },
 };
 const uischema = {
