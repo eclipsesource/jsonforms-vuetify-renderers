@@ -2,6 +2,7 @@
   <v-text-field
     :value="control.data ? control.data : null"
     :label="control.label"
+    :error-messages="control.errors"
     clearable
     @input="onChange"
   >
