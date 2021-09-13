@@ -1,6 +1,6 @@
 <template>
   <v-checkbox
-    :value="control.data ? control.data : null"
+    :input-value="control.data ? control.data : null"
     :label="control.label"
     :error-messages="control.errors"
     clearable
@@ -33,10 +33,12 @@ const controlRenderer = defineComponent({
     ...rendererProps(),
   },
   setup(props: RendererProps<ControlElement>) {
-    return useJsonFormsControl(props);
+    const p = useJsonFormsControl(props);
+    console.log(p);
+    return p;
   },
   methods: {
-    // TODO: check if this is the correct pattern to handle true | null from a checkbox
+    // TODO: how to handle unchecked (false/null) value from a checkbox
     onChange(newValue: boolean) {
       newValue = newValue || false;
       this.handleChange(this.control.path, newValue ?? undefined);
