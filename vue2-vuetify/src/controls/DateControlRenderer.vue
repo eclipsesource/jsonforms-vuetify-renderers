@@ -9,6 +9,7 @@
       offset-y
       min-width="auto"
     >
+      // TODO: bind initial value from form data
       <template v-slot:activator="{ on, attrs }">
         <v-text-field
           :value="control.data ? control.data : null"

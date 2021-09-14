@@ -146,6 +146,7 @@ export default defineComponent({
         description: 'Confirm if you have passed the subject\nHereby ...',
         done: true,
         recurrence: 'Daily',
+        dueDate: '2021-09-16',
         rating: 3,
       },
       schema,
