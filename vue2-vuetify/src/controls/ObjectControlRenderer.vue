@@ -1,4 +1,3 @@
-// TODO hand over remaining dispatch props
 <template>
   <div>
     this is the object renderer
@@ -40,7 +39,6 @@ const controlRenderer = defineComponent({
     ...rendererProps(),
   },
   setup(props: RendererProps<ControlElement>) {
-    console.log(props)
     return useJsonFormsControlWithDetail(props);
   },
   computed: {

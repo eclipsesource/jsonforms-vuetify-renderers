@@ -34,7 +34,6 @@ const controlRenderer = defineComponent({
   },
   setup(props: RendererProps<ControlElement>) {
     const p = useJsonFormsControl(props);
-    console.log(p);
     return p;
   },
   methods: {
