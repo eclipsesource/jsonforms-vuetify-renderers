@@ -1,6 +1,9 @@
 export { default as ControlRenderer } from './ControlRenderer.vue';
 import { entry as controlRendererEntry } from './ControlRenderer.vue';
 
+export { default as MultiLineControlRenderer } from './MultiLineControlRenderer.vue';
+import { entry as MultiLineControlRendererEntry } from './MultiLineControlRenderer.vue';
+
 export { default as integerControlRenderer } from './IntegerControlRenderer.vue';
 import { entry as integerControlRendererEntry } from './IntegerControlRenderer.vue';
 
@@ -19,4 +22,5 @@ export const controlRenderers = [
   booleanControlRendererEntry,
   dateControlRendererEntry,
   objectControlRendererEntry,
+  MultiLineControlRendererEntry,
 ];
