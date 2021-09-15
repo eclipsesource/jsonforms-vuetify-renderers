@@ -33,8 +33,7 @@ const controlRenderer = defineComponent({
     ...rendererProps(),
   },
   setup(props: RendererProps<ControlElement>) {
-    const p = useJsonFormsControl(props);
-    return p;
+    return useJsonFormsControl(props);
   },
   methods: {
     // TODO: how to handle unchecked (false/null) value from a checkbox
