@@ -52,12 +52,6 @@ const controlRenderer = defineComponent({
         this.control.uischema,
         this.control.rootSchema
       );
-      // TODO what shall be the default behavior
-      uischema.options = {
-        ...uischema.options,
-        intented: true,
-      };
-      (uischema as GroupLayout).label = this.control.label;
       return uischema;
     },
   },
