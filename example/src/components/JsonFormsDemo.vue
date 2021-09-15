@@ -4,6 +4,7 @@
       <json-forms
         v-bind:data="data"
         v-bind:schema="schema"
+        v-bind:uischema="uischema"
         v-bind:renderers="renderers"
         @change="onChange"
       />
