@@ -1,29 +1,14 @@
 import {
   composePaths,
-  findUISchema,
+  computeLabel,
   getFirstPrimitiveProp,
   isDescriptionHidden,
   Resolve,
-  computeLabel,
-  UISchemaElement,
 } from '@jsonforms/core';
 import cloneDeep from 'lodash/cloneDeep';
 import merge from 'lodash/merge';
-import { computed, ref, ComputedRef } from '../vue';
 import { useStyles } from '../styles';
-
-const useChildUiSchema = <I extends { control: any }>(
-  input: I
-): ComputedRef<UISchemaElement> => {
-  return computed(() =>
-    findUISchema(
-      input.control.value.uischemas,
-      input.control.value.schema,
-      input.control.value.uischema.scope,
-      input.control.value.path
-    )
-  );
-};
+import { computed, ComputedRef, ref } from '../vue';
 
 const useControlAppliedOptions = <I extends { control: any }>(input: I) => {
   return computed(() =>
@@ -121,8 +106,6 @@ export const useVuetifyArrayControl = <I extends { control: any }>(
 ) => {
   const appliedOptions = useControlAppliedOptions(input);
 
-  const childUiSchema = useChildUiSchema(input);
-
   const computedLabel = useComputedLabel(input, appliedOptions);
 
   const childLabelForIndex = (index: number) => {
@@ -145,7 +128,6 @@ export const useVuetifyArrayControl = <I extends { control: any }>(
     ...input,
     styles: useStyles(input.control.value.uischema),
     appliedOptions,
-    childUiSchema,
     childLabelForIndex,
     computedLabel,
   };
@@ -159,12 +141,9 @@ export const useVuetifyMultiEnumControl = <I extends { control: any }>(
 ) => {
   const appliedOptions = useControlAppliedOptions(input);
 
-  const childUiSchema = useChildUiSchema(input);
-
   return {
     ...input,
     styles: useStyles(input.control.value.uischema),
     appliedOptions,
-    childUiSchema,
   };
 };

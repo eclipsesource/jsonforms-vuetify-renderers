@@ -1,8 +1,8 @@
 <template>
   <div v-if="control.visible">
     <combinator-properties
-      :schema="_schema"
-      :combinatorKeyword="'oneOf'"
+      :schema="subSchema"
+      combinatorKeyword="oneOf"
       :path="path"
     />
 
@@ -23,7 +23,6 @@
       >
         <dispatch-renderer
           v-if="selectedIndex === oneOfIndex"
-          :key="oneOfIndex"
           :schema="oneOfRenderInfo.schema"
           :uischema="oneOfRenderInfo.uischema"
           :path="control.path"
@@ -68,6 +67,8 @@ import {
   getSchema,
   getData,
   ControlProps,
+  JsonSchema,
+  CombinatorSubSchemaRenderInfo,
 } from '@jsonforms/core';
 import {
   DispatchRenderer,
@@ -119,7 +120,7 @@ const isControlEnabled = (
 };
 
 const controlRenderer = defineComponent({
-  name: 'oneof-renderer',
+  name: 'one-of-renderer',
   components: {
     DispatchRenderer,
     CombinatorProperties,
@@ -142,20 +143,6 @@ const controlRenderer = defineComponent({
     const input = useJsonFormsOneOfControl(props);
     const control = (input.control as any).value as typeof input.control;
 
-    const _schema = resolveSubSchemas(
-      control.schema,
-      control.rootSchema,
-      'oneOf'
-    );
-    const oneOfRenderInfos = createCombinatorRenderInfos(
-      _schema.oneOf!,
-      control.rootSchema,
-      'oneOf',
-      control.uischema,
-      control.path,
-      control.uischemas
-    );
-
     const selectedIndex = ref(control.indexOfFittingSchema || 0);
     const tabIndex = ref(selectedIndex.value);
     const newSelectedIndex = ref(0);
@@ -174,14 +161,31 @@ const controlRenderer = defineComponent({
 
     return {
       ...useVuetifyControl(input),
-      _schema,
-      oneOfRenderInfos,
       selectedIndex,
       tabIndex,
       dialog,
       newSelectedIndex,
       controlEnabled,
     };
+  },
+  computed: {
+    subSchema(): JsonSchema {
+      return resolveSubSchemas(
+        this.control.schema,
+        this.control.rootSchema,
+        'oneOf'
+      );
+    },
+    oneOfRenderInfos(): CombinatorSubSchemaRenderInfo[] {
+      return createCombinatorRenderInfos(
+        this.subSchema.oneOf!,
+        this.control.rootSchema,
+        'oneOf',
+        this.control.uischema,
+        this.control.path,
+        this.control.uischemas
+      );
+    },
   },
   methods: {
     handleTabChange(): void {

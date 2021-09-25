@@ -40,7 +40,7 @@
     <v-card-text>
       <v-container justify-space-around align-content-center>
         <v-row justify="center">
-          <v-expansion-panels accordion ref="accordion">
+          <v-expansion-panels accordion focusable>
             <v-expansion-panel
               v-for="(element, index) in control.data"
               :key="`${control.path}-${index}`"
@@ -158,7 +158,7 @@
               <v-expansion-panel-content :class="styles.arrayList.itemContent">
                 <dispatch-renderer
                   :schema="control.schema"
-                  :uischema="childUiSchema"
+                  :uischema="foundUISchema"
                   :path="composePaths(control.path, `${index}`)"
                   :enabled="control.enabled"
                   :renderers="control.renderers"
@@ -186,6 +186,8 @@ import {
   createDefaultValue,
   Resolve,
   JsonSchema,
+  UISchemaElement,
+  findUISchema,
 } from '@jsonforms/core';
 import { defineComponent } from '../vue';
 import {
@@ -250,6 +252,17 @@ const controlRenderer = defineComponent({
   computed: {
     noData(): boolean {
       return !this.control.data || this.control.data.length === 0;
+    },
+    foundUISchema(): UISchemaElement {
+      return findUISchema(
+        this.control.uischemas,
+        this.control.schema,
+        this.control.uischema.scope,
+        this.control.path,
+        undefined,
+        this.control.uischema,
+        this.control.rootSchema
+      );
     },
     //TODO: check is that is the appropate way to get the array schema, possibly it would be better for the core to have a property that exports that schema
     arraySchema(): JsonSchema | undefined {

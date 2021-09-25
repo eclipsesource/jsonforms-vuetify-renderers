@@ -2,7 +2,7 @@
   <div v-if="control.visible">
     <template v-if="delegateUISchema">
       <dispatch-renderer
-        :schema="_schema"
+        :schema="subSchema"
         :uischema="delegateUISchema"
         :path="control.path"
         :enabled="control.enabled"
@@ -10,12 +10,10 @@
         :cells="control.cells"
       />
     </template>
-    <template
-      v-else-if="allOfRenderInfos"
-      v-for="(allOfRenderInfo, allOfIndex) in allOfRenderInfos"
-    >
+    <template v-else-if="allOfRenderInfos">
       <dispatch-renderer
-        :key="allOfIndex"
+        v-for="(allOfRenderInfo, allOfIndex) in allOfRenderInfos"
+        :key="`${control.path}-${allOfIndex}`"
         :schema="allOfRenderInfo.schema"
         :uischema="allOfRenderInfo.uischema"
         :path="control.path"
@@ -35,8 +33,10 @@ import {
   findMatchingUISchema,
   isAllOfControl,
   JsonFormsRendererRegistryEntry,
+  JsonSchema,
   rankWith,
   resolveSubSchemas,
+  UISchemaElement,
 } from '@jsonforms/core';
 import {
   DispatchRenderer,
@@ -48,7 +48,7 @@ import { defineComponent } from '../vue';
 import { useVuetifyControl } from '../util';
 
 const controlRenderer = defineComponent({
-  name: 'allof-renderer',
+  name: 'all-of-renderer',
   components: {
     DispatchRenderer,
   },
@@ -56,47 +56,33 @@ const controlRenderer = defineComponent({
     ...rendererProps<ControlElement>(),
   },
   setup(props: RendererProps<ControlElement>) {
-    const input = useJsonFormsAllOfControl(props);
-    const control = (input.control as any).value as typeof input.control;
-
-    const _schema = resolveSubSchemas(
-      control.schema,
-      control.rootSchema,
-      'allOf'
-    );
-    const delegateUISchema = findMatchingUISchema(control.uischemas)(
-      _schema,
-      control.uischema.scope,
-      control.path
-    );
-
-    let allOfRenderInfos: CombinatorSubSchemaRenderInfo[] | undefined =
-      undefined;
-
-    if (delegateUISchema) {
-      return {
-        ...useVuetifyControl(input),
-        delegateUISchema,
-        _schema,
-        allOfRenderInfos,
-      };
-    }
-
-    allOfRenderInfos = createCombinatorRenderInfos(
-      _schema.allOf!,
-      control.rootSchema,
-      'allOf',
-      control.uischema,
-      control.path,
-      control.uischemas
-    );
-
-    return {
-      ...useVuetifyControl(input),
-      delegateUISchema,
-      _schema,
-      allOfRenderInfos,
-    };
+    return useVuetifyControl(useJsonFormsAllOfControl(props));
+  },
+  computed: {
+    subSchema(): JsonSchema {
+      return resolveSubSchemas(
+        this.control.schema,
+        this.control.rootSchema,
+        'allOf'
+      );
+    },
+    delegateUISchema(): UISchemaElement {
+      return findMatchingUISchema(this.control.uischemas)(
+        this.subSchema,
+        this.control.uischema.scope,
+        this.control.path
+      );
+    },
+    allOfRenderInfos(): CombinatorSubSchemaRenderInfo[] {
+      return createCombinatorRenderInfos(
+        this.subSchema.allOf!,
+        this.control.rootSchema,
+        'allOf',
+        this.control.uischema,
+        this.control.path,
+        this.control.uischemas
+      );
+    },
   },
 });
 

@@ -1,13 +1,6 @@
-/**
- * ---------------------------------------------------------------------
- * Copyright (c) 2020 EclipseSource Munich
- * Licensed under MIT
- * https://github.com/eclipsesource/jsonforms-editor/blob/master/LICENSE
- * ---------------------------------------------------------------------
- */
 import editorApi from 'monaco-editor/esm/vs/editor/editor.api';
-import { Uri } from 'monaco-editor/esm/vs/editor/editor.api';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
+import { JsonSchema } from '@jsonforms/core';
 
 import { jsonSchemaDraft7, ruleSchema, uiSchema } from '../core/jsonschema';
 
@@ -28,9 +21,9 @@ export const addSchema = (
   schemas: {
     uri: string;
     fileMatch?: string[];
-    schema?: any;
+    schema?: JsonSchema;
   }[]
-) => {
+): void => {
   const registeredSchemas =
     editor.languages.json.jsonDefaults.diagnosticsOptions.schemas;
   if (registeredSchemas === undefined) {
@@ -59,8 +52,8 @@ export const addSchema = (
  */
 export const configureJsonSchemaValidation = (
   editor: EditorApi,
-  modelUri: Uri
-) => {
+  modelUri: monaco.Uri
+): void => {
   /** Note that the Monaco Editor only supports JSON Schema Draft 7 itself,
    * so if we also want to support a later standard we still have to formalize
    * it in JSON Schema Draft 7*/
@@ -74,8 +67,8 @@ export const configureJsonSchemaValidation = (
  */
 export const configureRuleSchemaValidation = (
   editor: EditorApi,
-  modelUri: Uri
-) => {
+  modelUri: monaco.Uri
+): void => {
   /** Note that the Monaco Editor only supports JSON Schema Draft 7 itself,
    * so if we also want to support a later standard we still have to formalize
    * it in JSON Schema Draft 7*/
@@ -90,8 +83,8 @@ export const configureRuleSchemaValidation = (
  */
 export const configureUISchemaValidation = (
   editor: EditorApi,
-  modelUri: Uri
-) => {
+  modelUri: monaco.Uri
+): void => {
   /** Note that the Monaco Editor only supports JSON Schema Draft 7 itself,
    * so if we also want to support a later standard we still have to formalize
    * it in JSON Schema Draft 7*/
@@ -105,9 +98,9 @@ export const configureDataValidation = (
   editor: EditorApi,
   schema: {
     uri: string;
-    schema: any;
+    schema: JsonSchema;
   }
-) => {
+): void => {
   /** Note that the Monaco Editor only supports JSON Schema Draft 7 itself,
    * so if we also want to support a later standard we still have to formalize
    * it in JSON Schema Draft 7*/
@@ -115,9 +108,9 @@ export const configureDataValidation = (
 };
 
 export const getMonacoModelForUri = (
-  modelUri: Uri,
+  modelUri: monaco.Uri,
   initialValue: string | undefined
-) => {
+): editorApi.editor.ITextModel => {
   const value = initialValue ?? '';
   let model = monaco.editor.getModel(modelUri);
   if (model) {

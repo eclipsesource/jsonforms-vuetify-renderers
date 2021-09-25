@@ -1,8 +1,8 @@
 <template>
   <div v-if="control.visible">
     <combinator-properties
-      :schema="_schema"
-      :combinatorKeyword="'anyOf'"
+      :schema="subSchema"
+      combinatorKeyword="anyOf"
       :path="path"
     />
 
@@ -22,7 +22,6 @@
       >
         <dispatch-renderer
           v-if="selectedIndex === anyOfIndex"
-          :key="anyOfIndex"
           :schema="anyOfRenderInfo.schema"
           :uischema="anyOfRenderInfo.uischema"
           :path="control.path"
@@ -36,10 +35,12 @@
 
 <script lang="ts">
 import {
+  CombinatorSubSchemaRenderInfo,
   ControlElement,
   createCombinatorRenderInfos,
   isAnyOfControl,
   JsonFormsRendererRegistryEntry,
+  JsonSchema,
   rankWith,
   resolveSubSchemas,
 } from '@jsonforms/core';
@@ -55,7 +56,7 @@ import { useVuetifyControl } from '../util';
 import { CombinatorProperties } from './components';
 
 const controlRenderer = defineComponent({
-  name: 'anyof-renderer',
+  name: 'any-of-renderer',
   components: {
     DispatchRenderer,
     CombinatorProperties,
@@ -70,29 +71,31 @@ const controlRenderer = defineComponent({
   setup(props: RendererProps<ControlElement>) {
     const input = useJsonFormsAnyOfControl(props);
     const control = (input.control as any).value as typeof input.control;
-
-    const _schema = resolveSubSchemas(
-      control.schema,
-      control.rootSchema,
-      'anyOf'
-    );
-    const anyOfRenderInfos = createCombinatorRenderInfos(
-      _schema.anyOf!,
-      control.rootSchema,
-      'anyOf',
-      control.uischema,
-      control.path,
-      control.uischemas
-    );
-
     const selectedIndex = ref(control.indexOfFittingSchema || 0);
 
     return {
       ...useVuetifyControl(input),
-      _schema,
-      anyOfRenderInfos,
       selectedIndex,
     };
+  },
+  computed: {
+    subSchema(): JsonSchema {
+      return resolveSubSchemas(
+        this.control.schema,
+        this.control.rootSchema,
+        'anyOf'
+      );
+    },
+    anyOfRenderInfos(): CombinatorSubSchemaRenderInfo[] {
+      return createCombinatorRenderInfos(
+        this.subSchema.anyOf!,
+        this.control.rootSchema,
+        'anyOf',
+        this.control.uischema,
+        this.control.path,
+        this.control.uischemas
+      );
+    },
   },
 });
 

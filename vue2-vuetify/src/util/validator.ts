@@ -1,8 +1,9 @@
 import { Options } from 'ajv';
 import { createAjv as createAjvCore } from '@jsonforms/core';
+import AJV from 'ajv';
 
-export const createAjv = (options?: Options) => {
-    const ajv = createAjvCore(options);
-    ajv.addFormat('password', (_) => true);
-    return ajv;
+export const createAjv = (options?: Options): AJV.Ajv => {
+  const ajv = createAjvCore(options);
+  ajv.addFormat('password', (_) => true);
+  return ajv;
 };
