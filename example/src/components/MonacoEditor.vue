@@ -28,6 +28,7 @@ export default {
   props: {
     width: { type: [String, Number], default: '100%' },
     height: { type: [String, Number], default: '100%' },
+    uri: String,
     value: String,
     defaultValue: { type: String, default: '' },
     language: { type: String, default: 'javascript' },
@@ -83,6 +84,23 @@ export default {
           });
         }
       },
+    },
+    uri(uri: string, prev: string) {
+      const { editor } = this;
+      if (editor && prev !== uri) {
+        const model = editor.getModel();
+        editor.setModel(
+          monaco.editor.createModel(
+            this.value,
+            this.language,
+            monaco.Uri.parse(uri)
+          )
+        );
+
+        if (model) {
+          model.dispose();
+        }
+      }
     },
     value(value) {
       if (this.editor) {
@@ -161,10 +179,12 @@ export default {
       const { language, theme, overrideServices, className } = this;
       // Before initializing monaco editor
       const options = { ...this.options, ...this.editorWillMount() };
+      const uri = this.uri != null ? monaco.Uri.parse(this.uri) : undefined;
+
       this.editor = monaco.editor.create(
         this.$refs.containerElement as HTMLElement,
         {
-          value,
+          model: monaco.editor.createModel(value, language, uri),
           language,
           ...(className ? { extraEditorClassName: className } : {}),
           ...options,

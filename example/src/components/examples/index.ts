@@ -186,11 +186,8 @@ export const examples = [
     title: 'If Then Else',
     input: ifThenElse,
   },
-  //TODO: Temporary disable the Huge example since it does generate errors and the browser hangs
-  /*
   {
     title: 'Huge',
     input: huge,
   },
-  */
 ];
