@@ -29,12 +29,26 @@
                   <v-toolbar flat>
                     <v-toolbar-title>Schema</v-toolbar-title>
                     <v-spacer></v-spacer>
-                    <v-btn icon @click="reloadMonacoSchema">
-                      <v-icon>mdi-reload</v-icon>
-                    </v-btn>
-                    <v-btn icon @click="saveMonacoSchema">
-                      <v-icon>mdi-content-save</v-icon>
-                    </v-btn>
+                    <v-tooltip bottom>
+                      <template v-slot:activator="{ on: onTooltip }">
+                        <v-btn
+                          icon
+                          @click="reloadMonacoSchema"
+                          v-on="onTooltip"
+                        >
+                          <v-icon>mdi-reload</v-icon>
+                        </v-btn>
+                      </template>
+                      {{ `Reload Example Schema` }}
+                    </v-tooltip>
+                    <v-tooltip bottom>
+                      <template v-slot:activator="{ on: onTooltip }">
+                        <v-btn icon @click="saveMonacoSchema" v-on="onTooltip">
+                          <v-icon>mdi-content-save</v-icon>
+                        </v-btn>
+                      </template>
+                      {{ `Apply Change To Example Schema` }}
+                    </v-tooltip>
                   </v-toolbar>
                 </v-card-title>
                 <v-divider class="mx-4"></v-divider>
@@ -53,12 +67,30 @@
                   <v-toolbar flat>
                     <v-toolbar-title>UI Schema</v-toolbar-title>
                     <v-spacer></v-spacer>
-                    <v-btn icon @click="reloadMonacoUiSchema">
-                      <v-icon>mdi-reload</v-icon>
-                    </v-btn>
-                    <v-btn icon @click="saveMonacoUiSchema">
-                      <v-icon>mdi-content-save</v-icon>
-                    </v-btn>
+                    <v-tooltip bottom>
+                      <template v-slot:activator="{ on: onTooltip }">
+                        <v-btn
+                          icon
+                          @click="reloadMonacoUiSchema"
+                          v-on="onTooltip"
+                        >
+                          <v-icon>mdi-reload</v-icon>
+                        </v-btn>
+                      </template>
+                      {{ `Reload Example UI Schema` }}
+                    </v-tooltip>
+                    <v-tooltip bottom>
+                      <template v-slot:activator="{ on: onTooltip }">
+                        <v-btn
+                          icon
+                          @click="saveMonacoUiSchema"
+                          v-on="onTooltip"
+                        >
+                          <v-icon>mdi-content-save</v-icon>
+                        </v-btn>
+                      </template>
+                      {{ `Apply Change To Example UI Schema` }}
+                    </v-tooltip>
                   </v-toolbar>
                 </v-card-title>
                 <v-divider class="mx-4"></v-divider>
@@ -77,12 +109,22 @@
                   <v-toolbar flat>
                     <v-toolbar-title>Data</v-toolbar-title>
                     <v-spacer></v-spacer>
-                    <v-btn icon @click="reloadMonacoData">
-                      <v-icon>mdi-reload</v-icon>
-                    </v-btn>
-                    <v-btn icon @click="saveMonacoData">
-                      <v-icon>mdi-content-save</v-icon>
-                    </v-btn>
+                    <v-tooltip bottom>
+                      <template v-slot:activator="{ on: onTooltip }">
+                        <v-btn icon @click="reloadMonacoData" v-on="onTooltip">
+                          <v-icon>mdi-reload</v-icon>
+                        </v-btn>
+                      </template>
+                      {{ `Reload Example Data` }}
+                    </v-tooltip>
+                    <v-tooltip bottom>
+                      <template v-slot:activator="{ on: onTooltip }">
+                        <v-btn icon @click="saveMonacoData" v-on="onTooltip">
+                          <v-icon>mdi-content-save</v-icon>
+                        </v-btn>
+                      </template>
+                      {{ `Apply Change To Example Data` }}
+                    </v-tooltip>
                   </v-toolbar>
                 </v-card-title>
                 <v-divider class="mx-4"></v-divider>
@@ -182,7 +224,22 @@ export default {
       console.log('jsonform change');
     },
     reloadMonacoSchema() {
-      console.log('TODO');
+      const example = find(
+        this.examples,
+        (example) => example.id === this.$route.params.id
+      );
+
+      if (example) {
+        this.$store.set(
+          'app/monaco@schemaModel',
+          getMonacoModelForUri(
+            monaco.Uri.parse(this.toSchemaUri(example.id)),
+            example.input.schema
+              ? JSON.stringify(example.input.schema, null, 2)
+              : ''
+          )
+        );
+      }
     },
     saveMonacoSchema() {
       const model = this.monacoSchemaModel as monaco.editor.ITextModel;
@@ -200,13 +257,28 @@ export default {
           }
 
           if (newJson) {
-            example.schema = newJson;
+            example.input.schema = newJson;
           }
         }
       }
     },
     reloadMonacoUiSchema() {
-      console.log('TODO');
+      const example = find(
+        this.examples,
+        (example) => example.id === this.$route.params.id
+      );
+
+      if (example) {
+        this.$store.set(
+          'app/monaco@uischemaModel',
+          getMonacoModelForUri(
+            monaco.Uri.parse(this.toUiSchemaUri(example.id)),
+            example.input.uischema
+              ? JSON.stringify(example.input.uischema, null, 2)
+              : ''
+          )
+        );
+      }
     },
     saveMonacoUiSchema() {
       const model = this.monacoUiSchemaModel as monaco.editor.ITextModel;
@@ -230,7 +302,22 @@ export default {
       }
     },
     reloadMonacoData() {
-      console.log('TODO');
+      const example = find(
+        this.examples,
+        (example) => example.id === this.$route.params.id
+      );
+
+      if (example) {
+        this.$store.set(
+          'app/monaco@dataModel',
+          getMonacoModelForUri(
+            monaco.Uri.parse(this.toDataUri(example.id)),
+            example.input.data
+              ? JSON.stringify(example.input.data, null, 2)
+              : ''
+          )
+        );
+      }
     },
     saveMonacoData() {
       const model = this.monacoDataModel as monaco.editor.ITextModel;
@@ -248,9 +335,7 @@ export default {
           }
 
           if (newJson) {
-            example.data = newJson;
-            // notify that the example was modified
-            //this.selectedExample.value = { ...example };
+            example.input.data = newJson;
           }
         }
       }
@@ -279,21 +364,25 @@ export default {
         'app/monaco@schemaModel',
         getMonacoModelForUri(
           monaco.Uri.parse(this.toSchemaUri(example.id)),
-          example.schema ? JSON.stringify(example.schema, null, 2) : ''
+          example.input.schema
+            ? JSON.stringify(example.input.schema, null, 2)
+            : ''
         )
       );
       this.$store.set(
         'app/monaco@uischemaModel',
         getMonacoModelForUri(
           monaco.Uri.parse(this.toUiSchemaUri(example.id)),
-          example.uischema ? JSON.stringify(example.uischema, null, 2) : ''
+          example.input.uischema
+            ? JSON.stringify(example.input.uischema, null, 2)
+            : ''
         )
       );
       this.$store.set(
         'app/monaco@dataModel',
         getMonacoModelForUri(
           monaco.Uri.parse(this.toDataUri(example.id)),
-          example.data ? JSON.stringify(example.data, null, 2) : ''
+          example.input.data ? JSON.stringify(example.input.data, null, 2) : ''
         )
       );
     },
