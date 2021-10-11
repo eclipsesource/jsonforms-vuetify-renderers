@@ -5,7 +5,6 @@ import { JsonSchema } from '@jsonforms/core';
 import { jsonSchemaDraft7, ruleSchema, uiSchema } from '../core/jsonschema';
 
 export type EditorApi = typeof editorApi;
-export type TextType = 'JSON' | 'JSON Schema' | 'UI Schema';
 
 /**
  * Register a new schema for the Json language, if it isn't already registered.
@@ -52,30 +51,12 @@ export const addSchema = (
  */
 export const configureJsonSchemaValidation = (
   editor: EditorApi,
-  modelUri: monaco.Uri
+  fileMatch: string[]
 ): void => {
   /** Note that the Monaco Editor only supports JSON Schema Draft 7 itself,
    * so if we also want to support a later standard we still have to formalize
    * it in JSON Schema Draft 7*/
-  addSchema(editor, [
-    { ...jsonSchemaDraft7, fileMatch: [modelUri.toString()] },
-  ]);
-};
-
-/**
- * Configures the Monaco Editor to validate the input against the Rule UI Schema meta-schema.
- */
-export const configureRuleSchemaValidation = (
-  editor: EditorApi,
-  modelUri: monaco.Uri
-): void => {
-  /** Note that the Monaco Editor only supports JSON Schema Draft 7 itself,
-   * so if we also want to support a later standard we still have to formalize
-   * it in JSON Schema Draft 7*/
-  addSchema(editor, [
-    { ...jsonSchemaDraft7 },
-    { ...ruleSchema, fileMatch: [modelUri.toString()] },
-  ]);
+  addSchema(editor, [{ ...jsonSchemaDraft7, fileMatch }]);
 };
 
 /**
@@ -83,12 +64,16 @@ export const configureRuleSchemaValidation = (
  */
 export const configureUISchemaValidation = (
   editor: EditorApi,
-  modelUri: monaco.Uri
+  fileMatch: string[]
 ): void => {
   /** Note that the Monaco Editor only supports JSON Schema Draft 7 itself,
    * so if we also want to support a later standard we still have to formalize
    * it in JSON Schema Draft 7*/
-  addSchema(editor, [{ ...uiSchema, fileMatch: [modelUri.toString()] }]);
+  addSchema(editor, [
+    { ...jsonSchemaDraft7 },
+    { ...ruleSchema },
+    { ...uiSchema, fileMatch },
+  ]);
 };
 
 /**
@@ -96,15 +81,14 @@ export const configureUISchemaValidation = (
  */
 export const configureDataValidation = (
   editor: EditorApi,
-  schema: {
-    uri: string;
-    schema: JsonSchema;
-  }
+  uri: string,
+  fileMatch: string,
+  schema: JsonSchema
 ): void => {
   /** Note that the Monaco Editor only supports JSON Schema Draft 7 itself,
    * so if we also want to support a later standard we still have to formalize
    * it in JSON Schema Draft 7*/
-  addSchema(editor, [{ ...schema }]);
+  addSchema(editor, [{ schema, uri, fileMatch: [fileMatch] }]);
 };
 
 export const getMonacoModelForUri = (
