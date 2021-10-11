@@ -40,7 +40,7 @@
 
 <script lang="ts">
 import { sync } from 'vuex-pathify';
-import { examples } from '@/components/examples';
+import { examples } from '@/examples';
 
 export default {
   name: 'DefaultDrawer',

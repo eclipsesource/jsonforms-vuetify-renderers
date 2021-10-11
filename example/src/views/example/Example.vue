@@ -103,7 +103,7 @@
 </template>
 
 <script lang="ts">
-import { examples } from '@/components/examples';
+import { examples } from '@/examples';
 import { find } from 'lodash';
 import { sync } from 'vuex-pathify';
 
