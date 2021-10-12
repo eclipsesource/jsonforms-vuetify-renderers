@@ -140,6 +140,13 @@
           </v-tabs>
         </v-card-text>
       </v-card>
+      <v-snackbar v-model="snackbar" :timeout="snackbarTimeout">
+        {{ snackbarText }}
+
+        <template v-slot:action="{ attrs }">
+          <v-btn text v-bind="attrs" @click="snackbar = false"> Close </v-btn>
+        </template>
+      </v-snackbar>
     </v-flex>
   </v-container>
 </template>
@@ -161,7 +168,8 @@ import {
   EditorApi,
   getMonacoModelForUri,
 } from '@/core/jsonSchemaValidation';
-// mergeStyles combines all classes from both styles definitions into one
+import { Example } from '@/core/types';
+
 const myStyles = mergeStyles(defaultStyles, {
   control: { root: 'my-control' },
 });
@@ -176,6 +184,10 @@ export default {
     return {
       activeTab: 0,
       examples,
+      example: undefined,
+      snackbar: false,
+      snackbarText: '',
+      snackbarTimeout: 3000,
     };
   },
   computed: {
@@ -188,40 +200,40 @@ export default {
     monacoSchemaModel: sync('app/monaco@schemaModel'),
     monacoUiSchemaModel: sync('app/monaco@uischemaModel'),
     monacoDataModel: sync('app/monaco@dataModel'),
-    example() {
-      const e = find(
-        this.examples,
-        (example) => example.id === this.$route.params.id
-      );
-      if (e) {
-        return {
-          id: e.id,
-          title: e.title,
-          schema: e.input.schema,
-          uischema: e.input.uischema,
-          data: e.input.data,
-        };
-      }
-
-      return null;
-    },
   },
   mounted() {
-    if (this.example) {
-      this.updateMonacoModels(this.example);
-    }
+    this.setExample(
+      find(this.examples, (example) => example.id === this.$route.params.id)
+    );
   },
   watch: {
-    example: {
-      deep: true,
-      handler(example: any, prev: any) {
-        this.updateMonacoModels(example);
-      },
+    '$route.params.id'(id) {
+      this.setExample(find(this.examples, (example) => example.id === id));
     },
   },
   methods: {
     onChange(event: JsonFormsChangeEvent) {
-      console.log('jsonform change');
+      this.$store.set(
+        'app/monaco@dataModel',
+        getMonacoModelForUri(
+          monaco.Uri.parse(this.toDataUri(this.example.id)),
+          event.data ? JSON.stringify(event.data, null, 2) : ''
+        )
+      );
+    },
+    setExample(example: Example): void {
+      if (example) {
+        this.example = {
+          id: example.id,
+          title: example.title,
+          input: {
+            schema: example.input.schema,
+            uischema: example.input.uischema,
+            data: example.input.data,
+          },
+        };
+        this.updateMonacoModels(this.example);
+      }
     },
     reloadMonacoSchema() {
       const example = find(
@@ -239,6 +251,7 @@ export default {
               : ''
           )
         );
+        this.toast('Original example schema loaded. Apply it to take effect.');
       }
     },
     saveMonacoSchema() {
@@ -246,19 +259,21 @@ export default {
       const example = this.example;
 
       if (model && example) {
+        // TODO: is there a better way how to get errors including the error message from monaco editor ?
+        const hasError =
+          model
+            .getAllDecorations()
+            .filter((d) => d.options.className === 'squiggly-error')
+            .map((e) => e).length > 0;
+
         const modelValue = model.getValue();
-        if (modelValue) {
-          let newJson: Record<string, any> | undefined = undefined;
+        if (modelValue && !hasError) {
+          const newJson: Record<string, any> = JSON.parse(modelValue);
+          example.input.schema = newJson;
 
-          try {
-            newJson = JSON.parse(modelValue);
-          } catch (error) {
-            console.error('Invalid schema JSON: ' + error);
-          }
-
-          if (newJson) {
-            example.input.schema = newJson;
-          }
+          this.toast('New schema applied');
+        } else if (hasError) {
+          this.toast('Error: schema is invalid');
         }
       }
     },
@@ -278,6 +293,9 @@ export default {
               : ''
           )
         );
+        this.toast(
+          'Original example UI schema loaded. Apply it to take effect.'
+        );
       }
     },
     saveMonacoUiSchema() {
@@ -285,19 +303,20 @@ export default {
       const example = this.example;
 
       if (model && example) {
+        // TODO: is there a better way how to get errors including the error message from monaco editor ?
+        const hasError =
+          model
+            .getAllDecorations()
+            .filter((d) => d.options.className === 'squiggly-error')
+            .map((e) => e).length > 0;
+
         const modelValue = model.getValue();
-        if (modelValue) {
-          let newJson: Record<string, any> | undefined = undefined;
-
-          try {
-            newJson = JSON.parse(modelValue);
-          } catch (error) {
-            console.error('Invalid uischema JSON: ' + error);
-          }
-
-          if (newJson) {
-            example.uischema = newJson;
-          }
+        if (modelValue && !hasError) {
+          const newJson: Record<string, any> = JSON.parse(modelValue);
+          example.input.uischema = newJson;
+          this.toast('New UI schema applied');
+        } else if (hasError) {
+          this.toast('Error: UI schema is invalid');
         }
       }
     },
@@ -317,6 +336,7 @@ export default {
               : ''
           )
         );
+        this.toast('Original example data loaded. Apply it to take effect.');
       }
     },
     saveMonacoData() {
@@ -324,6 +344,8 @@ export default {
       const example = this.example;
 
       if (model && example) {
+        // do not check for monaco errors just if this is valid JSON becase we want to see when we have validation errors
+
         const modelValue = model.getValue();
         if (modelValue) {
           let newJson: Record<string, any> | undefined = undefined;
@@ -331,11 +353,12 @@ export default {
           try {
             newJson = JSON.parse(modelValue);
           } catch (error) {
-            console.error('Invalid Data JSON: ' + error);
+            this.toast(`Error: ${error}`);
           }
 
           if (newJson) {
             example.input.data = newJson;
+            this.toast('New data applied');
           }
         }
       }
@@ -394,6 +417,10 @@ export default {
     },
     toDataUri(id: string): string {
       return `${id}.data.json`;
+    },
+    toast(message: string): void {
+      this.snackbar = true;
+      this.snackbarText = message;
     },
   },
   provide() {

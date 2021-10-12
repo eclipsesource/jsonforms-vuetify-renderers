@@ -25,9 +25,13 @@ export const addSchema = (
 ): void => {
   const registeredSchemas =
     editor.languages.json.jsonDefaults.diagnosticsOptions.schemas;
-  if (registeredSchemas === undefined) {
+  if (registeredSchemas === undefined || registeredSchemas.length === 0) {
     editor.languages.json.jsonDefaults.setDiagnosticsOptions({
       validate: true,
+      allowComments: false,
+      enableSchemaRequest: false,
+      schemaRequest: 'warning',
+      schemaValidation: 'error',
       schemas: [...schemas],
     });
   } else {

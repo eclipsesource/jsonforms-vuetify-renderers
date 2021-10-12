@@ -2,9 +2,9 @@
   <div>
     <json-forms
       v-if="resolvedSchema.resolved && resolvedSchema.error === undefined"
-      :data="example.data"
+      :data="example.input.data"
       :schema="resolvedSchema.schema"
-      :uischema="example.uischema"
+      :uischema="example.input.uischema"
       :renderers="renderers"
       :cells="cells"
       :config="config"
@@ -114,12 +114,15 @@ export default {
     };
   },
   watch: {
-    example(newExample: Example): void {
-      this.resolveSchema(newExample.schema);
+    example: {
+      deep: true,
+      handler(newExample: Example, oldExample: Example) {
+        this.resolveSchema(newExample.input.schema);
+      },
     },
   },
   mounted() {
-    this.resolveSchema(this.example.schema);
+    this.resolveSchema(this.example.input.schema);
   },
   methods: {
     onChange(event: JsonFormsChangeEvent): void {

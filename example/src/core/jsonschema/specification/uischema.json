@@ -110,7 +110,7 @@
           "elements": "Layout should have an array property \"elements\"",
           "type": "Layout should have a string property \"type\""
         },
-        "additionalProperties": "Layout should not have properties other than type and elements"
+        "additionalProperties": "Layout should not have properties other than type, elements and rule"
       }
     },
     "verticallayout": {
@@ -129,7 +129,18 @@
           "$ref": "#/definitions/rule"
         }
       },
-      "required": ["type", "elements"]
+      "required": ["type", "elements"],
+      "additionalProperties": false,
+      "errorMessage": {
+        "properties": {
+          "type": "type should be equal to one of the allowed values"
+        },
+        "required": {
+          "elements": "Layout should have an array property \"elements\"",
+          "type": "Layout should have a string property \"type\""
+        },
+        "additionalProperties": "Layout should not have properties other than type, elements and rule"
+      }
     },
     "categorization": {
       "type": "object",
@@ -189,7 +200,7 @@
           "type": "Category layout should have a string property \"type\"",
           "elements": "Category layout should have an array property \"elements\""
         },
-        "additionalProperties": "Category layout should not have properties other than type,elements and label"
+        "additionalProperties": "Category layout should not have properties other than type, elements, label and rule"
       }
     },
     "group": {
@@ -206,6 +217,9 @@
         },
         "label": {
           "type": "string"
+        },
+        "rule": {
+          "$ref": "#/definitions/rule"
         }
       },
       "required": ["type", "elements", "label"],
@@ -220,7 +234,7 @@
           "elements": "Group layout should have an array property \"elements\"",
           "label": "Group layout should have a string property \"label\""
         },
-        "additionalProperties": "Group layout should not have properties other than type,elements and label"
+        "additionalProperties": "Group layout should not have properties other than type, elements, label and rule"
       }
     },
     "rule": {
