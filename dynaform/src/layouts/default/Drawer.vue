@@ -7,6 +7,24 @@
     :right="$vuetify.rtl"
     v-model="drawer"
   >
+    <v-list-item link>
+      <v-list-item-icon>
+        <v-img
+          :src="require('@/assets/jsonforms.svg')"
+          max-height="64"
+          max-width="64"
+        />
+      </v-list-item-icon>
+      <v-list-item-content
+        @click="
+          if ($route.name !== 'designer') $router.push({ name: 'designer' });
+        "
+      >
+        <v-list-item-title class="text-h6"> Designer </v-list-item-title>
+        <v-list-item-subtitle> Screen Designer </v-list-item-subtitle>
+      </v-list-item-content>
+    </v-list-item>
+    <v-divider></v-divider>
     <v-list-item>
       <v-list-item-icon>
         <v-img

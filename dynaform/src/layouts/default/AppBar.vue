@@ -15,7 +15,7 @@
               max-width="64"
             />
           </v-col>
-          <v-col>JSON Forms </v-col>
+          <v-col>JSON Dynaform </v-col>
         </v-row></v-container
       ></v-toolbar-title
     >

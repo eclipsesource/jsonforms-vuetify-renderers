@@ -1,4 +1,4 @@
 {
-  "packages": ["vue2-vuetify", "example"],
+  "packages": ["vue2-vuetify", "dynaform"],
   "version": "3.0.0-alpha.2"
 }

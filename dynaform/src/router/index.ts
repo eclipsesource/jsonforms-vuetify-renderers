@@ -26,6 +26,18 @@ export default new Router({
           name: 'example',
           component: () => import('../views/example'),
         },
+        {
+          path: 'designer/',
+          name: 'designer',
+          component: () => import('../views/designer'),
+          children: [
+            {
+              path: '',
+              name: 'Default',
+              component: () => import('../views/home'),
+            },
+          ],
+        },
       ],
     },
   ],
