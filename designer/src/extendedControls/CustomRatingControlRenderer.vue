@@ -2,11 +2,7 @@
   <v-form>
     <v-container>
       esto esta completamente extendido
-      <!-- <v-text-field
-        counter="25"
-        hint="This field uses counter prop"
-        label="Regular"
-      ></v-text-field> -->
+      <v-rating v-model="control.data"></v-rating>
       <!-- <v-combobox
         v-model="select"
         :items="items"
@@ -44,13 +40,21 @@ const controlRenderer = defineComponent({
   props: {
     ...rendererProps<ControlElement>(),
   },
-
   setup(props: RendererProps<ControlElement>) {
+    console.log(props);
     return useVuetifyControl(
       useJsonFormsControl(props),
       (value) => value || undefined
     );
   },
+  mounted() {
+    console.log(this.control);
+  },
+  // computed: {
+  //   // rating(): number[] | undefined {
+  //   //   return this.control.data;
+  //   // },
+  // },
   data() {
     return {
       select: ['Vuetify', 'Programming'],
