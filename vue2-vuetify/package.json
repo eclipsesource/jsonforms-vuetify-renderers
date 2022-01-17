@@ -48,7 +48,7 @@
     "@jsonforms/core": "^3.0.0-alpha.3",
     "@jsonforms/vue2": "^3.0.0-alpha.3",
     "@mdi/font": "^5.9.55",
-    "@vue/composition-api": "1.0.0-rc.3",
+    "@vue/composition-api": "^1.4.2",
     "vue": "^2.6.11",
     "vuetify": "^2.4.0"
   },
