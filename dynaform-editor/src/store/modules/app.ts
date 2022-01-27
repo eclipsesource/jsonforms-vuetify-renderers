@@ -30,6 +30,7 @@ import {
   EditorLayout,
   EditorUISchemaElement,
 } from '../../model/uischema';
+import { setSchema } from '@jsonforms/core';
 
 /** Removes the given UI element from its tree.
  *  If a SchemaElement is provided, the element to remove will be cleaned up from all linkedUISchemaElements fields in the schema.
@@ -204,7 +205,22 @@ const mutations = {
       }
     );
     console.log(clone);
+    state.editor.uiSchema = clone.uiSchema;
+  },
+  SET_SCHEMA:(state, payload)=>{
 
+  const clone = withCloneTree(
+        state.editor.uiSchema,
+        undefined,
+        state,
+        (clonedUiSchema) => {
+          return linkSchemas(
+            buildSchemaTree(payload),
+            cleanUiSchemaLinks(clonedUiSchema)
+          );
+        }
+      );
+      state.editor.schema = clone.schema;
   }
 };
 
@@ -228,6 +244,9 @@ const actions = {
   },
   addUnscopedElementToLayout({commit}, payload){
     commit ('ADD_UNSCOPED_ELEMENT_TO_LAYOUT', payload);
+  },
+  setSchema({commit}, payload) {
+    commit ('SET_SCHEMA', payload);
   }
   // setSchema(){
   //   commit('SET_SCHEMA', palleteElements);

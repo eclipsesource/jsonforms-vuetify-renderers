@@ -11,13 +11,13 @@ import { assign, cloneDeep, omit } from 'lodash';
 import { v4 as uuid } from 'uuid';
 
 import { getHierarchy, TreeElement } from '../util/tree';
-// Type: object
+
 export const OBJECT: 'object' = 'object';
-// Type: array
+
 export const ARRAY: 'array' = 'array';
-// Type: primitive
+
 export const PRIMITIVE: 'primitive' = 'primitive';
-// Type: other
+
 export const OTHER: 'other' = 'other';
 
 export type SchemaElementType = 'object' | 'array' | 'primitive' | 'other';

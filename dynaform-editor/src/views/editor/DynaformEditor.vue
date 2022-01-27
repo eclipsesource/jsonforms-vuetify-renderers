@@ -43,7 +43,7 @@ export default {
   mounted(){
     this.schemaService
       .getSchema()
-      .then((schema) => this.$store.set('app/editor@schema', schema));
+      .then((schema) => this.$store.dispatch('app/setSchema', schema));
   },
 
  computed: {

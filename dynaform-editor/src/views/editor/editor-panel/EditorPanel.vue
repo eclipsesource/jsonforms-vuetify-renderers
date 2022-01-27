@@ -38,9 +38,6 @@ export default {
     }
   },
   methods: {
-    log: function (evt) {
-      window.console.log(evt);
-    },
     updateConfig: function (items) {
       alert('upadete config');
     },

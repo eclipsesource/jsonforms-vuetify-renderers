@@ -5,7 +5,6 @@
       :list="list1"
       group="people"
       @change="handleChange"
-      @start="onStart"
     >
       <v-col
         v-for="(element, index) in uischema.elements"
@@ -43,6 +42,10 @@ import {
 import { useVuetifyLayout } from '@jsonforms/vue2-vuetify';
 import { VContainer, VRow, VCol } from 'vuetify/lib';
 import { DroppableElementRegistration } from './DroppableElement.vue';
+
+import { EditorUISchemaElement } from '../model/uischema';
+import { createControl } from '../util/generators/uiSchema';
+
 const layoutRenderer = defineComponent({
   name: 'horizontal-layout-renderer',
   components: {
@@ -58,7 +61,7 @@ const layoutRenderer = defineComponent({
   },
   data() {
     return {
-      list1: [],
+      list1: []
     };
   },
   setup(props: RendererProps<Layout>) {
@@ -75,21 +78,26 @@ const layoutRenderer = defineComponent({
     },
   },
   methods: {
-    onStart() {
-      console.log('start');
-    },
     handleChange(e) {
-      
-      // e.stopPropagation();
       if (e.added) {
-        console.log('hola');
-        let provider = e.added.element.uiSchemaElementProvider();
-        //this.$store.set('app/editor@uiSchema', provider);
-        this.$store.dispatch('app/addUnscopedElementToLayout', {
-          uiSchemaElement: provider,
-          layoutUUID: this.uischema.uuid,
-          index: 0,
-        });
+        if (e.added.element.uuid) {
+          const uiSchemaElement: EditorUISchemaElement = createControl(
+            e.added.element
+          );
+          this.$store.dispatch('app/addScopedElementToLayout', {
+            uiSchemaElement: uiSchemaElement,
+            layoutUUID: this.uischema.uuid,
+            index: 0,
+            schemaUUID: e.added.element.uuid,
+          });
+        } else {
+          let provider = e.added.element.uiSchemaElementProvider();
+          this.$store.dispatch('app/addUnscopedElementToLayout', {
+            uiSchemaElement: provider,
+            layoutUUID: this.uischema.uuid,
+            index: 0,
+          });
+        }
       }
     },
   },

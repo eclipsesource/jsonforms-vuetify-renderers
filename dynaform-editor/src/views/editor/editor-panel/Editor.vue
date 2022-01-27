@@ -4,7 +4,7 @@
       :renderers="editorRenderers"
       :data="data"
       :uischema="useUiSchema"
-      :schema="schema"
+      :schema="useExportSchema()"
     />
     <EmptyEditor v-else/>
   </div>
@@ -16,6 +16,7 @@ import { PropType } from 'vue';
 import { JsonFormsRendererRegistryEntry } from '@jsonforms/core';
 import EmptyEditor from './EmptyEditor.vue';
 import { sync } from 'vuex-pathify';
+import {useExportSchema} from '../../../util'
 export default {
   name: 'Editor',
   props: {
@@ -29,9 +30,6 @@ export default {
     JsonForms,
     EmptyEditor,
   },
-  mounted() {
-    console.log(this.editorRenderers);
-  },
   data() {
     return{
 
@@ -39,8 +37,16 @@ export default {
       schema:{}
     }
   },
+  
   computed: {
+    
      useUiSchema: sync('app/editor@uiSchema'),
+     useSchema: sync('app/editor@schema'),
   },
+  methods:{
+    useExportSchema: function(){
+      return useExportSchema();
+    }
+  }
 };
 </script>
