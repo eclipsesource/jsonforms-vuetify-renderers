@@ -34,12 +34,12 @@ export default {
     };
   },
   methods: {
-    handleChange(e) {
+    handleChange(e: any) {
       if (e.added) {
         let provider = e.added.element.uiSchemaElementProvider();
         this.$store.set('app/editor@uiSchema', provider);
       }
-    }
+    },
   },
 };
 </script>

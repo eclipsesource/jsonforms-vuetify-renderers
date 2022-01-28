@@ -9,6 +9,15 @@ export type Example = {
     data: Record<string, any>;
   };
 };
+export type Preview = {
+  id: string;
+  title: string;
+  input: {
+    schema?: JsonSchema;
+    uischema?: UISchemaElement;
+    data: Record<string, any>;
+  };
+};
 
 export type ResolvedSchema = {
   schema?: JsonSchema;

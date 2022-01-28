@@ -4,7 +4,7 @@
       :renderers="editorRenderers"
       :data="data"
       :uischema="useUiSchema"
-      :schema="useExportSchema()"
+      :schema="useExportSchema"
     />
     <EmptyEditor v-else/>
   </div>
@@ -24,6 +24,10 @@ export default {
       required: false,
       type: Array as PropType<JsonFormsRendererRegistryEntry[]>,
     },
+    schema: {
+        type: Object,
+      default:() => undefined
+    }
   },
   
   components: {
@@ -34,19 +38,18 @@ export default {
     return{
 
       data: {},
-      schema:{}
-    }
-  },
-  
-  computed: {
+      useExportSchema:useExportSchema(this.schema)
+     }
     
+  },
+  computed: {
      useUiSchema: sync('app/editor@uiSchema'),
-     useSchema: sync('app/editor@schema'),
+    //  useExportSchema: function (){
+    //    return useExportSchema(this.schema);
+    //  }
   },
   methods:{
-    useExportSchema: function(){
-      return useExportSchema();
-    }
+   
   }
 };
 </script>

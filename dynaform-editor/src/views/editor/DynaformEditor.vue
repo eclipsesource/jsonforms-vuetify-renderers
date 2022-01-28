@@ -22,6 +22,7 @@
 import PalletePanel from './pallete-panel';
 import EditorPanel from './editor-panel';
 import PropertiesPanel from './properties-panel';
+import DynaformPreview from '../../components/DynaformPreview.vue'
 import { defaultEditorRenderers } from '../../renderers';
 import { ExampleSchemaService } from '../../api/exampleSchemaService';
 import { sync } from 'vuex-pathify';
@@ -30,11 +31,14 @@ export default {
   components: {
     PalletePanel,
     EditorPanel,
-    PropertiesPanel,
+    PropertiesPanel
   },
   data() {
     return {
-      editorTabs: [],
+      editorTabs: [{
+        name: "Preview",
+        component: DynaformPreview,
+      }],
       editorRenderers: defaultEditorRenderers,
       schemaService: new ExampleSchemaService(),
     };
