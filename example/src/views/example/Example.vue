@@ -25,7 +25,7 @@
               />
             </v-tab-item>
             <v-tab-item :key="1">
-              <v-card>
+              <v-card flat>
                 <v-card-title>
                   <v-toolbar flat>
                     <v-toolbar-title>Schema</v-toolbar-title>
@@ -63,7 +63,7 @@
               </v-card>
             </v-tab-item>
             <v-tab-item :key="2">
-              <v-card>
+              <v-card flat>
                 <v-card-title>
                   <v-toolbar flat>
                     <v-toolbar-title>UI Schema</v-toolbar-title>
@@ -105,7 +105,7 @@
               </v-card>
             </v-tab-item>
             <v-tab-item :key="3">
-              <v-card>
+              <v-card flat>
                 <v-card-title>
                   <v-toolbar flat>
                     <v-toolbar-title>Data</v-toolbar-title>
@@ -466,5 +466,10 @@ export default {
 
 .vue-code-hightlight pre code {
   background-color: transparent !important;
+}
+
+/* fix dropdown menu visibility when inside tabs */
+.v-window {
+  overflow: visible;
 }
 </style>
