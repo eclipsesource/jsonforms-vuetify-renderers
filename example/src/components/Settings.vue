@@ -207,12 +207,12 @@
             <v-tooltip bottom>
               <template v-slot:activator="{ on: onTooltip }">
                 <v-switch
-                  v-model="locale"
-                  label="Switch between english and german locale"
+                  v-model="hideAvatar"
+                  label="Hide Array Item Avatar"
                   v-on="onTooltip"
                 ></v-switch>
               </template>
-              Only applies to basic example
+              Whether the array index avatars shall be shown
             </v-tooltip>
           </v-col>
         </v-row>
@@ -238,6 +238,7 @@ export default {
     collapseNewItems: sync('app/jsonforms@config.collapseNewItems'),
     readonly: sync('app/jsonforms@readonly'),
     locale: sync('app/jsonforms@locale'),
+    hideAvatar: sync('app/jsonforms@config.hideAvatar'),
   },
   data: function () {
     return {

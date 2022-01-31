@@ -49,20 +49,22 @@
               <v-expansion-panel-header :class="styles.arrayList.itemHeader">
                 <v-container py-0>
                   <v-row
-                    :style="`display: grid; grid-template-columns: min-content auto min-content ${
+                    :style="`display: grid; grid-template-columns: ${
+                      !hideAvatar ? 'min-content' : ''
+                    } auto min-content ${
                       appliedOptions.showSortButtons
                         ? 'min-content min-content'
                         : ''
                     }`"
                   >
-                    <v-col align-self="center" px-0>
+                    <v-col v-if="!hideAvatar" align-self="center" px-0>
                       <validation-badge
                         overlap
                         bordered
                         :errors="childErrors(index)"
                       >
-                        <v-avatar size="40" aria-label="Index" color="info"
-                          ><span class="info--text text--lighten-5">{{
+                        <v-avatar size="40" aria-label="Index" color="primary"
+                          ><span class="primary--text text--lighten-5">{{
                             index + 1
                           }}</span></v-avatar
                         >
@@ -144,7 +146,7 @@
                                 arraySchema.minItems !== undefined &&
                                 control.data.length <= arraySchema.minItems)
                             "
-                            @click.native="removeItemsClick($event, [index])"
+                            @click.stop.native="suggestToDelete = index"
                           >
                             <v-icon class="notranslate">mdi-delete</v-icon>
                           </v-btn>
@@ -173,6 +175,36 @@
         No data
       </v-container></v-card-text
     >
+    <v-dialog
+      :value="suggestToDelete !== null"
+      max-width="600"
+      @keydown.esc="suggestToDelete = null"
+      @click:outside="suggestToDelete = null"
+    >
+      <v-card>
+        <v-card-title class="text-h5">
+          Delete {{ childLabelForIndex(suggestToDelete) || 'element' }}?
+        </v-card-title>
+
+        <v-card-text> The element will be deleted. </v-card-text>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+
+          <v-btn text @click="suggestToDelete = null"> Cancel </v-btn>
+          <v-btn
+            text
+            ref="confirm"
+            @click="
+              removeItemsClick([suggestToDelete]);
+              suggestToDelete = null;
+            "
+          >
+            Delete
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-card>
 </template>
 
@@ -188,6 +220,7 @@ import {
   findUISchema,
   Resolve,
   JsonSchema,
+  getControlPath,
 } from '@jsonforms/core';
 import { defineComponent } from '../vue';
 import {
@@ -196,11 +229,13 @@ import {
   useJsonFormsArrayControl,
   RendererProps,
 } from '@jsonforms/vue2';
-import { useVuetifyArrayControl } from '../util';
+import { useNested, useVuetifyArrayControl } from '../util';
 import {
   VCard,
+  VCardActions,
   VCardTitle,
   VCardText,
+  VDialog,
   VRow,
   VCol,
   VContainer,
@@ -225,9 +260,11 @@ const controlRenderer = defineComponent({
   components: {
     DispatchRenderer,
     VCard,
+    VCardActions,
     VCardTitle,
     VCardText,
     VAvatar,
+    VDialog,
     VRow,
     VCol,
     VToolbar,
@@ -250,7 +287,10 @@ const controlRenderer = defineComponent({
   setup(props: RendererProps<ControlElement>) {
     const control = useVuetifyArrayControl(useJsonFormsArrayControl(props));
     const currentlyExpanded = ref<null | number>(null);
-    return { ...control, currentlyExpanded };
+    const suggestToDelete = ref<null | number>(null);
+    // indicate to our child renderers that we are increasing the "nested" level
+    useNested('array');
+    return { ...control, currentlyExpanded, suggestToDelete };
   },
   computed: {
     noData(): boolean {
@@ -274,6 +314,9 @@ const controlRenderer = defineComponent({
         this.control.rootSchema
       );
     },
+    hideAvatar(): boolean {
+      return !!this.appliedOptions.hideAvatar;
+    },
   },
   methods: {
     composePaths,
@@ -295,16 +338,16 @@ const controlRenderer = defineComponent({
       event.stopPropagation();
       this.moveDown?.(this.control.path, toMove)();
     },
-    removeItemsClick(event: Event, toDelete: number[]): void {
-      event.stopPropagation();
+    removeItemsClick(toDelete: number[]): void {
       this.removeItems?.(this.control.path, toDelete)();
     },
     childErrors(index: number): ErrorObject[] {
-      return this.control.childErrors.filter((e) =>
-        e.instancePath.startsWith(
+      return this.control.childErrors.filter((e) => {
+        const errorDataPath = getControlPath(e);
+        return errorDataPath.startsWith(
           this.composePaths(this.control.path, `${index}`)
-        )
-      );
+        );
+      });
     },
   },
 });
