@@ -27,6 +27,12 @@ const buildFormats = [
       format: 'esm',
       sourcemap: true,
     },
+    watch: {
+      chokidar: {
+        //enable pulling so we can detect changes when working in WSL2
+        usePolling: true,
+      },
+    },
     plugins: [
       resolve({
         extensions: ['.js', '.jsx', '.ts', '.tsx', '.vue'],
