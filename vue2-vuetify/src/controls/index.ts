@@ -32,6 +32,7 @@ import { entry as radioGroupControlRendererEntry } from './RadioGroupControlRend
 import { entry as sliderControlRendererEntry } from './SliderControlRenderer.vue';
 import { entry as stringControlRendererEntry } from './StringControlRenderer.vue';
 import { entry as timeControlRendererEntry } from './TimeControlRenderer.vue';
+import { entry as fileControlRendererEntry } from './FileControlRenderer.vue';
 
 export const controlRenderers = [
   anyOfStringOrEnumControlRendererEntry,
@@ -50,4 +51,5 @@ export const controlRenderers = [
   sliderControlRendererEntry,
   stringControlRendererEntry,
   timeControlRendererEntry,
+  fileControlRendererEntry,
 ];

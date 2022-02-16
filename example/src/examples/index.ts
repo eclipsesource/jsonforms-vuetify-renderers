@@ -14,6 +14,8 @@ import { input as enumExample } from './enum';
 import { input as enumInArray } from './enum-in-array';
 import { input as groupLayout } from './group-layout';
 import { input as horizontalLayout } from './horizontal-layout';
+import { input as templateLayout } from './template-layout';
+import { input as labels } from './labels';
 import { input as listWithDetails } from './list-with-details';
 import { input as listWithDetailsAndReorder } from './list-with-details-and-reorder';
 import { input as listWithDetailsRestrict } from './list-with-details-restrict';
@@ -75,6 +77,11 @@ export const examples = [
     input: multiEnum,
   },
   {
+    id: 'labels',
+    title: 'Labels',
+    input: labels,
+  },
+  {
     id: 'categorization',
     title: 'Categorization',
     input: categorization,
@@ -108,6 +115,11 @@ export const examples = [
     id: 'nested-layout',
     title: 'Nested Layout',
     input: nestedLayout,
+  },
+  {
+    id: 'template-layout',
+    title: 'Template Layout',
+    input: templateLayout,
   },
   {
     id: 'array',
