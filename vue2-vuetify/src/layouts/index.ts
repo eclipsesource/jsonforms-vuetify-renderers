@@ -37,3 +37,5 @@ export const layoutRenderers = [
   verticalLayoutRendererEntry,
   templateLayoutRendererEntry,
 ];
+
+export * from './components';

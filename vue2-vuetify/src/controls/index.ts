@@ -53,3 +53,6 @@ export const controlRenderers = [
   timeControlRendererEntry,
   fileControlRendererEntry,
 ];
+
+export * from './directives';
+export * from './components';

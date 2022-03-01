@@ -20,3 +20,5 @@ export const complexRenderers = [
   objectRendererEntry,
   oneOfRendererEntry,
 ];
+
+export * from './components';
