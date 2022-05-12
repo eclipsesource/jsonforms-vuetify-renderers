@@ -19,7 +19,7 @@ import {
   and,
   optionIs,
 } from '@jsonforms/core';
-import { defineComponent, inject } from '@vue/composition-api';
+import { defineComponent, inject } from '../vue';
 import {
   rendererProps,
   useJsonFormsLayout,

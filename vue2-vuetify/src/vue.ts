@@ -14,8 +14,14 @@ export {
   unref,
   watch,
   watchEffect,
+  provide,
 } from '@vue/composition-api';
-export type { Ref, ComputedRef } from '@vue/composition-api';
+export type {
+  Ref,
+  ComputedRef,
+  ComputedOptions,
+  MethodOptions,
+} from '@vue/composition-api';
 /**
  * Compatibility type as defineComponent of '@vue/composition-api' can't properly handle PropTypes.
  */

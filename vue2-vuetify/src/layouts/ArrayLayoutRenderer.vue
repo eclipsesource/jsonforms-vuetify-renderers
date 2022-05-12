@@ -253,7 +253,7 @@ import {
 } from 'vuetify/lib';
 import { ValidationIcon, ValidationBadge } from '../controls/components/index';
 import { ErrorObject } from 'ajv';
-import { ref } from '@vue/composition-api';
+import { ref } from '../vue';
 
 const controlRenderer = defineComponent({
   name: 'array-layout-renderer',

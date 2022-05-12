@@ -82,7 +82,7 @@ import {
 import TemplateCompiler from './components/TemplateCompiler.vue';
 import Vue from 'vue';
 import { ErrorObject } from 'ajv';
-import { ComputedOptions, MethodOptions } from '@vue/composition-api';
+import { ComputedOptions, MethodOptions } from '../vue';
 
 interface TemplateElement extends Layout {
   type: 'TemplateLayout';

@@ -70,7 +70,7 @@ import {
 } from '@jsonforms/vue2';
 import { DisabledIconFocus } from './directives';
 import { useVuetifyControl, useTranslator } from '../util';
-import { defineComponent, unref } from '@vue/composition-api';
+import { defineComponent, unref } from '../vue';
 import {
   VHover,
   VFileInput,

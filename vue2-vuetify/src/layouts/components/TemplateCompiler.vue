@@ -21,10 +21,15 @@ import {
   compileToFunctions,
 } from 'vue-template-compiler';
 import Vue from 'vue';
-import { CompType, Components, defineComponent } from '../../vue';
+import {
+  CompType,
+  Components,
+  defineComponent,
+  ComputedOptions,
+  MethodOptions,
+} from '../../vue';
 import { UISchemaElement } from '@jsonforms/core';
 import merge from 'lodash/merge';
-import { ComputedOptions, MethodOptions } from '@vue/composition-api';
 
 const templateCompiler = defineComponent({
   name: 'template-compiler',
