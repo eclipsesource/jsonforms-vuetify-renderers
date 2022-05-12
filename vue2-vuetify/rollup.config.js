@@ -29,7 +29,7 @@ const buildFormats = [
     },
     watch: {
       chokidar: {
-        //enable pulling so we can detect changes when working in WSL2
+        //enable polling so we can detect changes when working in WSL2
         usePolling: true,
       },
     },
