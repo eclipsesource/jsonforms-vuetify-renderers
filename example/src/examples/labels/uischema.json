@@ -1,0 +1,29 @@
+{
+  "type": "VerticalLayout",
+  "elements": [
+    {
+      "type": "Label",
+      "text": "Type your name"
+    },
+    {
+      "type": "HorizontalLayout",
+      "elements": [
+        {
+          "type": "Control",
+          "scope": "#/properties/firstName"
+        },
+        {
+          "type": "Control",
+          "scope": "#/properties/lastName"
+        }
+      ]
+    },
+    {
+      "type": "Label",
+      "text": "Your name is {{ data.firstName }} {{ data.lastName }}",
+      "options": {
+        "template": true
+      }
+    }
+  ]
+}

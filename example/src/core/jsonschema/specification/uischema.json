@@ -21,6 +21,9 @@
     },
     {
       "$ref": "#/definitions/group"
+    },
+    {
+      "$ref": "#/definitions/templatelayout"
     }
   ],
   "definitions": {
@@ -49,6 +52,9 @@
           },
           {
             "$ref": "#/definitions/group"
+          },
+          {
+            "$ref": "#/definitions/templatelayout"
           }
         ]
       }
@@ -290,6 +296,41 @@
           "label": "Group layout should have a string property \"label\""
         },
         "additionalProperties": "Group layout should not have properties other than type, elements, label, options and rule"
+      }
+    },
+    "templatelayout": {
+      "type": "object",
+      "$id": "#templatelayout",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "TemplateLayout",
+          "default": "TemplateLayout"
+        },
+        "template": {
+          "type": "string"
+        },
+        "elements": {
+          "$ref": "#/definitions/elements"
+        },
+        "options": {
+          "$ref": "#/definitions/options"
+        },
+        "rule": {
+          "$ref": "#/definitions/rule"
+        }
+      },
+      "required": ["type", "template"],
+      "additionalProperties": false,
+      "errorMessage": {
+        "properties": {
+          "type": "type should be equal to one of the allowed values"
+        },
+        "required": {
+          "template": "Layout should have an string property \"template\"",
+          "type": "Layout should have a string property \"type\""
+        },
+        "additionalProperties": "Layout should not have properties other than type, template, elements, options and rule"
       }
     },
     "rule": {
