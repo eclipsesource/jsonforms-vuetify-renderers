@@ -366,4 +366,7 @@ export const entry: JsonFormsRendererRegistryEntry = {
 .notranslate {
   transform: none !important;
 }
+.v-expansion-panel-header:before {
+  background-color: inherit;
+}
 </style>
