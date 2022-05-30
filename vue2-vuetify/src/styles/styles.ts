@@ -37,6 +37,7 @@ export interface Styles {
   arrayList: {
     root?: string;
     toolbar?: string;
+    container?: string;
     addButton?: string;
     label?: string;
     noData?: string;

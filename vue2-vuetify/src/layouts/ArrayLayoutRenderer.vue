@@ -1,44 +1,22 @@
 <template>
-  <v-card v-if="control.visible" :class="styles.arrayList.root" elevation="0">
+  <v-card v-if="control.visible" :class="styles.arrayList.root">
     <v-card-title>
-      <v-toolbar flat :class="styles.arrayList.toolbar">
-        <v-toolbar-title :class="styles.arrayList.label">{{
-          computedLabel
-        }}</v-toolbar-title>
-        <validation-icon
-          v-if="control.childErrors.length > 0"
-          :errors="control.childErrors"
-        />
-        <v-spacer></v-spacer>
-
-        <v-tooltip bottom>
-          <template v-slot:activator="{ on: onTooltip }">
-            <v-btn
-              fab
-              text
-              elevation="0"
-              small
-              :aria-label="`Add to ${control.label}`"
-              v-on="onTooltip"
-              :class="styles.arrayList.addButton"
-              :disabled="
-                !control.enabled ||
-                (appliedOptions.restrict &&
-                  arraySchema !== undefined &&
-                  arraySchema.maxItems !== undefined &&
-                  control.data.length >= arraySchema.maxItems)
-              "
-              @click="addButtonClick"
-            >
-              <v-icon>mdi-plus</v-icon>
-            </v-btn>
-          </template>
-          {{ `Add to ${control.label}` }}
-        </v-tooltip>
-      </v-toolbar>
+      {{ computedLabel }}
+      <validation-icon
+        v-if="
+          control.childErrors.length > 0 &&
+          appliedOptions.showValidationOnArrayTitles
+        "
+        :errors="control.childErrors"
+      />
+      <v-spacer></v-spacer>
     </v-card-title>
-    <v-card-text>
-      <v-container justify-space-around align-content-center>
+    <v-card-text v-if="!noData">
+      <v-container
+        justify-space-around
+        align-content-center
+        :class="styles.arrayList.container"
+      >
         <v-row justify="center">
           <v-expansion-panels
             accordion
@@ -175,10 +153,31 @@
           </v-expansion-panels>
         </v-row>
       </v-container>
-      <v-container v-if="noData" :class="styles.arrayList.noData">
-        No data
-      </v-container></v-card-text
-    >
+    </v-card-text>
+    <v-card-actions class="pb-8">
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on: onTooltip }">
+          <v-btn
+            color="primary"
+            rounded
+            :aria-label="`Add to ${control.label}`"
+            v-on="onTooltip"
+            :class="styles.arrayList.addButton"
+            :disabled="
+              !control.enabled ||
+              (appliedOptions.restrict &&
+                arraySchema !== undefined &&
+                arraySchema.maxItems !== undefined &&
+                control.data.length >= arraySchema.maxItems)
+            "
+            @click="addButtonClick"
+          >
+            <v-icon>mdi-plus</v-icon> Add new
+          </v-btn>
+        </template>
+        {{ `Add to ${control.label}` }}
+      </v-tooltip>
+    </v-card-actions>
     <v-dialog
       :value="suggestToDelete !== null"
       max-width="600"
