@@ -126,13 +126,13 @@ export const useTranslator = () => {
  * Adds styles and appliedOptions
  */
 export const useVuetifyLayout = <I extends { layout: any }>(input: I) => {
-  const appliedOptions = computed(() =>
-    merge(
+  const appliedOptions = computed(() => {
+    return merge(
       {},
-      cloneDeep(input.layout.value.config),
+      cloneDeep(input.layout.config),
       cloneDeep(input.layout.value.uischema.options)
-    )
-  );
+    );
+  });
 
   const vuetifyProps = (path: string) => {
     const props = get(appliedOptions.value?.vuetify, path);
