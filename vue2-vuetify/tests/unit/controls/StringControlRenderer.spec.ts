@@ -6,11 +6,10 @@ import StringControlRenderer, {
 import { wait } from '../../../tests';
 import { mountJsonForms } from '../util';
 
-const renderers = [stringControlRendererEntry];
-
 describe('StringControlRenderer.vue', () => {
-  const data = 'a';
+  const renderers = [stringControlRendererEntry];
 
+  const data = 'a';
   const schema = {
     type: 'string',
     title: 'My String',
@@ -71,6 +70,8 @@ describe('StringControlRenderer.vue', () => {
 });
 
 describe('StringControlRenderer.vue with suggestion', () => {
+  const renderers = [stringControlRendererEntry];
+
   const data = '';
 
   const schema = {

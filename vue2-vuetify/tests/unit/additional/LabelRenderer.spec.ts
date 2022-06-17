@@ -5,11 +5,10 @@ import LabelRenderer, {
 } from '../../../src/additional/LabelRenderer.vue';
 import { mountJsonForms } from '../util';
 
-const renderers = [labelRendererEntry];
-
 describe('LabelRenderer.vue', () => {
-  const data = '';
+  const renderers = [labelRendererEntry];
 
+  const data = '';
   const schema = {
     type: 'string',
   };
