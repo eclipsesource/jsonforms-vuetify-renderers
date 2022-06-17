@@ -61,12 +61,13 @@ const controlRenderer = defineComponent({
   computed: {
     dataTime: {
       get(): string | null | undefined {
-        const datetimeLocalFormat = 'YYYY-MM-DDTHH:mm:ss.SSS';
+        const format =
+          this.appliedOptions.dateTimeFormat ?? 'YYYY-MM-DDTHH:mm:ss.SSS';
         const saveFormat = this.appliedOptions.dateTimeSaveFormat ?? undefined;
         const value = this.control.data as string | undefined | null;
 
         const dateTime = parseDateTime(value, saveFormat);
-        return dateTime ? dateTime.local().format(datetimeLocalFormat) : value;
+        return dateTime ? dateTime.local().format(format) : value;
       },
       set(value: string) {
         const datetimeLocalFormats = [
@@ -74,8 +75,7 @@ const controlRenderer = defineComponent({
           'YYYY-MM-DDTHH:mm:ss',
           'YYYY-MM-DDTHH:mm',
         ];
-        const saveFormat =
-          this.appliedOptions.dateTimeSaveFormat ?? 'YYYY-MM-DDTHH:mm:ssZ';
+        const saveFormat = this.appliedOptions.dateTimeSaveFormat ?? undefined;
 
         const dateTime = parseDateTime(value, datetimeLocalFormats);
         const result = dateTime ? dateTime.format(saveFormat) : value;
