@@ -13,8 +13,21 @@
     "allowSyntheticDefaultImports": true,
     "sourceMap": true,
     "outDir": "./lib",
-    "types": ["node", "vue", "vuetify"],
-    "lib": ["esnext", "dom", "dom.iterable", "scripthost"]
+    "types": [
+      "node",
+      "vue",
+      "vuetify",
+      "jest"
+    ],
+    "lib": [
+      "esnext",
+      "dom",
+      "dom.iterable",
+      "scripthost"
+    ]
   },
-  "exclude": ["node_modules", "lib"]
+  "exclude": [
+    "node_modules",
+    "lib"
+  ]
 }

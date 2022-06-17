@@ -4,7 +4,6 @@
     "source.fixAll.eslint": true
   },
   "files.insertFinalNewline": true,
-
   // prettier extension setting
   "editor.formatOnSave": true,
   "[json]": {
@@ -15,5 +14,6 @@
   },
   "[typescript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
-  }
+  },
+  "jest.autoRun": "off"
 }
