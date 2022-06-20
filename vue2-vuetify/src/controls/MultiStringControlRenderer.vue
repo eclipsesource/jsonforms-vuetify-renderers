@@ -7,7 +7,7 @@
   >
     <v-hover v-slot="{ hover }">
       <v-textarea
-        v-disabled-icon-focus
+        disabled-icon-focus
         :id="control.id + '-input'"
         :class="styles.control.input"
         :disabled="!control.enabled"
