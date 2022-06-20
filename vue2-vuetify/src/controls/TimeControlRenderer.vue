@@ -268,9 +268,7 @@ const controlRenderer = defineComponent({
     });
 
     const onInputChange = (value: any) => {
-      console.log('onInputChange1=' + timeFormat.value);
       const time = parseDateTime(value, timeFormat.value);
-      console.log('onInputChange2=' + time);
       wrapper.onChange(time ? time.format(timeSaveFormat.value) : value);
     };
 
