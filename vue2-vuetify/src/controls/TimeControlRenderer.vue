@@ -8,13 +8,12 @@
     <v-menu
       ref="menu"
       v-model="showMenu"
-      :return-value.sync="timeModel"
       :close-on-content-click="false"
       transition="scale-transition"
       offset-y
       min-width="290px"
     >
-      <template v-slot:activator="{ on }">
+      <template v-slot:activator="{ on: onMenu }">
         <v-hover v-slot="{ hover }">
           <v-text-field
             disabled-icon-focus
@@ -28,27 +27,46 @@
             :persistent-hint="persistentHint()"
             :required="control.required"
             :error-messages="control.errors"
-            :value="timeFormatted"
-            :clearable="hover"
             v-bind="vuetifyProps('v-text-field')"
+            v-mask="mask"
+            v-on="onMenu"
+            :value="inputValue"
+            @change="onInputChange"
             @focus="isFocused = true"
             @blur="isFocused = false"
-            @input="onChange"
-            v-on="on"
-          ></v-text-field>
+          >
+            <template slot="append">
+              <v-icon v-if="hover" @click="clear">mdi-close</v-icon>
+            </template>
+          </v-text-field>
         </v-hover>
       </template>
       <v-time-picker
         v-if="showMenu"
-        v-model="timeModel"
+        :value="pickerValue"
+        ref="picker"
         v-bind="vuetifyProps('v-time-picker')"
         :min="min"
         :max="max"
         :use-seconds="useSeconds"
         :format="ampm ? 'ampm' : '24hr'"
-        @click:minute="clickMinute"
-        @click:second="clickSecond"
-      ></v-time-picker>
+      >
+        <v-btn text color="primary" @click="clear"> Clear </v-btn>
+        <v-spacer></v-spacer>
+        <v-btn text color="primary" @click="showMenu = false"> Cancel </v-btn>
+        <v-btn
+          text
+          color="primary"
+          @click="
+            () => {
+              onPickerChange($refs.picker.genValue());
+              showMenu = false;
+            }
+          "
+        >
+          OK
+        </v-btn></v-time-picker
+      >
     </v-menu>
   </control-wrapper>
 </template>
@@ -66,17 +84,21 @@ import {
   RendererProps,
   useJsonFormsControl,
 } from '@jsonforms/vue2';
+import { computed, ComputedRef, ref, unref } from '@vue/composition-api';
+import { VueMaskDirective as Mask } from 'v-mask';
 import {
-  computed,
-  ComputedRef,
-  ref,
-  unref,
-  WritableComputedRef,
-} from '@vue/composition-api';
-import { VHover, VMenu, VTextField, VTimePicker } from 'vuetify/lib';
+  VHover,
+  VMenu,
+  VTextField,
+  VTimePicker,
+  VIcon,
+  VSpacer,
+  VBtn,
+} from 'vuetify/lib';
 import { parseDateTime, useVuetifyControl } from '../util';
 import { defineComponent } from '../vue';
 import { default as ControlWrapper } from './ControlWrapper.vue';
+import { DisabledIconFocus } from './directives';
 
 const JSON_SCHEMA_TIME_FORMATS = [
   'HH:mm:ss.SSSZ',
@@ -101,7 +123,11 @@ const controlRenderer = defineComponent({
     VTextField,
     VMenu,
     VTimePicker,
+    VIcon,
+    VSpacer,
+    VBtn,
   },
+  directives: { DisabledIconFocus, Mask },
   props: {
     ...rendererProps<ControlElement>(),
   },
@@ -109,7 +135,7 @@ const controlRenderer = defineComponent({
     const showMenu = ref(false);
     const wrapper = useVuetifyControl(
       useJsonFormsControl(props),
-      (value: any) => toSaveTimeFormat(value) || undefined
+      (value: any) => value || undefined
     );
 
     const ampm = computed(() => wrapper.appliedOptions.value.ampm === true);
@@ -134,36 +160,9 @@ const controlRenderer = defineComponent({
       ...JSON_SCHEMA_TIME_FORMATS,
     ]);
 
-    const toSaveTimeFormat = (value: any) => {
-      const time = parseDateTime(value, formats.value);
-      return time ? time.format(timeSaveFormat.value) : value;
-    };
-
     const useSeconds: ComputedRef<boolean> = computed(() =>
       timeFormat.value.includes('s') ? true : false
     );
-
-    const timeModel: WritableComputedRef<string | undefined> = computed({
-      get() {
-        let result: string | undefined = undefined;
-
-        const time = parseDateTime(unref(wrapper.control).data, formats.value);
-        if (time) {
-          let timePickerFormat = 'HH:mm';
-          if (useSeconds.value) {
-            timePickerFormat += ':ss';
-          }
-          // Time picker model (ISO 8601 format, 24hr hh:mm)
-          result = time.format(timePickerFormat);
-        }
-
-        return result;
-      },
-      set(value: string | undefined): void {
-        // convert handled by toSaveTimeFormat
-        wrapper.onChange(value);
-      },
-    });
 
     const min: ComputedRef<string | undefined> = computed(() => {
       const schema = unref(wrapper.control).schema as JsonSchema &
@@ -188,11 +187,115 @@ const controlRenderer = defineComponent({
       return undefined;
     });
 
-    const timeFormatted: ComputedRef<string | undefined> = computed(() => {
+    const maskFunction = (value: string) => {
+      const format = timeFormat.value;
+      const parts = format.split(/([^HhmsAaSZ]*)(hh?|HH?|mm?|ss?|a|A|SSS|Z)/);
+
+      const numbers = value?.replace(/[^0-9]/g, '');
+
+      let result: (string | RegExp)[] = [];
+      for (const part of parts) {
+        if (part && part !== '') {
+          if (part == 'H') {
+            result.push(/[0-2]/);
+            if (numbers.charAt(0) === '0') {
+              // no push only 0
+            } else if (numbers.charAt(0) === '2') {
+              result.push(/[0-3]/);
+            } else {
+              result.push(/[0-9]/);
+            }
+          } else if (part == 'HH') {
+            result.push(/[0-2]/);
+            result.push(numbers.charAt(0) === '2' ? /[0-3]/ : /[0-9]/);
+          } else if (part == 'h') {
+            result.push(/[1]/);
+            result.push(/[0-2]/);
+          } else if (part == 'hh') {
+            result.push(/[0-1]/);
+            result.push(numbers.charAt(0) === '0' ? /[1-9]/ : /[0-2]/);
+          } else if (part == 'm') {
+            result.push(/[0-5]/);
+            result.push(numbers.charAt(0) === '0' ? /[1-9]/ : /[0-9]/);
+          } else if (part == 'mm') {
+            result.push(/[0-5]/);
+            result.push(/[0-9]/);
+          } else if (part == 's') {
+            result.push(/[0-5]/);
+            result.push(numbers.charAt(0) === '0' ? /[1-9]/ : /[0-9]/);
+          } else if (part == 'ss') {
+            result.push(/[0-5]/);
+            result.push(/[0-9]/);
+          } else if (part == 'a') {
+            result.push(/a|p/);
+            result.push('m');
+          } else if (part == 'A') {
+            result.push(/A|P/);
+            result.push('M');
+          } else if (part == 'Z') {
+            //GMT-12 to GMT+14
+            result.push(/\+|-/);
+            result.push(/[0-1]/);
+            if (value.includes('-0') || value.includes('+0')) {
+              result.push(/[0-9]/);
+            } else if (value.includes('-1') || value.includes('+1')) {
+              result.push(value.includes('+1') ? /[0-4]/ : /[0-2]/);
+            }
+            result.push(':');
+            result.push(/[0-5]/);
+            result.push(/[0-9]/);
+          } else if (part == 'SSS') {
+            result.push(/[0-9]/);
+            result.push(/[0-9]/);
+            result.push(/[0-9]/);
+          } else {
+            result.push(part);
+          }
+        }
+      }
+
+      return result;
+    };
+
+    const mask = ref<((value: string) => (string | RegExp)[]) | undefined>(
+      undefined
+    );
+
+    const inputValue: ComputedRef<string | undefined> = computed(() => {
       const value = unref(wrapper.control).data as string | undefined;
       const time = parseDateTime(value, formats.value);
       return time ? time.format(timeFormat.value) : value;
     });
+
+    const onInputChange = (value: any) => {
+      console.log('onInputChange1=' + timeFormat.value);
+      const time = parseDateTime(value, timeFormat.value);
+      console.log('onInputChange2=' + time);
+      wrapper.onChange(time ? time.format(timeSaveFormat.value) : value);
+    };
+
+    const pickerValue: ComputedRef<string | undefined> = computed(() => {
+      const value = unref(wrapper.control).data as string | undefined;
+      const time = parseDateTime(value, formats.value);
+      return time
+        ? useSeconds.value
+          ? time.format('HH:mm:ss')
+          : time.format('HH:mm')
+        : value;
+    });
+
+    const onPickerChange = (value: any) => {
+      const time = parseDateTime(
+        value,
+        useSeconds.value ? 'HH:mm:ss' : 'HH:mm'
+      );
+      wrapper.onChange(time ? time.format(timeSaveFormat.value) : value);
+    };
+
+    const clear = () => {
+      mask.value = undefined;
+      wrapper.onChange(null);
+    };
 
     return {
       ...wrapper,
@@ -202,23 +305,23 @@ const controlRenderer = defineComponent({
       timeSaveFormat,
       useSeconds,
       formats,
-      timeModel,
       min,
       max,
-      timeFormatted,
+      mask,
+      maskFunction,
+      inputValue,
+      pickerValue,
+      clear,
+      onInputChange,
+      onPickerChange,
     };
   },
-  methods: {
-    clickMinute(): void {
-      if (!this.useSeconds) {
-        (this.$refs?.menu as any)?.save(this.timeModel);
-        this.showMenu = false;
-      }
-    },
-    clickSecond(): void {
-      if (this.useSeconds) {
-        (this.$refs?.menu as any)?.save(this.timeModel);
-        this.showMenu = false;
+  watch: {
+    isFocused(newFocus) {
+      if (newFocus) {
+        this.mask = this.maskFunction;
+      } else {
+        this.mask = undefined;
       }
     },
   },

@@ -14,7 +14,7 @@
               "label": "12H Time with seconds",
               "options": {
                 "ampm": true,
-                "timeFormat": "hh:mm:ss",
+                "timeFormat": "hh:mm:ssZ a",
                 "timeSaveFormat": "HH:mm:ssZ"
               }
             },
@@ -23,7 +23,7 @@
               "scope": "#/properties/timeFullWithZone",
               "label": "24H Time with seconds",
               "options": {
-                "timeFormat": "HH:mm:ss",
+                "timeFormat": "HH:mm:ssZ",
                 "timeSaveFormat": "HH:mm:ssZ"
               }
             }
@@ -38,7 +38,7 @@
               "label": "12H Time no seconds",
               "options": {
                 "ampm": true,
-                "timeFormat": "hh:mm",
+                "timeFormat": "hh:mmZ a",
                 "timeSaveFormat": "HH:mm:ssZ"
               }
             },
@@ -47,7 +47,7 @@
               "scope": "#/properties/timeWithZone",
               "label": "24H Time no seconds",
               "options": {
-                "timeFormat": "HH:mm",
+                "timeFormat": "HH:mmZ",
                 "timeSaveFormat": "HH:mm:ssZ"
               }
             }
@@ -68,7 +68,7 @@
               "label": "12H Time with seconds",
               "options": {
                 "ampm": true,
-                "timeFormat": "hh:mm:ss"
+                "timeFormat": "hh:mm:ss a"
               }
             },
             {
@@ -90,7 +90,7 @@
               "label": "12H Time no seconds",
               "options": {
                 "ampm": true,
-                "timeFormat": "hh:mm"
+                "timeFormat": "hh:mm a"
               }
             },
             {
@@ -119,7 +119,7 @@
               "options": {
                 "format": "time",
                 "ampm": true,
-                "timeFormat": "hh:mm:ss",
+                "timeFormat": "hh:mm:ssZ a",
                 "timeSaveFormat": "HH:mm:ssZ"
               }
             },
@@ -129,7 +129,7 @@
               "label": "24H Time with seconds",
               "options": {
                 "format": "time",
-                "timeFormat": "HH:mm:ss",
+                "timeFormat": "HH:mm:ssZ",
                 "timeSaveFormat": "HH:mm:ssZ"
               }
             }
@@ -145,7 +145,7 @@
               "options": {
                 "format": "time",
                 "ampm": true,
-                "timeFormat": "hh:mm",
+                "timeFormat": "hh:mmZ a",
                 "timeSaveFormat": "HH:mmZ"
               }
             },
@@ -155,7 +155,7 @@
               "label": "24H Time no seconds",
               "options": {
                 "format": "time",
-                "timeFormat": "HH:mm",
+                "timeFormat": "HH:mmZ",
                 "timeSaveFormat": "HH:mmZ"
               }
             }
@@ -177,7 +177,7 @@
               "options": {
                 "format": "time",
                 "ampm": true,
-                "timeFormat": "hh:mm:ss",
+                "timeFormat": "hh:mm:ss a",
                 "timeSaveFormat": "HH:mm:ss"
               }
             },
@@ -203,7 +203,7 @@
               "options": {
                 "format": "time",
                 "ampm": true,
-                "timeFormat": "hh:mm",
+                "timeFormat": "hh:mm a",
                 "timeSaveFormat": "HH:mm"
               }
             },
