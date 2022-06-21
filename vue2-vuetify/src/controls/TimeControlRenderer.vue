@@ -51,9 +51,11 @@
         :use-seconds="useSeconds"
         :format="ampm ? 'ampm' : '24hr'"
       >
-        <v-btn text color="primary" @click="clear"> Clear </v-btn>
+        <v-btn text color="primary" @click="clear"> {{ clearLabel }} </v-btn>
         <v-spacer></v-spacer>
-        <v-btn text color="primary" @click="showMenu = false"> Cancel </v-btn>
+        <v-btn text color="primary" @click="showMenu = false">
+          {{ cancelLabel }}
+        </v-btn>
         <v-btn
           text
           color="primary"
@@ -64,7 +66,7 @@
             }
           "
         >
-          OK
+          {{ okLabel }}
         </v-btn></v-time-picker
       >
     </v-menu>
@@ -87,15 +89,15 @@ import {
 import { computed, ComputedRef, ref, unref } from '@vue/composition-api';
 import { VueMaskDirective as Mask } from 'v-mask';
 import {
+  VBtn,
   VHover,
+  VIcon,
   VMenu,
+  VSpacer,
   VTextField,
   VTimePicker,
-  VIcon,
-  VSpacer,
-  VBtn,
 } from 'vuetify/lib';
-import { parseDateTime, useVuetifyControl } from '../util';
+import { parseDateTime, useTranslator, useVuetifyControl } from '../util';
 import { defineComponent } from '../vue';
 import { default as ControlWrapper } from './ControlWrapper.vue';
 import { DisabledIconFocus } from './directives';
@@ -103,8 +105,8 @@ import { DisabledIconFocus } from './directives';
 const JSON_SCHEMA_TIME_FORMATS = [
   'HH:mm:ss.SSSZ',
   'HH:mm:ss.SSS',
+  'HH:mm:ssZ',
   'HH:mm:ss',
-  'HH:mm',
 ];
 
 // https://ajv.js.org/packages/ajv-formats.html#keywords-to-compare-values-formatmaximum-formatminimum-and-formatexclusivemaximum-formatexclusiveminimum
@@ -132,6 +134,8 @@ const controlRenderer = defineComponent({
     ...rendererProps<ControlElement>(),
   },
   setup(props: RendererProps<ControlElement>) {
+    const t = useTranslator();
+
     const showMenu = ref(false);
     const wrapper = useVuetifyControl(
       useJsonFormsControl(props),
@@ -191,41 +195,70 @@ const controlRenderer = defineComponent({
       const format = timeFormat.value;
       const parts = format.split(/([^HhmsAaSZ]*)(hh?|HH?|mm?|ss?|a|A|SSS|Z)/);
 
+      let index = -1;
       const numbers = value?.replace(/[^0-9]/g, '');
 
       let result: (string | RegExp)[] = [];
       for (const part of parts) {
         if (part && part !== '') {
           if (part == 'H') {
-            result.push(/[0-2]/);
-            if (numbers.charAt(0) === '0') {
-              // no push only 0
-            } else if (numbers.charAt(0) === '2') {
-              result.push(/[0-3]/);
-            } else {
+            result.push(/[0-9]/);
+            index += 1;
+            if (numbers.charAt(index) === '1') {
               result.push(/[0-9]/);
+              index += 1;
+            } else if (numbers.charAt(index) === '2') {
+              result.push(/[0-3]/);
+              index += 1;
             }
           } else if (part == 'HH') {
             result.push(/[0-2]/);
-            result.push(numbers.charAt(0) === '2' ? /[0-3]/ : /[0-9]/);
+            index += 1;
+            result.push(numbers.charAt(index) === '2' ? /[0-3]/ : /[0-9]/);
+            index += 1;
           } else if (part == 'h') {
             result.push(/[1]/);
             result.push(/[0-2]/);
+            index += 2;
           } else if (part == 'hh') {
             result.push(/[0-1]/);
-            result.push(numbers.charAt(0) === '0' ? /[1-9]/ : /[0-2]/);
+            index += 1;
+            result.push(numbers.charAt(index) === '0' ? /[1-9]/ : /[0-2]/);
+            index += 1;
           } else if (part == 'm') {
-            result.push(/[0-5]/);
-            result.push(numbers.charAt(0) === '0' ? /[1-9]/ : /[0-9]/);
+            result.push(/[0-9]/);
+            index += 1;
+            if (
+              numbers.charAt(index) === '1' ||
+              numbers.charAt(index) === '2' ||
+              numbers.charAt(index) === '3' ||
+              numbers.charAt(index) === '4' ||
+              numbers.charAt(index) === '5'
+            ) {
+              result.push(/[0-9]/);
+              index += 1;
+            }
           } else if (part == 'mm') {
             result.push(/[0-5]/);
             result.push(/[0-9]/);
+            index += 2;
           } else if (part == 's') {
-            result.push(/[0-5]/);
-            result.push(numbers.charAt(0) === '0' ? /[1-9]/ : /[0-9]/);
+            result.push(/[0-9]/);
+            index += 1;
+            if (
+              numbers.charAt(index) === '1' ||
+              numbers.charAt(index) === '2' ||
+              numbers.charAt(index) === '3' ||
+              numbers.charAt(index) === '4' ||
+              numbers.charAt(index) === '5'
+            ) {
+              result.push(/[0-9]/);
+              index += 1;
+            }
           } else if (part == 'ss') {
             result.push(/[0-5]/);
             result.push(/[0-9]/);
+            index += 2;
           } else if (part == 'a') {
             result.push(/a|p/);
             result.push('m');
@@ -236,18 +269,23 @@ const controlRenderer = defineComponent({
             //GMT-12 to GMT+14
             result.push(/\+|-/);
             result.push(/[0-1]/);
+            index += 1;
             if (value.includes('-0') || value.includes('+0')) {
               result.push(/[0-9]/);
+              index += 1;
             } else if (value.includes('-1') || value.includes('+1')) {
               result.push(value.includes('+1') ? /[0-4]/ : /[0-2]/);
+              index += 1;
             }
             result.push(':');
             result.push(/[0-5]/);
             result.push(/[0-9]/);
+            index += 2;
           } else if (part == 'SSS') {
             result.push(/[0-9]/);
             result.push(/[0-9]/);
             result.push(/[0-9]/);
+            index += 3;
           } else {
             result.push(part);
           }
@@ -295,6 +333,32 @@ const controlRenderer = defineComponent({
       wrapper.onChange(null);
     };
 
+    const clearLabel: ComputedRef<string> = computed(() => {
+      const label =
+        typeof wrapper.appliedOptions.value.clearLabel == 'string'
+          ? wrapper.appliedOptions.value.clearLabel
+          : 'Clear';
+      return t.value(label, label);
+    });
+
+    const cancelLabel: ComputedRef<string> = computed(() => {
+      const label =
+        typeof wrapper.appliedOptions.value.cancelLabel == 'string'
+          ? wrapper.appliedOptions.value.cancelLabel
+          : 'Cancel';
+
+      return t.value(label, label);
+    });
+
+    const okLabel: ComputedRef<string> = computed(() => {
+      const label =
+        typeof wrapper.appliedOptions.value.okLabel == 'string'
+          ? wrapper.appliedOptions.value.okLabel
+          : 'OK';
+
+      return t.value(label, label);
+    });
+
     return {
       ...wrapper,
       showMenu,
@@ -312,6 +376,9 @@ const controlRenderer = defineComponent({
       clear,
       onInputChange,
       onPickerChange,
+      clearLabel,
+      cancelLabel,
+      okLabel,
     };
   },
   watch: {
