@@ -40,7 +40,13 @@
     <v-card-text>
       <v-container justify-space-around align-content-center>
         <v-row justify="center">
-          <v-expansion-panels accordion focusable v-model="currentlyExpanded">
+          <v-expansion-panels
+            accordion
+            :focusable="focusable"
+            v-bind="vuetifyProps('v-expansion-panels')"
+            v-model="currentlyExpanded"
+            flat
+          >
             <v-expansion-panel
               v-for="(element, index) in control.data"
               :key="`${control.path}-${index}`"
@@ -289,10 +295,12 @@ const controlRenderer = defineComponent({
     const currentlyExpanded = ref<null | number>(
       control.appliedOptions.value.initCollapsed ? null : 0
     );
+    const focusable =
+      control.vuetifyProps('v-expansion-panels')?.focusable ?? true;
     const suggestToDelete = ref<null | number>(null);
     // indicate to our child renderers that we are increasing the "nested" level
     useNested('array');
-    return { ...control, currentlyExpanded, suggestToDelete };
+    return { ...control, currentlyExpanded, focusable, suggestToDelete };
   },
   computed: {
     noData(): boolean {
@@ -365,8 +373,5 @@ export const entry: JsonFormsRendererRegistryEntry = {
 <style scoped>
 .notranslate {
   transform: none !important;
-}
-.v-expansion-panel-header:before {
-  background-color: inherit;
 }
 </style>
