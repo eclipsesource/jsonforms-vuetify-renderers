@@ -19,6 +19,7 @@
       :error-messages="control.errors"
       :value="dataTime"
       v-bind="vuetifyProps('v-text-field')"
+      @input="onChange"
       @focus="isFocused = true"
       @blur="isFocused = false"
     />
