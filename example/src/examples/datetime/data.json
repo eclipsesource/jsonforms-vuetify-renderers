@@ -1,0 +1,10 @@
+{
+  "datetime": "2022-06-15T13:15:00",
+  "datetimeWithZone": "2022-06-15T13:15:00Z",
+  "datetimeFull": "2022-06-15T13:15:15",
+  "datetimeFullWithZone": "2022-06-15T13:15:15Z",
+  "stringDatetime": "2022-06-15 13:15",
+  "stringDatetimeWithZone": "2022-06-15 13:15Z",
+  "stringDatetimeFull": "2022-06-15 13:15:15",
+  "stringDatetimeFullWithZone": "2022-06-15 13:15:15Z"
+}

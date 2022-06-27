@@ -1,0 +1,225 @@
+{
+  "type": "VerticalLayout",
+  "elements": [
+    {
+      "type": "Group",
+      "label": "Schema Based With Timezone",
+      "elements": [
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/properties/dateTimeFullWithZone",
+              "label": "Date with 12H Time and seconds",
+              "options": {
+                "ampm": true,
+                "dateTimeFormat": "MM/DD/YYYY hh:mm:ssZ a",
+                "dateTimeSaveFormat": "YYYY-MM-DD'T'HH:mm:ssZ"
+              }
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/dateTimeFullWithZone",
+              "label": "Date with 24H Time and seconds",
+              "options": {
+                "dateTimeFormat": "MM/DD/YYYY HH:mm:ssZ",
+                "dateTimeSaveFormat": "YYYY-MM-DD'T'HH:mm:ssZ"
+              }
+            }
+          ]
+        },
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/properties/dateTimeWithZone",
+              "label": "Date with 12H Time no seconds",
+              "options": {
+                "ampm": true,
+                "dateTimeFormat": "MM/DD/YYYY hh:mmZ a",
+                "dateTimeSaveFormat": "YYYY-MM-DD'T'HH:mm:ssZ"
+              }
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/timeWithZone",
+              "label": "Date with 24H Time no seconds",
+              "options": {
+                "dateTimeFormat": "MM/DD/YYYY HH:mmZ",
+                "dateTimeSaveFormat": "YYYY-MM-DD'T'HH:mm:ssZ"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Group",
+      "label": "Schema Based No Timezone",
+      "elements": [
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/properties/timeFull",
+              "label": "Date with 12H Time with seconds",
+              "options": {
+                "ampm": true,
+                "dateTimeFormat": "MM/DD/YYYY hh:mm:ss a"
+              }
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/timeFull",
+              "label": "Date with 24H Time with seconds",
+              "options": {
+                "dateTimeFormat": "MM/DD/YYYY HH:mm:ss"
+              }
+            }
+          ]
+        },
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/properties/time",
+              "label": "Date with 12H Time no seconds",
+              "options": {
+                "ampm": true,
+                "dateTimeFormat": "MM/DD/YYYY hh:mm a"
+              }
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/time",
+              "label": "Date with 24H Time no seconds",
+              "options": {
+                "dateTimeFormat": "MM/DD/YYYY HH:mm"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Group",
+      "label": "UI Schema Based With Timezone",
+      "elements": [
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/properties/stringTimeFullWithZone",
+              "label": "Date with 12H Time and seconds",
+              "options": {
+                "format": "date-time",
+                "ampm": true,
+                "dateTimeFormat": "MM/DD/YYYY hh:mm:ssZ a",
+                "dateTimeSaveFormat": "YYYY-MM-DD'T'HH:mm:ssZ"
+              }
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/stringTimeFullWithZone",
+              "label": "Date with 24H Time and seconds",
+              "options": {
+                "format": "date-time",
+                "dateTimeFormat": "MM/DD/YYYY HH:mm:ssZ",
+                "dateTimeSaveFormat": "YYYY-MM-DD'T'HH:mm:ssZ"
+              }
+            }
+          ]
+        },
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/properties/stringTimeWithZone",
+              "label": "Date with 12H Time no seconds",
+              "options": {
+                "format": "date-time",
+                "ampm": true,
+                "dateTimeFormat": "MM/DD/YYYY hh:mmZ a",
+                "dateTimeSaveFormat": "YYYY-MM-DD'T'HH:mmZ"
+              }
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/stringTimeWithZone",
+              "label": "Date with 24H Time no seconds",
+              "options": {
+                "format": "date-time",
+                "dateTimeFormat": "MM/DD/YYYY HH:mmZ",
+                "dateTimeSaveFormat": "YYYY-MM-DD'T'HH:mmZ"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Group",
+      "label": "UI Schema Based No Timezone",
+      "elements": [
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/properties/stringTimeFull",
+              "label": "Date with 12H Time and seconds",
+              "options": {
+                "format": "date-time",
+                "ampm": true,
+                "dateTimeFormat": "MM/DD/YYYY hh:mm:ss a",
+                "dateTimeSaveFormat": "YYYY-MM-DD'T'HH:mm:ss"
+              }
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/stringTimeFull",
+              "label": "Date with 24H Time and seconds",
+              "options": {
+                "format": "date-time",
+                "dateTimeFormat": "MM/DD/YYYY HH:mm:ss",
+                "dateTimeSaveFormat": "YYYY-MM-DD'T'HH:mm:ss"
+              }
+            }
+          ]
+        },
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/properties/stringTime",
+              "label": "Date with 12H Time no seconds",
+              "options": {
+                "format": "date-time",
+                "ampm": true,
+                "dateTimeFormat": "MM/DD/YYYY hh:mm a",
+                "dateTimeSaveFormat": "YYYY-MM-DD'T'HH:mm"
+              }
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/stringTime",
+              "label": "Date with 24H Time no seconds",
+              "options": {
+                "format": "date-time",
+                "dateTimeFormat": "MM/DD/YYYY HH:mm",
+                "dateTimeSaveFormat": "YYYY-MM-DD'T'HH:mm"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
