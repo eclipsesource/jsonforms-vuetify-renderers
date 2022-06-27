@@ -17,9 +17,9 @@
       :persistent-hint="persistentHint()"
       :required="control.required"
       :error-messages="control.errors"
-      :value="dataTime"
+      :value="inputValue"
       v-bind="vuetifyProps('v-text-field')"
-      @input="onChange"
+      @input="onInputChange"
       @focus="isFocused = true"
       @blur="isFocused = false"
     />
@@ -43,6 +43,13 @@ import { default as ControlWrapper } from './ControlWrapper.vue';
 import { useVuetifyControl, parseDateTime } from '../util';
 import { VTextField } from 'vuetify/lib';
 
+const JSON_SCHEMA_DATE_TIME_FORMATS = [
+  "YYYY-MM-DD'T'HH:mm:ss.SSSZ",
+  "YYYY-MM-DD'T'HH:mm:ss.SSS",
+  "YYYY-MM-DD'T'HH:mm:ssZ",
+  "YYYY-MM-DD'T'HH:mm:ss",
+];
+
 const controlRenderer = defineComponent({
   name: 'datetime-control-renderer',
   components: {
@@ -60,29 +67,33 @@ const controlRenderer = defineComponent({
     );
   },
   computed: {
-    dataTime: {
-      get(): string | null | undefined {
-        const datetimeLocalFormat = 'YYYY-MM-DDTHH:mm:ss.SSS';
-        const saveFormat = this.appliedOptions.dateTimeSaveFormat ?? undefined;
-        const value = this.control.data as string | undefined | null;
-
-        const dateTime = parseDateTime(value, saveFormat);
-        return dateTime ? dateTime.local().format(datetimeLocalFormat) : value;
-      },
-      set(value: string) {
-        const datetimeLocalFormats = [
-          'YYYY-MM-DDTHH:mm:ss.SSS',
-          'YYYY-MM-DDTHH:mm:ss',
-          'YYYY-MM-DDTHH:mm',
-        ];
-        const saveFormat =
-          this.appliedOptions.dateTimeSaveFormat ?? 'YYYY-MM-DDTHH:mm:ssZ';
-
-        const dateTime = parseDateTime(value, datetimeLocalFormats);
-        const result = dateTime ? dateTime.format(saveFormat) : value;
-
-        this.onChange(result);
-      },
+    dateTimeFormat(): string {
+      return typeof this.appliedOptions.dateTimeFormat == 'string'
+        ? this.appliedOptions.dateTimeFormat
+        : 'YYYY-MM-DD HH:mm';
+    },
+    dateTimeSaveFormat(): string {
+      return typeof this.appliedOptions.dateTimeSaveFormat == 'string'
+        ? this.appliedOptions.dateTimeSaveFormat
+        : 'YYYY-MM-DD HH:mm';
+    },
+    formats(): string[] {
+      return [
+        this.dateTimeSaveFormat,
+        this.dateTimeFormat,
+        ...JSON_SCHEMA_DATE_TIME_FORMATS,
+      ];
+    },
+    inputValue(): string | undefined {
+      const value = this.control.data;
+      const date = parseDateTime(value, this.formats);
+      return date ? date.format(this.dateTimeFormat) : value;
+    },
+  },
+  methods: {
+    onInputChange(value: string): void {
+      const date = parseDateTime(value, this.dateTimeFormat);
+      this.onChange(date ? date.format(this.dateTimeSaveFormat) : value);
     },
   },
 });
