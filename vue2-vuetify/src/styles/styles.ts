@@ -42,6 +42,7 @@ export interface Styles {
     label?: string;
     noData?: string;
     item?: string;
+    itemContainer?: string;
     itemHeader?: string;
     itemLabel?: string;
     itemContent?: string;

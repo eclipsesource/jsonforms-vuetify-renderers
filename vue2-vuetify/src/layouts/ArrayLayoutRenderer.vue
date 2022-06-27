@@ -38,7 +38,11 @@
       </v-toolbar>
     </v-card-title>
     <v-card-text>
-      <v-container justify-space-around align-content-center>
+      <v-container
+        justify-space-around
+        align-content-center
+        :class="styles.arrayList.container"
+      >
         <v-row justify="center">
           <v-expansion-panels accordion focusable v-model="currentlyExpanded">
             <v-expansion-panel
@@ -47,7 +51,7 @@
               :class="styles.arrayList.item"
             >
               <v-expansion-panel-header :class="styles.arrayList.itemHeader">
-                <v-container py-0>
+                <v-container py-0 :class="styles.arrayList.itemContainer">
                   <v-row
                     :style="`display: grid; grid-template-columns: ${
                       !hideAvatar ? 'min-content' : ''
