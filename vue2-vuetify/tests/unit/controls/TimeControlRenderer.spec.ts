@@ -8,7 +8,7 @@ import { mountJsonForms } from '../util';
 
 describe('TimeControlRenderer.vue', () => {
   const renderers = [timeControlRendererEntry];
-  const data = '00:20';
+  const data = '00:20:00';
   const schema = {
     type: 'string',
     title: 'My Time',
@@ -19,6 +19,8 @@ describe('TimeControlRenderer.vue', () => {
     scope: '#',
     options: {
       placeholder: 'time placeholder',
+      timeFormat: 'HH:mm:ss',
+      timeSaveFormat: 'HH:mm:ss',
     },
   };
   let wrapper: Wrapper<any, Element>;
@@ -47,16 +49,15 @@ describe('TimeControlRenderer.vue', () => {
 
   it('emits a data change', async () => {
     const input = wrapper.find('input');
-    await input.setValue('01:51');
+    await input.setValue('01:51:10');
     // 300 ms debounceWait
     await wait(300);
-    expect(wrapper.vm.$data.data).toEqual('01:51');
+    expect(wrapper.vm.$data.data).toEqual('01:51:10');
   });
 
   it('should have a placeholder', async () => {
     const input = wrapper.find('input');
-    // select the input so the placeholder is generated
-    await input.trigger('click');
+    await input.trigger('focus');
     const placeholder = input.attributes('placeholder');
     expect(placeholder).toEqual('time placeholder');
   });

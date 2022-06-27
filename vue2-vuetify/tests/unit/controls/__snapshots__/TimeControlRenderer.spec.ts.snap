@@ -9,15 +9,15 @@ exports[`TimeControlRenderer.vue should render component and match snapshot 1`] 
     <div id="#"
          class="control"
          appliedoptions="[object Object]"
-         errors="must match format &quot;time&quot;"
+         errors
          label="My Time"
     >
-      <div class="v-input v-input--has-state v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--placeholder error--text input">
+      <div class="v-input v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--placeholder input">
         <div class="v-input__control">
           <div class="v-input__slot">
             <div class="v-text-field__slot">
               <label for="#-input"
-                     class="v-label v-label--active theme--light error--text"
+                     class="v-label v-label--active theme--light"
                      style="left: 0px; position: absolute;"
               >
                 My Time
@@ -28,16 +28,11 @@ exports[`TimeControlRenderer.vue should render component and match snapshot 1`] 
             </div>
           </div>
           <div class="v-text-field__details">
-            <div class="v-messages theme--light error--text"
-                 role="alert"
-            >
+            <div class="v-messages theme--light">
               <transition-group-stub tag="div"
                                      name="message-transition"
                                      class="v-messages__wrapper"
               >
-                <div class="v-messages__message">
-                  must match format "time"
-                </div>
               </transition-group-stub>
             </div>
           </div>

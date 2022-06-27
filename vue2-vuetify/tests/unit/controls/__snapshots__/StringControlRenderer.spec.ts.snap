@@ -22,7 +22,8 @@ exports[`StringControlRenderer.vue should render component and match snapshot 1`
               >
                 My String
               </label>
-              <input id="#-input"
+              <input disabled-icon-focus
+                     id="#-input"
                      type="text"
               >
             </div>
@@ -70,7 +71,8 @@ exports[`StringControlRenderer.vue with suggestion should render component and m
               >
                 Select Continent
               </label>
-              <input id="#-input"
+              <input disabled-icon-focus
+                     id="#-input"
                      type="text"
                      autocomplete="off"
               >
@@ -131,7 +133,8 @@ exports[`StringControlRenderer.vue with suggestion should render component and m
               >
                 Select Continent
               </label>
-              <input id="#-input"
+              <input disabled-icon-focus
+                     id="#-input"
                      type="text"
                      autocomplete="off"
                      placeholder="Enter your continent"

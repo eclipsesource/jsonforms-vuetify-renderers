@@ -58,8 +58,7 @@ describe('DateControlRenderer.vue', () => {
 
   it('should have a placeholder', async () => {
     const input = wrapper.find('input[type="date"]');
-    // select the input so the placeholder is generated
-    await input.trigger('click');
+    await input.trigger('focus');
     const placeholder = input.attributes('placeholder');
     expect(placeholder).toEqual('date placeholder');
   });

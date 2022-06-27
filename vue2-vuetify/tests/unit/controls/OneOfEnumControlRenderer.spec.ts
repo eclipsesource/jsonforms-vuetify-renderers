@@ -3,6 +3,7 @@ import { Wrapper } from '@vue/test-utils';
 import OneOfEnumControlRenderer, {
   entry as oneOfEnumControlRendererEntry,
 } from '../../../src/controls/OneOfEnumControlRenderer.vue';
+import { wait } from '../../../tests';
 import { mountJsonForms } from '../util';
 
 describe('OneOfEnumControlRenderer.vue', () => {
@@ -20,9 +21,6 @@ describe('OneOfEnumControlRenderer.vue', () => {
   const uischema = {
     type: 'Control',
     scope: '#',
-    options: {
-      placeholder: 'oneOfEnum placeholder',
-    },
   };
 
   let wrapper: Wrapper<any, Element>;
@@ -41,10 +39,8 @@ describe('OneOfEnumControlRenderer.vue', () => {
     expect(wrapper.getComponent(OneOfEnumControlRenderer));
   });
 
-  it('renders a readonly input', () => {
-    expect(
-      wrapper.find('input[readonly="readonly"][type="text"]').exists()
-    ).toBe(true);
+  it('renders a input', () => {
+    expect(wrapper.find('input[type="text"]').exists()).toBe(true);
   });
 
   it('renders title as label', () => {
@@ -52,18 +48,15 @@ describe('OneOfEnumControlRenderer.vue', () => {
   });
 
   it('emits a data change', async () => {
-    const select = wrapper.find('input[type="hidden"]');
-    await select.setValue('b');
+    const select = wrapper.find('input[type="text"]');
+    // select the input so menu is shown
+    await select.trigger('click');
+
+    // select 2nd element which is b and click it to select it
+    wrapper.find('div[role="listbox"] div:nth-child(2)').trigger('click');
+    // 300 ms debounceWait
+    await wait(300);
     expect(wrapper.vm.$data.data).toEqual('b');
-  });
-
-  it('should have a placeholder', async () => {
-    const input = wrapper.find('input[type="text"]');
-    // select the input so the placeholder is generated
-    await input.trigger('click');
-
-    const placeholder = input.attributes('placeholder');
-    expect(placeholder).toEqual('enum placeholder');
   });
 
   it('should render component and match snapshot', () => {

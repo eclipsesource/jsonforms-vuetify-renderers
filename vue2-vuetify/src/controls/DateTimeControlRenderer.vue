@@ -44,10 +44,10 @@ import { useVuetifyControl, parseDateTime } from '../util';
 import { VTextField } from 'vuetify/lib';
 
 const JSON_SCHEMA_DATE_TIME_FORMATS = [
-  "YYYY-MM-DD'T'HH:mm:ss.SSSZ",
-  "YYYY-MM-DD'T'HH:mm:ss.SSS",
-  "YYYY-MM-DD'T'HH:mm:ssZ",
-  "YYYY-MM-DD'T'HH:mm:ss",
+  'YYYY-MM-DDTHH:mm:ss.SSSZ',
+  'YYYY-MM-DDTHH:mm:ss.SSS',
+  'YYYY-MM-DDTHH:mm:ssZ',
+  'YYYY-MM-DDTHH:mm:ss',
 ];
 
 const controlRenderer = defineComponent({
@@ -70,12 +70,12 @@ const controlRenderer = defineComponent({
     dateTimeFormat(): string {
       return typeof this.appliedOptions.dateTimeFormat == 'string'
         ? this.appliedOptions.dateTimeFormat
-        : 'YYYY-MM-DD HH:mm';
+        : 'YYYY-MM-DDTHH:mm';
     },
     dateTimeSaveFormat(): string {
       return typeof this.appliedOptions.dateTimeSaveFormat == 'string'
         ? this.appliedOptions.dateTimeSaveFormat
-        : 'YYYY-MM-DD HH:mm';
+        : 'YYYY-MM-DDTHH:mm:ssZ';
     },
     formats(): string[] {
       return [

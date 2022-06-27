@@ -70,8 +70,6 @@ const controlRenderer = defineComponent({
     timeFormat(): string {
       return typeof this.appliedOptions.timeFormat == 'string'
         ? this.appliedOptions.timeFormat
-        : this.ampm
-        ? 'hh:mm a'
         : 'HH:mm';
     },
     timeSaveFormat(): string {

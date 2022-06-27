@@ -20,6 +20,7 @@ describe('DateTimeControlRenderer.vue', () => {
     scope: '#',
     options: {
       placeholder: 'date-time placeholder',
+      dateTimeSaveFormat: 'YYYY-MM-DDTHH:mm:ss',
     },
   };
   let wrapper: Wrapper<any, Element>;
@@ -52,13 +53,12 @@ describe('DateTimeControlRenderer.vue', () => {
     await input.trigger('blur');
     // 300 ms debounceWait
     await wait(300);
-    expect(wrapper.vm.$data.data).toEqual('2021-03-10T21:10:00.000Z');
+    expect(wrapper.vm.$data.data).toEqual('2021-03-10T21:10:00');
   });
 
   it('should have a placeholder', async () => {
     const input = wrapper.find('input[type="datetime-local"]');
-    // select the input so the placeholder is generated
-    await input.trigger('click');
+    await input.trigger('focus');
     const placeholder = input.attributes('placeholder');
     expect(placeholder).toEqual('date-time placeholder');
   });
