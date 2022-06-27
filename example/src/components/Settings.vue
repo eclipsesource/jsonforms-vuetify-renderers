@@ -230,6 +230,20 @@
             </v-col>
           </v-row>
         </v-container>
+        <v-container>
+          <v-row>
+            <v-row><v-col>Add new array item button position</v-col></v-row>
+            <v-col>
+              <v-select
+                outlined
+                persistent-hint
+                dense
+                v-model="addArrayItemButtonPosition"
+                :items="addArrayItemButtonPositions"
+              ></v-select>
+            </v-col>
+          </v-row>
+        </v-container>
         <v-row>
           <v-col>
             <v-tooltip bottom>
@@ -269,6 +283,9 @@ export default {
     readonly: sync('app/jsonforms@readonly'),
     locale: sync('app/jsonforms@locale'),
     hideAvatar: sync('app/jsonforms@config.hideAvatar'),
+    addArrayItemButtonPosition: sync(
+      'app/jsonforms@config.addArrayItemButtonPosition'
+    ),
   },
   data: function () {
     return {
@@ -289,6 +306,10 @@ export default {
         { text: 'md', value: 'md' },
         { text: 'lg', value: 'lg' },
         { text: 'xl', value: 'xl' },
+      ],
+      addArrayItemButtonPositions: [
+        { text: 'Bottom left', value: 'BottomLeft' },
+        { text: 'Top right', value: 'TopRight' },
       ],
     };
   },

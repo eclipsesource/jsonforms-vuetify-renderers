@@ -1,28 +1,46 @@
 <template>
   <v-card v-if="control.visible" :class="styles.arrayList.root">
     <v-card-title>
-      {{ computedLabel }}
-      <validation-icon
-        v-if="
-          control.childErrors.length > 0 &&
-          appliedOptions.showValidationOnArrayTitles
-        "
-        :errors="control.childErrors"
-      />
-      <v-spacer></v-spacer>
+      <v-toolbar flat :class="styles.arrayList.toolbar">
+        <v-toolbar-title :class="styles.arrayList.label">{{
+          computedLabel
+        }}</v-toolbar-title>
+        <validation-icon
+          v-if="control.childErrors.length > 0"
+          :errors="control.childErrors"
+        />
+        <v-spacer></v-spacer>
+
+        <v-tooltip v-if="addArrayItemButtonPosition == 'TopRight'" bottom>
+          <template v-slot:activator="{ on: onTooltip }">
+            <v-btn
+              fab
+              text
+              elevation="0"
+              small
+              :aria-label="translatedAddArrayItemAriaLabel"
+              v-on="onTooltip"
+              :class="styles.arrayList.addButton"
+              :disabled="
+                !control.enabled ||
+                (appliedOptions.restrict &&
+                  arraySchema !== undefined &&
+                  arraySchema.maxItems !== undefined &&
+                  control.data.length >= arraySchema.maxItems)
+              "
+              @click="addButtonClick"
+            >
+              <v-icon>mdi-plus</v-icon>
+            </v-btn>
+          </template>
+          {{ translatedAddArrayItemAriaLabel }}
+        </v-tooltip>
+      </v-toolbar>
     </v-card-title>
-    <v-card-text v-if="!noData">
-      <v-container
-        justify-space-around
-        align-content-center
-        :class="styles.arrayList.container"
-      >
+    <v-card-text>
+      <v-container justify-space-around align-content-center>
         <v-row justify="center">
-          <v-expansion-panels
-            accordion
-            v-bind="expansionPanelsProps"
-            v-model="currentlyExpanded"
-          >
+          <v-expansion-panels accordion focusable v-model="currentlyExpanded">
             <v-expansion-panel
               v-for="(element, index) in control.data"
               :key="`${control.path}-${index}`"
@@ -153,14 +171,20 @@
           </v-expansion-panels>
         </v-row>
       </v-container>
-    </v-card-text>
-    <v-card-actions class="pb-8">
+      <v-container v-if="noData" :class="styles.arrayList.noData">
+        No data
+      </v-container></v-card-text
+    >
+    <v-card-actions
+      v-if="addArrayItemButtonPosition == 'BottomLeft'"
+      class="pb-8"
+    >
       <v-tooltip bottom>
         <template v-slot:activator="{ on: onTooltip }">
           <v-btn
             color="primary"
             rounded
-            :aria-label="`Add to ${control.label}`"
+            :aria-label="translatedAddArrayItemAriaLabel"
             v-on="onTooltip"
             :class="styles.arrayList.addButton"
             :disabled="
@@ -172,10 +196,10 @@
             "
             @click="addButtonClick"
           >
-            <v-icon>mdi-plus</v-icon> Add new
+            <v-icon>mdi-plus</v-icon> {{ translatedAddArrayItemLabel }}
           </v-btn>
         </template>
-        {{ `Add to ${control.label}` }}
+        {{ translatedAddArrayItemAriaLabel }}
       </v-tooltip>
     </v-card-actions>
     <v-dialog
@@ -232,7 +256,7 @@ import {
   useJsonFormsArrayControl,
   RendererProps,
 } from '@jsonforms/vue2';
-import { useNested, useVuetifyArrayControl } from '../util';
+import { useNested, useVuetifyArrayControl, useTranslator } from '../util';
 import {
   VCard,
   VCardActions,
@@ -257,7 +281,6 @@ import {
 import { ValidationIcon, ValidationBadge } from '../controls/components/index';
 import { ErrorObject } from 'ajv';
 import { computed, ref } from 'vue';
-import merge from 'lodash/merge';
 
 const controlRenderer = defineComponent({
   name: 'array-layout-renderer',
@@ -293,20 +316,28 @@ const controlRenderer = defineComponent({
     const currentlyExpanded = ref<null | number>(
       control.appliedOptions.value.initCollapsed ? null : 0
     );
-    const expansionPanelsProps = computed(() =>
-      merge(
-        { flat: false, focusable: true },
-        control.vuetifyProps('v-expansion-panels')
-      )
-    );
     const suggestToDelete = ref<null | number>(null);
     // indicate to our child renderers that we are increasing the "nested" level
     useNested('array');
+    const t = useTranslator();
+    const defaultAddNewItemLabelText = 'Add new';
+    const defaultAddNewItemAriaLabelText = 'Add to';
+    // Apply TopRight as the default add array item button position
+    const addArrayItemButtonPosition = computed(() => {
+      return control.appliedOptions.value?.addArrayItemButtonPosition ===
+        'BottomLeft'
+        ? 'BottomLeft'
+        : 'TopRight';
+    });
+    );
     return {
       ...control,
+      addArrayItemButtonPosition,
       currentlyExpanded,
-      expansionPanelsProps,
+      defaultAddNewItemLabelText,
+      defaultAddNewItemAriaLabelText,
       suggestToDelete,
+      t,
     };
   },
   computed: {
@@ -333,6 +364,35 @@ const controlRenderer = defineComponent({
     },
     hideAvatar(): boolean {
       return !!this.appliedOptions.hideAvatar;
+    },
+    translatedAddArrayItemLabel(): string | undefined {
+      if (this.uischema.options?.i18n) {
+        return this.t(
+          this.uischema.options.i18n,
+          this.defaultAddNewItemLabelText
+        );
+      }
+      return this.t(
+        this.defaultAddNewItemLabelText,
+        this.defaultAddNewItemLabelText
+      );
+    },
+    translatedAddArrayItemAriaLabel(): string | undefined {
+      if (this.uischema.options?.i18n) {
+        return this.t(
+          // this does not make a lot of sense without a translation function that
+          // supports value substitution
+          this.uischema.options.i18n,
+          `${this.defaultAddNewItemAriaLabelText} ${this.control.label}`,
+          {
+            label: this.control.label,
+          }
+        );
+      }
+      return this.t(
+        `${this.defaultAddNewItemAriaLabelText} ${this.control.label}`,
+        `${this.defaultAddNewItemAriaLabelText} ${this.control.label}`
+      );
     },
   },
   methods: {
