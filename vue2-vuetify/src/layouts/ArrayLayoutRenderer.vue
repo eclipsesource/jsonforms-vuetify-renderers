@@ -6,7 +6,7 @@
           computedLabel
         }}</v-toolbar-title>
         <validation-icon
-          v-if="control.childErrors.length > 0"
+          v-if="control.childErrors.length > 0 && showArraySummaryValidation"
           :errors="control.childErrors"
         />
         <v-spacer></v-spacer>
@@ -329,6 +329,9 @@ const controlRenderer = defineComponent({
         ? 'BottomLeft'
         : 'TopRight';
     });
+    // Always show array summary validation unless false is passed
+    const showArraySummaryValidation = computed(
+      () => control.appliedOptions.value.showArraySummaryValidation ?? true
     );
     return {
       ...control,
@@ -336,6 +339,7 @@ const controlRenderer = defineComponent({
       currentlyExpanded,
       defaultAddNewItemLabelText,
       defaultAddNewItemAriaLabelText,
+      showArraySummaryValidation,
       suggestToDelete,
       t,
     };

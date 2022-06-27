@@ -207,6 +207,20 @@
             <v-tooltip bottom>
               <template v-slot:activator="{ on: onTooltip }">
                 <v-switch
+                  v-model="showArraySummaryValidation"
+                  label="Show array summary validation"
+                  v-on="onTooltip"
+                ></v-switch>
+              </template>
+              If true, a summary of validation errors is shown on the array title
+            </v-tooltip>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col>
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on: onTooltip }">
+                <v-switch
                   v-model="initCollapsed"
                   label="Collapse arrays initially"
                   v-on="onTooltip"
@@ -285,6 +299,9 @@ export default {
     hideAvatar: sync('app/jsonforms@config.hideAvatar'),
     addArrayItemButtonPosition: sync(
       'app/jsonforms@config.addArrayItemButtonPosition'
+    ),
+    showArraySummaryValidation: sync(
+      'app/jsonforms@config.showArraySummaryValidation'
     ),
   },
   data: function () {

@@ -21,6 +21,7 @@ export interface AppState {
       breakHorizontal: false | string;
       hideAvatar: boolean;
       addArrayItemButtonPosition: 'BottomLeft' | 'TopRight';
+      showArraySummaryValidation: boolean;
     };
     renderers: JsonFormsRendererRegistryEntry[];
     cells: JsonFormsCellRendererRegistryEntry[];

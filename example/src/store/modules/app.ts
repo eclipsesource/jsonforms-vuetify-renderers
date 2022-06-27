@@ -23,6 +23,7 @@ const state: AppState = {
       initCollapsed: false,
       hideAvatar: false,
       addArrayItemButtonPosition: 'TopRight',
+      showArraySummaryValidation: true,
     },
     renderers: extendedVuetifyRenderers,
     cells: extendedVuetifyRenderers,
