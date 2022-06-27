@@ -129,7 +129,7 @@ export const useVuetifyLayout = <I extends { layout: any }>(input: I) => {
   const appliedOptions = computed(() => {
     return merge(
       {},
-      cloneDeep(input.layout.config),
+      cloneDeep(input.layout.value.config),
       cloneDeep(input.layout.value.uischema.options)
     );
   });
@@ -158,6 +158,12 @@ export const useVuetifyArrayControl = <I extends { control: any }>(
 
   const computedLabel = useComputedLabel(input, appliedOptions);
 
+  const vuetifyProps = (path: string) => {
+    const props = get(appliedOptions.value?.vuetify, path);
+
+    return props && isPlainObject(props) ? props : {};
+  };
+
   const childLabelForIndex = (index: number) => {
     const childLabelProp =
       input.control.value.uischema.options?.childLabelProp ??
@@ -184,6 +190,7 @@ export const useVuetifyArrayControl = <I extends { control: any }>(
     appliedOptions,
     childLabelForIndex,
     computedLabel,
+    vuetifyProps,
   };
 };
 
