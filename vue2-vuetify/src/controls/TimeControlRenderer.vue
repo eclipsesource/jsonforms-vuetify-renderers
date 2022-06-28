@@ -16,7 +16,7 @@
       <template v-slot:activator="{ on: onMenu }">
         <v-hover v-slot="{ hover }">
           <v-text-field
-            disabled-icon-focus
+            v-disabled-icon-focus
             :id="control.id + '-input'"
             :class="styles.control.input"
             :disabled="!control.enabled"
