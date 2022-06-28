@@ -418,7 +418,7 @@ const controlRenderer = defineComponent({
       const format = this.dateTimeFormat;
 
       const parts = format.split(
-        /([^YMDHhmsAaSZ]*)(YYYY|YY|MMMM|MMM|MM|M|DD|D)(hh?|HH?|mm?|ss?|a|A|SSS|Z)/
+        /([^YMDHhmsAaSZ]*)(YYYY|YY|MMMM|MMM|MM|M|DD|D|hh?|HH?|mm?|ss?|a|A|SSS|Z)/
       );
 
       let index = -1;
