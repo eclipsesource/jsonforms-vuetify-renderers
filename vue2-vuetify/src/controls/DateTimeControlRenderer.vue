@@ -129,10 +129,10 @@ import { ref } from '@vue/composition-api';
 import dayjs from 'dayjs';
 
 const JSON_SCHEMA_DATE_TIME_FORMATS = [
-  "YYYY-MM-DD'T'HH:mm:ss.SSSZ",
-  "YYYY-MM-DD'T'HH:mm:ss.SSS",
-  "YYYY-MM-DD'T'HH:mm:ssZ",
-  "YYYY-MM-DD'T'HH:mm:ss",
+  'YYYY-MM-DDTHH:mm:ss.SSSZ',
+  'YYYY-MM-DDTHH:mm:ss.SSS',
+  'YYYY-MM-DDTHH:mm:ssZ',
+  'YYYY-MM-DDTHH:mm:ss',
 ];
 
 // https://ajv.js.org/packages/ajv-formats.html#keywords-to-compare-values-formatmaximum-formatminimum-and-formatexclusivemaximum-formatexclusiveminimum
@@ -195,7 +195,7 @@ const controlRenderer = defineComponent({
     dateTimeSaveFormat(): string {
       return typeof this.appliedOptions.dateTimeSaveFormat == 'string'
         ? this.appliedOptions.dateTimeSaveFormat
-        : 'YYYY-MM-DD HH:mm';
+        : 'YYYY-MM-DDTHH:mm:ssZ';
     },
     formats(): string[] {
       return [
@@ -294,7 +294,7 @@ const controlRenderer = defineComponent({
         )}`;
         const dateTime = parseDateTime(
           dateTimeString,
-          "YYYY-MM-DD'T'HH:mm:ss.SSSZ"
+          'YYYY-MM-DDTHH:mm:ss.SSSZ'
         );
         this.onChange(dateTime!.format(this.dateTimeSaveFormat));
       }

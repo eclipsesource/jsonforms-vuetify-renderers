@@ -15,7 +15,7 @@
               "options": {
                 "ampm": true,
                 "dateTimeFormat": "MM/DD/YYYY hh:mm:ssZ a",
-                "dateTimeSaveFormat": "YYYY-MM-DD'T'HH:mm:ssZ"
+                "dateTimeSaveFormat": "YYYY-MM-DDTHH:mm:ssZ"
               }
             },
             {
@@ -24,7 +24,7 @@
               "label": "Date with 24H Time and seconds",
               "options": {
                 "dateTimeFormat": "MM/DD/YYYY HH:mm:ssZ",
-                "dateTimeSaveFormat": "YYYY-MM-DD'T'HH:mm:ssZ"
+                "dateTimeSaveFormat": "YYYY-MM-DDTHH:mm:ssZ"
               }
             }
           ]
@@ -39,7 +39,7 @@
               "options": {
                 "ampm": true,
                 "dateTimeFormat": "MM/DD/YYYY hh:mmZ a",
-                "dateTimeSaveFormat": "YYYY-MM-DD'T'HH:mm:ssZ"
+                "dateTimeSaveFormat": "YYYY-MM-DDTHH:mm:ssZ"
               }
             },
             {
@@ -48,7 +48,7 @@
               "label": "Date with 24H Time no seconds",
               "options": {
                 "dateTimeFormat": "MM/DD/YYYY HH:mmZ",
-                "dateTimeSaveFormat": "YYYY-MM-DD'T'HH:mm:ssZ"
+                "dateTimeSaveFormat": "YYYY-MM-DDTHH:mm:ssZ"
               }
             }
           ]
@@ -120,7 +120,7 @@
                 "format": "date-time",
                 "ampm": true,
                 "dateTimeFormat": "MM/DD/YYYY hh:mm:ssZ a",
-                "dateTimeSaveFormat": "YYYY-MM-DD'T'HH:mm:ssZ"
+                "dateTimeSaveFormat": "YYYY-MM-DDTHH:mm:ssZ"
               }
             },
             {
@@ -130,7 +130,7 @@
               "options": {
                 "format": "date-time",
                 "dateTimeFormat": "MM/DD/YYYY HH:mm:ssZ",
-                "dateTimeSaveFormat": "YYYY-MM-DD'T'HH:mm:ssZ"
+                "dateTimeSaveFormat": "YYYY-MM-DDTHH:mm:ssZ"
               }
             }
           ]
@@ -146,7 +146,7 @@
                 "format": "date-time",
                 "ampm": true,
                 "dateTimeFormat": "MM/DD/YYYY hh:mmZ a",
-                "dateTimeSaveFormat": "YYYY-MM-DD'T'HH:mmZ"
+                "dateTimeSaveFormat": "YYYY-MM-DDTHH:mmZ"
               }
             },
             {
@@ -156,7 +156,7 @@
               "options": {
                 "format": "date-time",
                 "dateTimeFormat": "MM/DD/YYYY HH:mmZ",
-                "dateTimeSaveFormat": "YYYY-MM-DD'T'HH:mmZ"
+                "dateTimeSaveFormat": "YYYY-MM-DDTHH:mmZ"
               }
             }
           ]
@@ -178,7 +178,7 @@
                 "format": "date-time",
                 "ampm": true,
                 "dateTimeFormat": "MM/DD/YYYY hh:mm:ss a",
-                "dateTimeSaveFormat": "YYYY-MM-DD'T'HH:mm:ss"
+                "dateTimeSaveFormat": "YYYY-MM-DDTHH:mm:ss"
               }
             },
             {
@@ -188,7 +188,7 @@
               "options": {
                 "format": "date-time",
                 "dateTimeFormat": "MM/DD/YYYY HH:mm:ss",
-                "dateTimeSaveFormat": "YYYY-MM-DD'T'HH:mm:ss"
+                "dateTimeSaveFormat": "YYYY-MM-DDTHH:mm:ss"
               }
             }
           ]
@@ -204,7 +204,7 @@
                 "format": "date-time",
                 "ampm": true,
                 "dateTimeFormat": "MM/DD/YYYY hh:mm a",
-                "dateTimeSaveFormat": "YYYY-MM-DD'T'HH:mm"
+                "dateTimeSaveFormat": "YYYY-MM-DDTHH:mm"
               }
             },
             {
@@ -214,7 +214,7 @@
               "options": {
                 "format": "date-time",
                 "dateTimeFormat": "MM/DD/YYYY HH:mm",
-                "dateTimeSaveFormat": "YYYY-MM-DD'T'HH:mm"
+                "dateTimeSaveFormat": "YYYY-MM-DDTHH:mm"
               }
             }
           ]
