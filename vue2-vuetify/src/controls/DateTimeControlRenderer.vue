@@ -67,7 +67,7 @@
           </v-col>
         </v-row>
         <v-card-actions>
-          <v-btn text color="primary" @click="clear"> {{ clearLabel }} </v-btn>
+          <v-btn text @click="clear"> {{ clearLabel }} </v-btn>
           <v-spacer></v-spacer>
           <v-btn text @click="showMenu = false">
             {{ cancelLabel }}
