@@ -13,6 +13,7 @@
     "allowSyntheticDefaultImports": true,
     "sourceMap": true,
     "outDir": "./lib",
+    "jsx": "preserve",
     "types": [
       "node",
       "vue",
