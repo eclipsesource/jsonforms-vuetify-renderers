@@ -11,6 +11,7 @@
       :close-on-content-click="false"
       transition="scale-transition"
       offset-y
+      min-width="580px"
     >
       <template v-slot:activator="{ on: onMenu }">
         <v-hover v-slot="{ hover }">
@@ -42,7 +43,7 @@
       </template>
       <v-card v-if="showMenu">
         <v-row no-gutters>
-          <v-col min-width="290px">
+          <v-col min-width="290px" cols="auto">
             <v-date-picker
               v-if="showMenu"
               :value="datePickerValue"
@@ -53,7 +54,7 @@
             >
             </v-date-picker>
           </v-col>
-          <v-col min-width="290px">
+          <v-col min-width="290px" cols="auto">
             <v-time-picker
               :value="timePickerValue"
               ref="timePicker"
@@ -586,11 +587,12 @@ export const entry: JsonFormsRendererRegistryEntry = {
 };
 </script>
 
-<style scoped>
-.v-picker {
+<style lang="scss" scoped>
+.v-picker::v-deep {
   border-radius: 0px;
-}
-.v-picker > .v-picker__title {
-  min-height: 102px;
+
+  .v-picker__title {
+    min-height: 102px;
+  }
 }
 </style>
