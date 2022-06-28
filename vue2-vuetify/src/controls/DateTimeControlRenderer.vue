@@ -48,8 +48,8 @@
               :value="datePickerValue"
               ref="datePicker"
               v-bind="vuetifyProps('v-date-picker')"
-              :min="min"
-              :max="max"
+              :min="minDate"
+              :max="maxDate"
             >
             </v-date-picker>
           </v-col>
@@ -58,8 +58,8 @@
               :value="timePickerValue"
               ref="timePicker"
               v-bind="vuetifyProps('v-time-picker')"
-              :min="min"
-              :max="max"
+              :min="minTime"
+              :max="maxTime"
               :use-seconds="useSeconds"
               :format="ampm ? 'ampm' : '24hr'"
             ></v-time-picker>
@@ -210,25 +210,88 @@ const controlRenderer = defineComponent({
     ampm(): boolean {
       return this.appliedOptions.ampm === true;
     },
-    min(): string | undefined {
+    minDate(): string | undefined {
+      if (typeof this.vuetifyProps('v-date-picker').min === 'string') {
+        // prefer the vuetify option first
+        return this.vuetifyProps('v-date-picker').min;
+      }
       // provide min so that the browser can display the native component with only selections that are allowed.
       // Since the browser supports only min there is posibility for the user to select a date that is defined in the formatExclusiveMinimum but the ajv will catch that validation.
       const schema = this.control.schema as JsonSchema & AjvMinMaxFormat;
       if (typeof schema.formatMinimum === 'string') {
-        return schema.formatMinimum;
+        const date = parseDateTime(schema.formatMinimum, this.formats);
+        return date ? date.format('YYYY-MM-DD') : schema.formatMinimum;
       } else if (typeof schema.formatExclusiveMinimum === 'string') {
-        return schema.formatExclusiveMinimum;
+        const date = parseDateTime(schema.formatExclusiveMinimum, this.formats);
+        return date ? date.format('YYYY-MM-DD') : schema.formatExclusiveMinimum;
       }
       return undefined;
     },
-    max(): string | undefined {
+    maxDate(): string | undefined {
+      if (typeof this.vuetifyProps('v-date-picker').max === 'string') {
+        // prefer the vuetify option first
+        return this.vuetifyProps('v-date-picker').max;
+      }
       // provide max so that the browser can display the native component with only selections that are allowed.
       // Since the browser supports only max there is posibility for the user to select a date that is defined in the formatExclusiveMaximum but the ajv will catch that validation.
       const schema = this.control.schema as JsonSchema & AjvMinMaxFormat;
       if (typeof schema.formatMaximum === 'string') {
-        return schema.formatMaximum;
+        const date = parseDateTime(schema.formatMaximum, this.formats);
+        return date ? date.format('YYYY-MM-DD') : schema.formatMaximum;
       } else if (typeof schema.formatExclusiveMaximum === 'string') {
-        return schema.formatExclusiveMaximum;
+        const date = parseDateTime(schema.formatExclusiveMaximum, this.formats);
+        return date ? date.format('YYYY-MM-DD') : schema.formatExclusiveMaximum;
+      }
+      return undefined;
+    },
+    minTime(): string | undefined {
+      if (typeof this.vuetifyProps('v-time-picker').min === 'string') {
+        // prefer the vuetify option first
+        return this.vuetifyProps('v-time-picker').min;
+      }
+
+      // provide min so that the browser can display the native component with only selections that are allowed.
+      // Since the browser supports only min there is posibility for the user to select a date that is defined in the formatExclusiveMinimum but the ajv will catch that validation.
+      const schema = this.control.schema as JsonSchema & AjvMinMaxFormat;
+      if (typeof schema.formatMinimum === 'string') {
+        const time = parseDateTime(schema.formatMinimum, this.formats);
+        return time
+          ? this.useSeconds
+            ? time.format('HH:mm:ss')
+            : time.format('HH:mm')
+          : schema.formatMinimum;
+      } else if (typeof schema.formatExclusiveMinimum === 'string') {
+        const time = parseDateTime(schema.formatExclusiveMinimum, this.formats);
+        return time
+          ? this.useSeconds
+            ? time.format('HH:mm:ss')
+            : time.format('HH:mm')
+          : schema.formatExclusiveMinimum;
+      }
+      return undefined;
+    },
+    maxTime(): string | undefined {
+      if (typeof this.vuetifyProps('v-time-picker').max === 'string') {
+        // prefer the vuetify option first
+        return this.vuetifyProps('v-time-picker').max;
+      }
+      // provide max so that the browser can display the native component with only selections that are allowed.
+      // Since the browser supports only max there is posibility for the user to select a date that is defined in the formatExclusiveMaximum but the ajv will catch that validation.
+      const schema = this.control.schema as JsonSchema & AjvMinMaxFormat;
+      if (typeof schema.formatMaximum === 'string') {
+        const time = parseDateTime(schema.formatMaximum, this.formats);
+        return time
+          ? this.useSeconds
+            ? time.format('HH:mm:ss')
+            : time.format('HH:mm')
+          : schema.formatMaximum;
+      } else if (typeof schema.formatExclusiveMaximum === 'string') {
+        const time = parseDateTime(schema.formatExclusiveMaximum, this.formats);
+        return time
+          ? this.useSeconds
+            ? time.format('HH:mm:ss')
+            : time.format('HH:mm')
+          : schema.formatExclusiveMaximum;
       }
       return undefined;
     },

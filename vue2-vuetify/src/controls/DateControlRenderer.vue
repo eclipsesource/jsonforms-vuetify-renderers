@@ -45,8 +45,8 @@
         :value="pickerValue"
         ref="picker"
         v-bind="vuetifyProps('v-date-picker')"
-        :min="min"
-        :max="max"
+        :min="minDate"
+        :max="maxDate"
         :type="pickerType"
       >
         <v-btn text color="primary" @click="clear"> {{ clearLabel }} </v-btn>
@@ -175,7 +175,11 @@ const controlRenderer = defineComponent({
       }
       return 'date';
     },
-    min(): string | undefined {
+    minDate(): string | undefined {
+      if (typeof this.vuetifyProps('v-date-picker').min === 'string') {
+        // prefer the vuetify option first
+        return this.vuetifyProps('v-date-picker').min;
+      }
       // provide min so that the browser can display the native component with only selections that are allowed.
       // Since the browser supports only min there is posibility for the user to select a date that is defined in the formatExclusiveMinimum but the ajv will catch that validation.
       const schema = this.control.schema as JsonSchema & AjvMinMaxFormat;
@@ -186,7 +190,11 @@ const controlRenderer = defineComponent({
       }
       return undefined;
     },
-    max(): string | undefined {
+    maxDate(): string | undefined {
+      if (typeof this.vuetifyProps('v-date-picker').max === 'string') {
+        // prefer the vuetify option first
+        return this.vuetifyProps('v-date-picker').max;
+      }
       // provide max so that the browser can display the native component with only selections that are allowed.
       // Since the browser supports only max there is posibility for the user to select a date that is defined in the formatExclusiveMaximum but the ajv will catch that validation.
       const schema = this.control.schema as JsonSchema & AjvMinMaxFormat;
