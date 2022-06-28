@@ -202,7 +202,12 @@ const controlRenderer = defineComponent({
           : schema.formatMinimum;
       } else if (typeof schema.formatExclusiveMinimum === 'string') {
         // convert to what VTimePicker expects
-        const time = parseDateTime(schema.formatExclusiveMinimum, this.formats);
+        let time = parseDateTime(schema.formatExclusiveMinimum, this.formats);
+        if (time) {
+          time = this.useSeconds
+            ? time.add(1, 'second')
+            : time.add(1, 'minute');
+        }
         return time
           ? this.useSeconds
             ? time.format('HH:mm:ss')
@@ -230,7 +235,12 @@ const controlRenderer = defineComponent({
           : schema.formatMaximum;
       } else if (typeof schema.formatExclusiveMaximum === 'string') {
         // convert to what VTimePicker expects
-        const time = parseDateTime(schema.formatExclusiveMaximum, this.formats);
+        let time = parseDateTime(schema.formatExclusiveMaximum, this.formats);
+        if (time) {
+          time = this.useSeconds
+            ? time.subtract(1, 'second')
+            : time.subtract(1, 'minute');
+        }
         return time
           ? this.useSeconds
             ? time.format('HH:mm:ss')

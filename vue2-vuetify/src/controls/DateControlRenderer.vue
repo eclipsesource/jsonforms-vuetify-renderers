@@ -186,7 +186,12 @@ const controlRenderer = defineComponent({
       if (typeof schema.formatMinimum === 'string') {
         return schema.formatMinimum;
       } else if (typeof schema.formatExclusiveMinimum === 'string') {
-        return schema.formatExclusiveMinimum;
+        let date = parseDateTime(schema.formatExclusiveMinimum, this.formats);
+        if (date) {
+          // the format is exclusive
+          date = date.add(1, 'day');
+        }
+        return date ? date.format('YYYY-MM-DD') : schema.formatExclusiveMinimum;
       }
       return undefined;
     },
@@ -201,7 +206,12 @@ const controlRenderer = defineComponent({
       if (typeof schema.formatMaximum === 'string') {
         return schema.formatMaximum;
       } else if (typeof schema.formatExclusiveMaximum === 'string') {
-        return schema.formatExclusiveMaximum;
+        let date = parseDateTime(schema.formatExclusiveMaximum, this.formats);
+        if (date) {
+          // the format is exclusive
+          date = date.subtract(1, 'day');
+        }
+        return date ? date.format('YYYY-MM-DD') : schema.formatExclusiveMaximum;
       }
       return undefined;
     },

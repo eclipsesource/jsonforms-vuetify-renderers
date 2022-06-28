@@ -180,7 +180,7 @@ const controlRenderer = defineComponent({
   watch: {
     isFocused(newFocus) {
       if (newFocus) {
-        //this.mask = this.maskFunction;
+        this.mask = this.maskFunction;
       } else {
         this.mask = undefined;
       }
@@ -222,7 +222,11 @@ const controlRenderer = defineComponent({
         const date = parseDateTime(schema.formatMinimum, this.formats);
         return date ? date.format('YYYY-MM-DD') : schema.formatMinimum;
       } else if (typeof schema.formatExclusiveMinimum === 'string') {
-        const date = parseDateTime(schema.formatExclusiveMinimum, this.formats);
+        let date = parseDateTime(schema.formatExclusiveMinimum, this.formats);
+        if (date) {
+          // the format is exclusive
+          date = date.add(1, 'second');
+        }
         return date ? date.format('YYYY-MM-DD') : schema.formatExclusiveMinimum;
       }
       return undefined;
@@ -239,7 +243,11 @@ const controlRenderer = defineComponent({
         const date = parseDateTime(schema.formatMaximum, this.formats);
         return date ? date.format('YYYY-MM-DD') : schema.formatMaximum;
       } else if (typeof schema.formatExclusiveMaximum === 'string') {
-        const date = parseDateTime(schema.formatExclusiveMaximum, this.formats);
+        let date = parseDateTime(schema.formatExclusiveMaximum, this.formats);
+        if (date) {
+          // the format is exclusive
+          date = date.subtract(1, 'second');
+        }
         return date ? date.format('YYYY-MM-DD') : schema.formatExclusiveMaximum;
       }
       return undefined;
@@ -255,18 +263,38 @@ const controlRenderer = defineComponent({
       const schema = this.control.schema as JsonSchema & AjvMinMaxFormat;
       if (typeof schema.formatMinimum === 'string') {
         const time = parseDateTime(schema.formatMinimum, this.formats);
-        return time
-          ? this.useSeconds
+        const datePicker = this.$refs?.datePicker as { inputDate?: string };
+
+        const date = parseDateTime(datePicker?.inputDate, 'YYYY-MM-DD');
+
+        if (date && time && date.isSame(time, 'day')) {
+          // time min only matters when it is the same day
+
+          return this.useSeconds
             ? time.format('HH:mm:ss')
-            : time.format('HH:mm')
-          : schema.formatMinimum;
+            : time.format('HH:mm');
+        }
+        return undefined;
       } else if (typeof schema.formatExclusiveMinimum === 'string') {
-        const time = parseDateTime(schema.formatExclusiveMinimum, this.formats);
-        return time
-          ? this.useSeconds
-            ? time.format('HH:mm:ss')
-            : time.format('HH:mm')
-          : schema.formatExclusiveMinimum;
+        let time = parseDateTime(schema.formatExclusiveMinimum, this.formats);
+        const datePicker = this.$refs?.datePicker as { inputDate?: string };
+        const date = parseDateTime(datePicker?.inputDate, 'YYYY-MM-DD');
+
+        if (date && time) {
+          if (time) {
+            time = this.useSeconds
+              ? time.add(1, 'second')
+              : time.add(1, 'minute');
+          }
+
+          if (date.isSame(time, 'day')) {
+            return this.useSeconds
+              ? time.format('HH:mm:ss')
+              : time.format('HH:mm');
+          }
+        }
+
+        return undefined;
       }
       return undefined;
     },
@@ -280,18 +308,38 @@ const controlRenderer = defineComponent({
       const schema = this.control.schema as JsonSchema & AjvMinMaxFormat;
       if (typeof schema.formatMaximum === 'string') {
         const time = parseDateTime(schema.formatMaximum, this.formats);
-        return time
-          ? this.useSeconds
+        const datePicker = this.$refs?.datePicker as { inputDate?: string };
+
+        const date = parseDateTime(datePicker?.inputDate, 'YYYY-MM-DD');
+
+        if (date && time && date.isSame(time, 'day')) {
+          // time min only matters when it is the same day
+
+          return this.useSeconds
             ? time.format('HH:mm:ss')
-            : time.format('HH:mm')
-          : schema.formatMaximum;
+            : time.format('HH:mm');
+        }
+
+        return undefined;
       } else if (typeof schema.formatExclusiveMaximum === 'string') {
-        const time = parseDateTime(schema.formatExclusiveMaximum, this.formats);
-        return time
-          ? this.useSeconds
-            ? time.format('HH:mm:ss')
-            : time.format('HH:mm')
-          : schema.formatExclusiveMaximum;
+        let time = parseDateTime(schema.formatExclusiveMaximum, this.formats);
+        const datePicker = this.$refs?.datePicker as { inputDate?: string };
+        const date = parseDateTime(datePicker?.inputDate, 'YYYY-MM-DD');
+
+        if (date && time) {
+          if (time) {
+            time = this.useSeconds
+              ? time.subtract(1, 'second')
+              : time.subtract(1, 'minute');
+          }
+
+          if (date.isSame(time, 'day')) {
+            return this.useSeconds
+              ? time.format('HH:mm:ss')
+              : time.format('HH:mm');
+          }
+        }
+        return undefined;
       }
       return undefined;
     },
@@ -369,7 +417,9 @@ const controlRenderer = defineComponent({
     maskFunction(value: string): (string | RegExp)[] {
       const format = this.dateTimeFormat;
 
-      const parts = format.split(/([^YMD]*)(YYYY|YY|MMMM|MMM|MM|M|DD|D)/);
+      const parts = format.split(
+        /([^YMDHhmsAaSZ]*)(YYYY|YY|MMMM|MMM|MM|M|DD|D)(hh?|HH?|mm?|ss?|a|A|SSS|Z)/
+      );
 
       let index = -1;
       const numbers = value?.replace(/[^0-9]/g, '');
@@ -432,6 +482,91 @@ const controlRenderer = defineComponent({
                 : /[0-9]/
             );
             index += 1;
+          } else if (part == 'H') {
+            result.push(/[0-9]/);
+            index += 1;
+            if (numbers.charAt(index) === '1') {
+              result.push(/[0-9]/);
+              index += 1;
+            } else if (numbers.charAt(index) === '2') {
+              result.push(/[0-3]/);
+              index += 1;
+            }
+          } else if (part == 'HH') {
+            result.push(/[0-2]/);
+            index += 1;
+            result.push(numbers.charAt(index) === '2' ? /[0-3]/ : /[0-9]/);
+            index += 1;
+          } else if (part == 'h') {
+            result.push(/[1]/);
+            result.push(/[0-2]/);
+            index += 2;
+          } else if (part == 'hh') {
+            result.push(/[0-1]/);
+            index += 1;
+            result.push(numbers.charAt(index) === '0' ? /[1-9]/ : /[0-2]/);
+            index += 1;
+          } else if (part == 'm') {
+            result.push(/[0-9]/);
+            index += 1;
+            if (
+              numbers.charAt(index) === '1' ||
+              numbers.charAt(index) === '2' ||
+              numbers.charAt(index) === '3' ||
+              numbers.charAt(index) === '4' ||
+              numbers.charAt(index) === '5'
+            ) {
+              result.push(/[0-9]/);
+              index += 1;
+            }
+          } else if (part == 'mm') {
+            result.push(/[0-5]/);
+            result.push(/[0-9]/);
+            index += 2;
+          } else if (part == 's') {
+            result.push(/[0-9]/);
+            index += 1;
+            if (
+              numbers.charAt(index) === '1' ||
+              numbers.charAt(index) === '2' ||
+              numbers.charAt(index) === '3' ||
+              numbers.charAt(index) === '4' ||
+              numbers.charAt(index) === '5'
+            ) {
+              result.push(/[0-9]/);
+              index += 1;
+            }
+          } else if (part == 'ss') {
+            result.push(/[0-5]/);
+            result.push(/[0-9]/);
+            index += 2;
+          } else if (part == 'a') {
+            result.push(/a|p/);
+            result.push('m');
+          } else if (part == 'A') {
+            result.push(/A|P/);
+            result.push('M');
+          } else if (part == 'Z') {
+            //GMT-12 to GMT+14
+            result.push(/\+|-/);
+            result.push(/[0-1]/);
+            index += 1;
+            if (value.includes('-0') || value.includes('+0')) {
+              result.push(/[0-9]/);
+              index += 1;
+            } else if (value.includes('-1') || value.includes('+1')) {
+              result.push(value.includes('+1') ? /[0-4]/ : /[0-2]/);
+              index += 1;
+            }
+            result.push(':');
+            result.push(/[0-5]/);
+            result.push(/[0-9]/);
+            index += 2;
+          } else if (part == 'SSS') {
+            result.push(/[0-9]/);
+            result.push(/[0-9]/);
+            result.push(/[0-9]/);
+            index += 3;
           } else {
             result.push(part);
           }
