@@ -44,7 +44,7 @@
             },
             {
               "type": "Control",
-              "scope": "#/properties/timeWithZone",
+              "scope": "#/properties/dateTimeWithZone",
               "label": "Date with 24H Time no seconds",
               "options": {
                 "dateTimeFormat": "MM/DD/YYYY HH:mmZ",
@@ -114,7 +114,7 @@
           "elements": [
             {
               "type": "Control",
-              "scope": "#/properties/stringTimeFullWithZone",
+              "scope": "#/properties/stringDateTimeFullWithZone",
               "label": "Date with 12H Time and seconds",
               "options": {
                 "format": "date-time",
@@ -125,7 +125,7 @@
             },
             {
               "type": "Control",
-              "scope": "#/properties/stringTimeFullWithZone",
+              "scope": "#/properties/stringDateTimeFullWithZone",
               "label": "Date with 24H Time and seconds",
               "options": {
                 "format": "date-time",
@@ -140,7 +140,7 @@
           "elements": [
             {
               "type": "Control",
-              "scope": "#/properties/stringTimeWithZone",
+              "scope": "#/properties/stringDateTimeWithZone",
               "label": "Date with 12H Time no seconds",
               "options": {
                 "format": "date-time",
@@ -151,7 +151,7 @@
             },
             {
               "type": "Control",
-              "scope": "#/properties/stringTimeWithZone",
+              "scope": "#/properties/stringDateTimeWithZone",
               "label": "Date with 24H Time no seconds",
               "options": {
                 "format": "date-time",
