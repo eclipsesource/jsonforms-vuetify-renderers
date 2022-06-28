@@ -31,8 +31,7 @@ exports[`EnumControlRenderer.vue should render component and match snapshot 1`] 
                 <div class="v-select__selection v-select__selection--comma">
                   a
                 </div>
-                <input disabled-icon-focus
-                       id="#-input"
+                <input id="#-input"
                        readonly="readonly"
                        type="text"
                        aria-readonly="false"
@@ -102,8 +101,7 @@ exports[`EnumControlRenderer.vue should render component and match snapshot when
                 <div class="v-select__selection v-select__selection--comma">
                   a
                 </div>
-                <input disabled-icon-focus
-                       id="#-input"
+                <input id="#-input"
                        readonly="readonly"
                        type="text"
                        aria-readonly="false"

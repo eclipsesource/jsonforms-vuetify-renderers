@@ -8,7 +8,7 @@
     <v-hover v-slot="{ hover }">
       <v-select
         v-if="appliedOptions.autocomplete === false"
-        disabled-icon-focus
+        v-disabled-icon-focus
         :id="control.id + '-input'"
         :class="styles.control.input"
         :disabled="!control.enabled"
@@ -31,7 +31,7 @@
       />
       <v-autocomplete
         v-else
-        disabled-icon-focus
+        v-disabled-icon-focus
         :id="control.id + '-input'"
         :class="styles.control.input"
         :disabled="!control.enabled"

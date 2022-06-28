@@ -22,8 +22,7 @@ exports[`MultiStringControlRenderer.vue should render component and match snapsh
               >
                 My Multi String
               </label>
-              <textarea disabled-icon-focus
-                        multi-line
+              <textarea multi-line
                         id="#-input"
                         rows="5"
               >

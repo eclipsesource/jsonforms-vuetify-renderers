@@ -8,7 +8,7 @@
     <v-hover v-slot="{ hover }">
       <v-combobox
         v-if="suggestions !== undefined"
-        disabled-icon-focus
+        v-disabled-icon-focus
         :id="control.id + '-input'"
         :class="styles.control.input"
         :disabled="!control.enabled"
@@ -38,7 +38,7 @@
       />
       <v-text-field
         v-else
-        disabled-icon-focus
+        v-disabled-icon-focus
         :id="control.id + '-input'"
         :class="styles.control.input"
         :disabled="!control.enabled"
