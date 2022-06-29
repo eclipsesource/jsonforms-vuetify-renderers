@@ -23,7 +23,7 @@ exports[`DateTimeControlRenderer.vue should render component and match snapshot 
                 My Date Time
               </label>
               <input id="#-input"
-                     type="datetime-local"
+                     type="text"
               >
             </div>
           </div>
@@ -37,6 +37,685 @@ exports[`DateTimeControlRenderer.vue should render component and match snapshot 
             </div>
           </div>
         </div>
+      </div>
+      <div class="v-menu">
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`DateTimeControlRenderer.vue should render component and match snapshot when clicked 1`] = `
+<div data-app="true"
+     class="v-application v-application--is-ltr theme--light"
+     id="app"
+>
+  <div class="v-application--wrap">
+    <div id="#"
+         class="control"
+         appliedoptions="[object Object]"
+         errors
+         label="My Date Time"
+    >
+      <div class="v-input v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--placeholder input">
+        <div class="v-input__control">
+          <div class="v-input__slot">
+            <div class="v-text-field__slot">
+              <label for="#-input"
+                     class="v-label v-label--active theme--light"
+                     style="left: 0px; position: absolute;"
+              >
+                My Date Time
+              </label>
+              <input id="#-input"
+                     type="text"
+              >
+            </div>
+          </div>
+          <div class="v-text-field__details">
+            <div class="v-messages theme--light">
+              <transition-group-stub tag="div"
+                                     name="message-transition"
+                                     class="v-messages__wrapper"
+              >
+              </transition-group-stub>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="v-menu">
+        <transition-stub name="scale-transition">
+        </transition-stub>
+      </div>
+    </div>
+  </div>
+  <div role="menu"
+       class="v-menu__content theme--light menuable__content__active "
+       style="max-height: auto; min-width: 580px; max-width: auto; top: 12px; left: 0px; transform-origin: top left; z-index: 8; display: none;"
+  >
+    <div class="v-card v-sheet theme--light">
+      <div class="row no-gutters">
+        <div min-width="290px"
+             class="col col-auto"
+        >
+          <div class="v-picker v-card v-picker--date theme--light">
+            <div class="v-picker__title primary">
+              <div class="v-date-picker-title">
+                <div class="v-picker__title__btn v-date-picker-title__year">
+                  2021
+                </div>
+                <div class="v-picker__title__btn v-date-picker-title__date v-picker__title__btn--active">
+                  <transition-stub name="picker-transition">
+                    <div>
+                      Tue, Mar 9
+                    </div>
+                  </transition-stub>
+                </div>
+              </div>
+            </div>
+            <div class="v-picker__body theme--light"
+                 style="width: 290px;"
+            >
+              <transition-stub name="fade-transition">
+                <div>
+                  <div class="v-date-picker-header theme--light">
+                    <button type="button"
+                            class="v-btn v-btn--icon v-btn--round theme--light v-size--default"
+                            aria-label="Previous month"
+                    >
+                      <span class="v-btn__content">
+                        <i aria-hidden="true"
+                           class="v-icon notranslate mdi mdi-chevron-left theme--light"
+                        >
+                        </i>
+                      </span>
+                    </button>
+                    <div class="v-date-picker-header__value">
+                      <transition-stub name="tab-transition">
+                        <div class="accent--text">
+                          <button type="button">
+                            March 2021
+                          </button>
+                        </div>
+                      </transition-stub>
+                    </div>
+                    <button type="button"
+                            class="v-btn v-btn--icon v-btn--round theme--light v-size--default"
+                            aria-label="Next month"
+                    >
+                      <span class="v-btn__content">
+                        <i aria-hidden="true"
+                           class="v-icon notranslate mdi mdi-chevron-right theme--light"
+                        >
+                        </i>
+                      </span>
+                    </button>
+                  </div>
+                  <div class="v-date-picker-table v-date-picker-table--date theme--light">
+                    <transition-stub name="tab-transition">
+                      <table>
+                        <thead>
+                          <tr>
+                            <th>
+                              S
+                            </th>
+                            <th>
+                              M
+                            </th>
+                            <th>
+                              T
+                            </th>
+                            <th>
+                              W
+                            </th>
+                            <th>
+                              T
+                            </th>
+                            <th>
+                              F
+                            </th>
+                            <th>
+                              S
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>
+                            </td>
+                            <td>
+                              <button type="button"
+                                      class="v-btn v-btn--text v-btn--rounded theme--light"
+                              >
+                                <div class="v-btn__content">
+                                  1
+                                </div>
+                              </button>
+                            </td>
+                            <td>
+                              <button type="button"
+                                      class="v-btn v-btn--text v-btn--rounded theme--light"
+                              >
+                                <div class="v-btn__content">
+                                  2
+                                </div>
+                              </button>
+                            </td>
+                            <td>
+                              <button type="button"
+                                      class="v-btn v-btn--text v-btn--rounded theme--light"
+                              >
+                                <div class="v-btn__content">
+                                  3
+                                </div>
+                              </button>
+                            </td>
+                            <td>
+                              <button type="button"
+                                      class="v-btn v-btn--text v-btn--rounded theme--light"
+                              >
+                                <div class="v-btn__content">
+                                  4
+                                </div>
+                              </button>
+                            </td>
+                            <td>
+                              <button type="button"
+                                      class="v-btn v-btn--text v-btn--rounded theme--light"
+                              >
+                                <div class="v-btn__content">
+                                  5
+                                </div>
+                              </button>
+                            </td>
+                            <td>
+                              <button type="button"
+                                      class="v-btn v-btn--text v-btn--rounded theme--light"
+                              >
+                                <div class="v-btn__content">
+                                  6
+                                </div>
+                              </button>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <button type="button"
+                                      class="v-btn v-btn--text v-btn--rounded theme--light"
+                              >
+                                <div class="v-btn__content">
+                                  7
+                                </div>
+                              </button>
+                            </td>
+                            <td>
+                              <button type="button"
+                                      class="v-btn v-btn--text v-btn--rounded theme--light"
+                              >
+                                <div class="v-btn__content">
+                                  8
+                                </div>
+                              </button>
+                            </td>
+                            <td>
+                              <button type="button"
+                                      class="v-btn v-btn--active v-btn--rounded theme--light accent"
+                              >
+                                <div class="v-btn__content">
+                                  9
+                                </div>
+                              </button>
+                            </td>
+                            <td>
+                              <button type="button"
+                                      class="v-btn v-btn--text v-btn--rounded theme--light"
+                              >
+                                <div class="v-btn__content">
+                                  10
+                                </div>
+                              </button>
+                            </td>
+                            <td>
+                              <button type="button"
+                                      class="v-btn v-btn--text v-btn--rounded theme--light"
+                              >
+                                <div class="v-btn__content">
+                                  11
+                                </div>
+                              </button>
+                            </td>
+                            <td>
+                              <button type="button"
+                                      class="v-btn v-btn--text v-btn--rounded theme--light"
+                              >
+                                <div class="v-btn__content">
+                                  12
+                                </div>
+                              </button>
+                            </td>
+                            <td>
+                              <button type="button"
+                                      class="v-btn v-btn--text v-btn--rounded theme--light"
+                              >
+                                <div class="v-btn__content">
+                                  13
+                                </div>
+                              </button>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <button type="button"
+                                      class="v-btn v-btn--text v-btn--rounded theme--light"
+                              >
+                                <div class="v-btn__content">
+                                  14
+                                </div>
+                              </button>
+                            </td>
+                            <td>
+                              <button type="button"
+                                      class="v-btn v-btn--text v-btn--rounded theme--light"
+                              >
+                                <div class="v-btn__content">
+                                  15
+                                </div>
+                              </button>
+                            </td>
+                            <td>
+                              <button type="button"
+                                      class="v-btn v-btn--text v-btn--rounded theme--light"
+                              >
+                                <div class="v-btn__content">
+                                  16
+                                </div>
+                              </button>
+                            </td>
+                            <td>
+                              <button type="button"
+                                      class="v-btn v-btn--text v-btn--rounded theme--light"
+                              >
+                                <div class="v-btn__content">
+                                  17
+                                </div>
+                              </button>
+                            </td>
+                            <td>
+                              <button type="button"
+                                      class="v-btn v-btn--text v-btn--rounded theme--light"
+                              >
+                                <div class="v-btn__content">
+                                  18
+                                </div>
+                              </button>
+                            </td>
+                            <td>
+                              <button type="button"
+                                      class="v-btn v-btn--text v-btn--rounded theme--light"
+                              >
+                                <div class="v-btn__content">
+                                  19
+                                </div>
+                              </button>
+                            </td>
+                            <td>
+                              <button type="button"
+                                      class="v-btn v-btn--text v-btn--rounded theme--light"
+                              >
+                                <div class="v-btn__content">
+                                  20
+                                </div>
+                              </button>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <button type="button"
+                                      class="v-btn v-btn--text v-btn--rounded theme--light"
+                              >
+                                <div class="v-btn__content">
+                                  21
+                                </div>
+                              </button>
+                            </td>
+                            <td>
+                              <button type="button"
+                                      class="v-btn v-btn--text v-btn--rounded theme--light"
+                              >
+                                <div class="v-btn__content">
+                                  22
+                                </div>
+                              </button>
+                            </td>
+                            <td>
+                              <button type="button"
+                                      class="v-btn v-btn--text v-btn--rounded theme--light"
+                              >
+                                <div class="v-btn__content">
+                                  23
+                                </div>
+                              </button>
+                            </td>
+                            <td>
+                              <button type="button"
+                                      class="v-btn v-btn--text v-btn--rounded theme--light"
+                              >
+                                <div class="v-btn__content">
+                                  24
+                                </div>
+                              </button>
+                            </td>
+                            <td>
+                              <button type="button"
+                                      class="v-btn v-btn--text v-btn--rounded theme--light"
+                              >
+                                <div class="v-btn__content">
+                                  25
+                                </div>
+                              </button>
+                            </td>
+                            <td>
+                              <button type="button"
+                                      class="v-btn v-btn--text v-btn--rounded theme--light"
+                              >
+                                <div class="v-btn__content">
+                                  26
+                                </div>
+                              </button>
+                            </td>
+                            <td>
+                              <button type="button"
+                                      class="v-btn v-btn--text v-btn--rounded theme--light"
+                              >
+                                <div class="v-btn__content">
+                                  27
+                                </div>
+                              </button>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <button type="button"
+                                      class="v-btn v-btn--text v-btn--rounded theme--light"
+                              >
+                                <div class="v-btn__content">
+                                  28
+                                </div>
+                              </button>
+                            </td>
+                            <td>
+                              <button type="button"
+                                      class="v-btn v-btn--text v-btn--rounded theme--light"
+                              >
+                                <div class="v-btn__content">
+                                  29
+                                </div>
+                              </button>
+                            </td>
+                            <td>
+                              <button type="button"
+                                      class="v-btn v-btn--text v-btn--rounded theme--light"
+                              >
+                                <div class="v-btn__content">
+                                  30
+                                </div>
+                              </button>
+                            </td>
+                            <td>
+                              <button type="button"
+                                      class="v-btn v-btn--text v-btn--rounded theme--light"
+                              >
+                                <div class="v-btn__content">
+                                  31
+                                </div>
+                              </button>
+                            </td>
+                            <td>
+                            </td>
+                            <td>
+                            </td>
+                            <td>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </transition-stub>
+                  </div>
+                </div>
+              </transition-stub>
+            </div>
+          </div>
+        </div>
+        <div min-width="290px"
+             class="col col-auto"
+        >
+          <div class="v-picker v-card v-picker--time theme--light">
+            <div class="v-picker__title primary">
+              <div class="v-time-picker-title">
+                <div class="v-time-picker-title__time">
+                  <div class="v-picker__title__btn v-picker__title__btn--active">
+                    21
+                  </div>
+                  <span>
+                    :
+                  </span>
+                  <div class="v-picker__title__btn">
+                    54
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="v-picker__body theme--light"
+                 style="width: 290px;"
+            >
+              <transition-stub name="fade-transition">
+                <div class="v-time-picker-clock__container">
+                  <div class="v-time-picker-clock theme--light">
+                    <div class="v-time-picker-clock__inner">
+                      <div class="v-time-picker-clock__hand v-time-picker-clock__hand--inner accent"
+                           style="transform: rotate(630deg) scaleY(0.62);"
+                      >
+                      </div>
+                      <span class="v-time-picker-clock__item"
+                            style="left: 50%; top: 0%;"
+                      >
+                        <span>
+                          0
+                        </span>
+                      </span>
+                      <span class="v-time-picker-clock__item"
+                            style="left: 75%; top: 6.698729810778062%;"
+                      >
+                        <span>
+                          1
+                        </span>
+                      </span>
+                      <span class="v-time-picker-clock__item"
+                            style="left: 93.30127018922192%; top: 24.999999999999993%;"
+                      >
+                        <span>
+                          2
+                        </span>
+                      </span>
+                      <span class="v-time-picker-clock__item"
+                            style="left: 100%; top: 50%;"
+                      >
+                        <span>
+                          3
+                        </span>
+                      </span>
+                      <span class="v-time-picker-clock__item"
+                            style="left: 93.30127018922194%; top: 74.99999999999999%;"
+                      >
+                        <span>
+                          4
+                        </span>
+                      </span>
+                      <span class="v-time-picker-clock__item"
+                            style="left: 75.00000000000001%; top: 93.30127018922192%;"
+                      >
+                        <span>
+                          5
+                        </span>
+                      </span>
+                      <span class="v-time-picker-clock__item"
+                            style="left: 50.00000000000001%; top: 100%;"
+                      >
+                        <span>
+                          6
+                        </span>
+                      </span>
+                      <span class="v-time-picker-clock__item"
+                            style="left: 25.000000000000014%; top: 93.30127018922194%;"
+                      >
+                        <span>
+                          7
+                        </span>
+                      </span>
+                      <span class="v-time-picker-clock__item"
+                            style="left: 6.698729810778076%; top: 75.00000000000003%;"
+                      >
+                        <span>
+                          8
+                        </span>
+                      </span>
+                      <span class="v-time-picker-clock__item"
+                            style="left: 0%; top: 50.00000000000001%;"
+                      >
+                        <span>
+                          9
+                        </span>
+                      </span>
+                      <span class="v-time-picker-clock__item"
+                            style="left: 6.6987298107780475%; top: 25.000000000000032%;"
+                      >
+                        <span>
+                          10
+                        </span>
+                      </span>
+                      <span class="v-time-picker-clock__item"
+                            style="left: 24.99999999999998%; top: 6.698729810778083%;"
+                      >
+                        <span>
+                          11
+                        </span>
+                      </span>
+                      <span class="v-time-picker-clock__item"
+                            style="left: 49.99999999999999%; top: 19%;"
+                      >
+                        <span>
+                          12
+                        </span>
+                      </span>
+                      <span class="v-time-picker-clock__item"
+                            style="left: 65.49999999999997%; top: 23.153212482682388%;"
+                      >
+                        <span>
+                          13
+                        </span>
+                      </span>
+                      <span class="v-time-picker-clock__item"
+                            style="left: 76.84678751731758%; top: 34.499999999999986%;"
+                      >
+                        <span>
+                          14
+                        </span>
+                      </span>
+                      <span class="v-time-picker-clock__item"
+                            style="left: 81%; top: 49.999999999999964%;"
+                      >
+                        <span>
+                          15
+                        </span>
+                      </span>
+                      <span class="v-time-picker-clock__item"
+                            style="left: 76.84678751731761%; top: 65.49999999999997%;"
+                      >
+                        <span>
+                          16
+                        </span>
+                      </span>
+                      <span class="v-time-picker-clock__item"
+                            style="left: 65.50000000000004%; top: 76.84678751731758%;"
+                      >
+                        <span>
+                          17
+                        </span>
+                      </span>
+                      <span class="v-time-picker-clock__item"
+                            style="left: 50.000000000000014%; top: 81%;"
+                      >
+                        <span>
+                          18
+                        </span>
+                      </span>
+                      <span class="v-time-picker-clock__item"
+                            style="left: 34.50000000000003%; top: 76.84678751731761%;"
+                      >
+                        <span>
+                          19
+                        </span>
+                      </span>
+                      <span class="v-time-picker-clock__item"
+                            style="left: 23.153212482682427%; top: 65.50000000000004%;"
+                      >
+                        <span>
+                          20
+                        </span>
+                      </span>
+                      <span class="v-time-picker-clock__item v-time-picker-clock__item--active accent"
+                            style="left: 19%; top: 50.000000000000014%;"
+                      >
+                        <span>
+                          21
+                        </span>
+                      </span>
+                      <span class="v-time-picker-clock__item"
+                            style="left: 23.153212482682385%; top: 34.50000000000003%;"
+                      >
+                        <span>
+                          22
+                        </span>
+                      </span>
+                      <span class="v-time-picker-clock__item"
+                            style="left: 34.49999999999996%; top: 23.153212482682427%;"
+                      >
+                        <span>
+                          23
+                        </span>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </transition-stub>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="v-card__actions">
+        <button type="button"
+                class="v-btn v-btn--text theme--light v-size--default"
+        >
+          <span class="v-btn__content">
+            Clear
+          </span>
+        </button>
+        <div class="spacer">
+        </div>
+        <button type="button"
+                class="v-btn v-btn--text theme--light v-size--default"
+        >
+          <span class="v-btn__content">
+            Cancel
+          </span>
+        </button>
+        <button type="button"
+                class="v-btn v-btn--text theme--light v-size--default primary--text"
+        >
+          <span class="v-btn__content">
+            OK
+          </span>
+        </button>
       </div>
     </div>
   </div>
