@@ -179,7 +179,7 @@ const controlRenderer = defineComponent({
   },
   watch: {
     isFocused(newFocus) {
-      if (newFocus && !this.disableMask) {
+      if (newFocus && this.applyMask) {
         this.mask = this.maskFunction.bind(this);
       } else {
         this.mask = undefined;
@@ -187,10 +187,10 @@ const controlRenderer = defineComponent({
     },
   },
   computed: {
-    disableMask(): boolean {
-      return typeof this.appliedOptions.disableMask == 'boolean'
-        ? this.appliedOptions.disableMask
-        : false;
+    applyMask(): boolean {
+      return typeof this.appliedOptions.mask == 'boolean'
+        ? this.appliedOptions.mask
+        : true;
     },
     dateTimeFormat(): string {
       return typeof this.appliedOptions.dateTimeFormat == 'string'
