@@ -673,7 +673,7 @@ const controlRenderer = defineComponent({
           result.push(/[0-9]/);
           index += 2;
         } else if (part == 's') {
-          result.push(/[0-5]/);
+          result.push(/[0-9]/);
           if (
             value.charAt(index) === '1' ||
             value.charAt(index) === '2' ||
