@@ -65,7 +65,7 @@ describe('DateControlRenderer.vue', () => {
     expect(wrapper.html()).toMatchSnapshot();
   });
 
-  it('should render component and match snapshot when clicked', () => {
+  it('should render component and match snapshot when clicked', async () => {
     const input = wrapper.find('input[type="text"]');
     await input.trigger('click');
     expect(wrapper.html()).toMatchSnapshot();

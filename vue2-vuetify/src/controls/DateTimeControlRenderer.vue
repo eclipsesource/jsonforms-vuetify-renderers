@@ -31,7 +31,7 @@
             v-mask="mask"
             v-on="onMenu"
             :value="inputValue"
-            @change="onInputChange"
+            @input="onInputChange"
             @focus="isFocused = true"
             @blur="isFocused = false"
           >
@@ -172,16 +172,15 @@ const controlRenderer = defineComponent({
     const mask = ref<((value: string) => (string | RegExp)[]) | undefined>(
       undefined
     );
-    const control = useVuetifyControl(
-      useJsonFormsControl(props),
-      (value) => value || undefined
-    );
-    return { ...control, showMenu, mask, t };
+    const adaptValue = (value: any) => value || undefined;
+
+    const control = useVuetifyControl(useJsonFormsControl(props), adaptValue);
+    return { ...control, showMenu, mask, t, adaptValue };
   },
   watch: {
     isFocused(newFocus) {
       if (newFocus) {
-        this.mask = this.maskFunction;
+        this.mask = this.maskFunction.bind(this);
       } else {
         this.mask = undefined;
       }
@@ -353,17 +352,19 @@ const controlRenderer = defineComponent({
       const value = this.control.data;
 
       const date = parseDateTime(value, this.formats);
-      return date ? date.format('YYYY-MM-DD') : value;
+      // show only valid values
+      return date ? date.format('YYYY-MM-DD') : undefined;
     },
     timePickerValue(): string | undefined {
       const value = this.control.data;
 
       const time = parseDateTime(value, this.formats);
+      // show only valid values
       return time
         ? this.useSeconds
           ? time.format('HH:mm:ss')
           : time.format('HH:mm')
-        : value;
+        : undefined;
     },
     clearLabel(): string {
       const label =
@@ -392,7 +393,11 @@ const controlRenderer = defineComponent({
   methods: {
     onInputChange(value: string): void {
       const date = parseDateTime(value, this.dateTimeFormat);
-      this.onChange(date ? date.format(this.dateTimeSaveFormat) : value);
+      const newdata = date ? date.format(this.dateTimeSaveFormat) : value;
+      if (this.adaptValue(newdata) !== this.control.data) {
+        // only invoke onChange when values are different since v-mask is also listening on input which lead to loop
+        this.onChange(newdata);
+      }
     },
     onPickerChange(dateValue: string, timeValue: string): void {
       const date = parseDateTime(dateValue, 'YYYY-MM-DD');
@@ -422,155 +427,308 @@ const controlRenderer = defineComponent({
         /([^YMDHhmsAaSZ]*)(YYYY|YY|MMMM|MMM|MM|M|DD|D|hh?|HH?|mm?|ss?|a|A|SSS|Z)/
       );
 
-      let index = -1;
-      const numbers = value?.replace(/[^0-9]/g, '');
+      let index = 0;
 
       let result: (string | RegExp)[] = [];
       for (const part of parts) {
-        if (part && part !== '') {
-          if (part == 'YYYY') {
-            result.push(/[0-9]/);
-            result.push(/[0-9]/);
-            result.push(/[0-9]/);
-            result.push(/[0-9]/);
-            index += 4;
-          } else if (part == 'YY') {
-            result.push(/[0-9]/);
-            result.push(/[0-9]/);
-            index += 2;
-          } else if (part == 'M') {
-            result.push(/[1]/);
-            result.push(/[0-2]/);
-            index += 2;
-          } else if (part == 'MM') {
-            result.push(/[0-1]/);
-            index += 1;
-            result.push(numbers.charAt(index) === '0' ? /[1-9]/ : /[0-2]/);
-            index += 1;
-          } else if (part == 'MMM') {
-            let regex = '(';
-            for (let i = 0; i <= 11; i++) {
-              regex += dayjs().month(0).format('MMM');
-              if (i < 11) {
-                regex += '|';
-              }
-            }
-            regex += ')';
-            result.push(new RegExp(regex));
-          } else if (part == 'MMMM') {
-            let regex = '(';
-            for (let i = 0; i <= 11; i++) {
-              regex += dayjs().month(0).format('MMMM');
-              if (i < 11) {
-                regex += '|';
-              }
-            }
-            regex += ')';
-            result.push(new RegExp(regex));
-          } else if (part == 'D') {
-            result.push(/[1-3]/);
-            index += 1;
-            result.push(numbers.charAt(index) === '3' ? /[0-1]/ : /[0-9]/);
-            index += 1;
-          } else if (part == 'DD') {
-            result.push(/[0-3]/);
-            index += 1;
-            result.push(
-              numbers.charAt(index) === '3'
-                ? /[0-1]/
-                : numbers.charAt(index) === '0'
-                ? /[1-9]/
-                : /[0-9]/
-            );
-            index += 1;
-          } else if (part == 'H') {
-            result.push(/[0-9]/);
-            index += 1;
-            if (numbers.charAt(index) === '1') {
-              result.push(/[0-9]/);
+        if (!part || part === '') {
+          continue;
+        }
+        if (index > value.length) {
+          break;
+        }
+        if (part == 'YYYY') {
+          result.push(/[0-9]/);
+          result.push(/[0-9]/);
+          result.push(/[0-9]/);
+          result.push(/[0-9]/);
+          index += 4;
+        } else if (part == 'YY') {
+          result.push(/[0-9]/);
+          result.push(/[0-9]/);
+          index += 2;
+        } else if (part == 'M') {
+          result.push(/[1]/);
+          if (value.charAt(index) === '1') {
+            if (
+              value.charAt(index + 1) == '0' ||
+              value.charAt(index + 1) == '1' ||
+              value.charAt(index + 1) == '2'
+            ) {
+              result.push(/[0-2]/);
               index += 1;
-            } else if (numbers.charAt(index) === '2') {
+            } else if (value.charAt(index + 1) === '') {
+              result.push(/[0-2]?/);
+            }
+          }
+          index += 1;
+        } else if (part == 'MM') {
+          result.push(/[0-1]/);
+          result.push(value.charAt(index) === '0' ? /[1-9]/ : /[0-2]/);
+          index += 2;
+        } else if (part == 'MMM') {
+          let increment = 0;
+          for (let position = 0; position <= 2; position++) {
+            let regex: string | undefined = undefined;
+            for (let i = 0; i <= 11; i++) {
+              const month = dayjs().month(i).format('MMM');
+              if (
+                value.charAt(index + position) === month.charAt(position) ||
+                value.charAt(index + position) === ''
+              ) {
+                if (regex === undefined) {
+                  regex = '(';
+                } else {
+                  regex += '|';
+                }
+                regex += month.charAt(position);
+              }
+            }
+            if (regex) {
+              regex += ')';
+              result.push(new RegExp(regex));
+              increment++;
+            } else {
+              break;
+            }
+          }
+          index += increment;
+        } else if (part == 'MMMM') {
+          let increment = 0;
+          let maxLength = 0;
+          let months: string[] = [];
+
+          for (let i = 0; i <= 11; i++) {
+            const month = dayjs().month(i).format('MMMM');
+            months.push(month);
+            if (month.length > maxLength) {
+              maxLength = month.length;
+            }
+          }
+
+          for (let position = 0; position < maxLength; position++) {
+            let regex: string | undefined = undefined;
+            for (let i = 0; i <= 11; i++) {
+              const month = months[i];
+              if (
+                value.charAt(index + position) == month.charAt(position) ||
+                value.charAt(index + position) === ''
+              ) {
+                if (regex === undefined) {
+                  regex = '(';
+                } else {
+                  regex += '|';
+                }
+                regex += month.charAt(position);
+              }
+            }
+            if (regex) {
+              regex += ')';
+              result.push(new RegExp(regex));
+              increment++;
+            } else {
+              break;
+            }
+          }
+          index += increment;
+        } else if (part == 'D') {
+          result.push(/[1-3]/);
+          if (
+            value.charAt(index) === '1' ||
+            value.charAt(index) === '2' ||
+            value.charAt(index) === '3'
+          ) {
+            if (value.charAt(index) === '3') {
+              if (
+                value.charAt(index + 1) === '0' ||
+                value.charAt(index + 1) === '1'
+              ) {
+                result.push(/[0-1]/);
+                index += 1;
+              } else if (value.charAt(index + 1) === '') {
+                result.push(/[0-1]?/);
+              }
+            } else {
+              if (
+                value.charAt(index + 1) === '0' ||
+                value.charAt(index + 1) === '1' ||
+                value.charAt(index + 1) === '2' ||
+                value.charAt(index + 1) === '3' ||
+                value.charAt(index + 1) === '4' ||
+                value.charAt(index + 1) === '5' ||
+                value.charAt(index + 1) === '6' ||
+                value.charAt(index + 1) === '7' ||
+                value.charAt(index + 1) === '8' ||
+                value.charAt(index + 1) === '9'
+              ) {
+                result.push(/[0-9]/);
+                index += 1;
+              } else if (value.charAt(index + 1) === '') {
+                result.push(/[0-9]?/);
+              }
+            }
+          }
+          index += 1;
+        } else if (part == 'DD') {
+          result.push(/[0-3]/);
+          result.push(
+            value.charAt(index) === '3'
+              ? /[0-1]/
+              : value.charAt(index) === '0'
+              ? /[1-9]/
+              : /[0-9]/
+          );
+          index += 2;
+        } else if (part == 'H') {
+          result.push(/[0-2]/);
+          if (value.charAt(index) === '2') {
+            if (
+              value.charAt(index + 1) === '0' ||
+              value.charAt(index + 1) === '1' ||
+              value.charAt(index + 1) === '2' ||
+              value.charAt(index + 1) === '3'
+            ) {
               result.push(/[0-3]/);
               index += 1;
+            } else if (value.charAt(index + 1) === '') {
+              result.push(/[0-3]?/);
             }
-          } else if (part == 'HH') {
-            result.push(/[0-2]/);
-            index += 1;
-            result.push(numbers.charAt(index) === '2' ? /[0-3]/ : /[0-9]/);
-            index += 1;
-          } else if (part == 'h') {
-            result.push(/[1]/);
-            result.push(/[0-2]/);
-            index += 2;
-          } else if (part == 'hh') {
-            result.push(/[0-1]/);
-            index += 1;
-            result.push(numbers.charAt(index) === '0' ? /[1-9]/ : /[0-2]/);
-            index += 1;
-          } else if (part == 'm') {
-            result.push(/[0-9]/);
-            index += 1;
+          } else if (value.charAt(index) === '1') {
             if (
-              numbers.charAt(index) === '1' ||
-              numbers.charAt(index) === '2' ||
-              numbers.charAt(index) === '3' ||
-              numbers.charAt(index) === '4' ||
-              numbers.charAt(index) === '5'
+              value.charAt(index + 1) === '0' ||
+              value.charAt(index + 1) === '1' ||
+              value.charAt(index + 1) === '2' ||
+              value.charAt(index + 1) === '3' ||
+              value.charAt(index + 1) === '4' ||
+              value.charAt(index + 1) === '5' ||
+              value.charAt(index + 1) === '6' ||
+              value.charAt(index + 1) === '7' ||
+              value.charAt(index + 1) === '8' ||
+              value.charAt(index + 1) === '9'
             ) {
               result.push(/[0-9]/);
               index += 1;
+            } else if (value.charAt(index + 1) === '') {
+              result.push(/[0-9]?/);
             }
-          } else if (part == 'mm') {
-            result.push(/[0-5]/);
-            result.push(/[0-9]/);
-            index += 2;
-          } else if (part == 's') {
-            result.push(/[0-9]/);
-            index += 1;
-            if (
-              numbers.charAt(index) === '1' ||
-              numbers.charAt(index) === '2' ||
-              numbers.charAt(index) === '3' ||
-              numbers.charAt(index) === '4' ||
-              numbers.charAt(index) === '5'
-            ) {
-              result.push(/[0-9]/);
-              index += 1;
-            }
-          } else if (part == 'ss') {
-            result.push(/[0-5]/);
-            result.push(/[0-9]/);
-            index += 2;
-          } else if (part == 'a') {
-            result.push(/a|p/);
-            result.push('m');
-          } else if (part == 'A') {
-            result.push(/A|P/);
-            result.push('M');
-          } else if (part == 'Z') {
-            //GMT-12 to GMT+14
-            result.push(/\+|-/);
-            result.push(/[0-1]/);
-            index += 1;
-            if (value.includes('-0') || value.includes('+0')) {
-              result.push(/[0-9]/);
-              index += 1;
-            } else if (value.includes('-1') || value.includes('+1')) {
-              result.push(value.includes('+1') ? /[0-4]/ : /[0-2]/);
-              index += 1;
-            }
-            result.push(':');
-            result.push(/[0-5]/);
-            result.push(/[0-9]/);
-            index += 2;
-          } else if (part == 'SSS') {
-            result.push(/[0-9]/);
-            result.push(/[0-9]/);
-            result.push(/[0-9]/);
-            index += 3;
-          } else {
-            result.push(part);
           }
+          index += 1;
+        } else if (part == 'HH') {
+          result.push(/[0-2]/);
+          result.push(value.charAt(index) === '2' ? /[0-3]/ : /[0-9]/);
+          index += 2;
+        } else if (part == 'h') {
+          result.push(/[1]/);
+          if (value.charAt(index) === '1') {
+            if (
+              value.charAt(index + 1) == '0' ||
+              value.charAt(index + 1) == '1' ||
+              value.charAt(index + 1) == '2'
+            ) {
+              result.push(/[0-2]/);
+              index += 1;
+            } else if (value.charAt(index + 1) === '') {
+              result.push(/[0-2]?/);
+            }
+          }
+          index += 1;
+        } else if (part == 'hh') {
+          result.push(/[0-1]/);
+          result.push(value.charAt(index) === '0' ? /[1-9]/ : /[0-2]/);
+          index += 2;
+        } else if (part == 'm') {
+          result.push(/[0-5]/);
+          if (
+            value.charAt(index) === '1' ||
+            value.charAt(index) === '2' ||
+            value.charAt(index) === '3' ||
+            value.charAt(index) === '4' ||
+            value.charAt(index) === '5'
+          ) {
+            if (
+              value.charAt(index + 1) === '0' ||
+              value.charAt(index + 1) === '1' ||
+              value.charAt(index + 1) === '2' ||
+              value.charAt(index + 1) === '3' ||
+              value.charAt(index + 1) === '4' ||
+              value.charAt(index + 1) === '5' ||
+              value.charAt(index + 1) === '6' ||
+              value.charAt(index + 1) === '7' ||
+              value.charAt(index + 1) === '8' ||
+              value.charAt(index + 1) === '9'
+            ) {
+              result.push(/[0-9]/);
+              index += 1;
+            } else if (value.charAt(index + 1) === '') {
+              result.push(/[0-9]?/);
+            }
+          }
+          index += 1;
+        } else if (part == 'mm') {
+          result.push(/[0-5]/);
+          result.push(/[0-9]/);
+          index += 2;
+        } else if (part == 's') {
+          result.push(/[0-5]/);
+          if (
+            value.charAt(index) === '1' ||
+            value.charAt(index) === '2' ||
+            value.charAt(index) === '3' ||
+            value.charAt(index) === '4' ||
+            value.charAt(index) === '5'
+          ) {
+            if (
+              value.charAt(index + 1) === '0' ||
+              value.charAt(index + 1) === '1' ||
+              value.charAt(index + 1) === '2' ||
+              value.charAt(index + 1) === '3' ||
+              value.charAt(index + 1) === '4' ||
+              value.charAt(index + 1) === '5' ||
+              value.charAt(index + 1) === '6' ||
+              value.charAt(index + 1) === '7' ||
+              value.charAt(index + 1) === '8' ||
+              value.charAt(index + 1) === '9'
+            ) {
+              result.push(/[0-9]/);
+              index += 1;
+            } else if (value.charAt(index + 1) === '') {
+              result.push(/[0-9]?/);
+            }
+          }
+          index += 1;
+        } else if (part == 'ss') {
+          result.push(/[0-5]/);
+          result.push(/[0-9]/);
+          index += 2;
+        } else if (part == 'a') {
+          result.push(/a|p/);
+          result.push('m');
+          index += 2;
+        } else if (part == 'A') {
+          result.push(/A|P/);
+          result.push('M');
+          index += 2;
+        } else if (part == 'Z') {
+          //GMT-12 to GMT+14
+          result.push(/\+|-/);
+          result.push(/[0-1]/);
+          if (value.charAt(index + 1) === '0') {
+            result.push(/[0-9]/);
+          } else if (value.charAt(index + 1) === '1') {
+            result.push(value.charAt(index) === '+' ? /[0-4]/ : /[0-2]/);
+          }
+          result.push(':');
+          result.push(/[0-5]/);
+          result.push(/[0-9]/);
+          index += 6;
+        } else if (part == 'SSS') {
+          result.push(/[0-9]/);
+          result.push(/[0-9]/);
+          result.push(/[0-9]/);
+          index += 3;
+        } else {
+          result.push(part);
+          index += part.length;
         }
       }
 
