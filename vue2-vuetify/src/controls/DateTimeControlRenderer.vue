@@ -580,7 +580,7 @@ const controlRenderer = defineComponent({
           );
           index += 2;
         } else if (part == 'H') {
-          result.push(/[0-2]/);
+          result.push(/[0-9]/);
           if (value.charAt(index) === '2') {
             if (
               value.charAt(index + 1) === '0' ||
@@ -615,10 +615,14 @@ const controlRenderer = defineComponent({
           index += 1;
         } else if (part == 'HH') {
           result.push(/[0-2]/);
-          result.push(value.charAt(index) === '2' ? /[0-3]/ : /[0-9]/);
+          if (value.charAt(index) === '0' || value.charAt(index) === '1') {
+            result.push(/[0-9]/);
+          } else if (value.charAt(index) === '2') {
+            result.push(/[0-3]/);
+          }
           index += 2;
         } else if (part == 'h') {
-          result.push(/[1]/);
+          result.push(/[1-9]/);
           if (value.charAt(index) === '1') {
             if (
               value.charAt(index + 1) == '0' ||
