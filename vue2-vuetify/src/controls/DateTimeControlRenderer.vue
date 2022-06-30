@@ -5,91 +5,93 @@
     :isFocused="isFocused"
     :appliedOptions="appliedOptions"
   >
-    <v-menu
-      ref="menu"
-      v-model="showMenu"
-      :close-on-content-click="false"
-      transition="scale-transition"
-      offset-y
-      min-width="580px"
-    >
-      <template v-slot:activator="{ on: onMenu }">
-        <v-hover v-slot="{ hover }">
-          <v-text-field
-            v-disabled-icon-focus
-            :id="control.id + '-input'"
-            :class="styles.control.input"
-            :disabled="!control.enabled"
-            :autofocus="appliedOptions.focus"
-            :placeholder="appliedOptions.placeholder"
-            :label="computedLabel"
-            :hint="control.description"
-            :persistent-hint="persistentHint()"
-            :required="control.required"
-            :error-messages="control.errors"
-            v-bind="vuetifyProps('v-text-field')"
-            v-mask="mask"
-            v-on="onMenu"
-            :value="inputValue"
-            @input="onInputChange"
-            @focus="isFocused = true"
-            @blur="isFocused = false"
+    <v-hover v-slot="{ hover }">
+      <v-text-field
+        v-disabled-icon-focus
+        :id="control.id + '-input'"
+        :class="styles.control.input"
+        :disabled="!control.enabled"
+        :autofocus="appliedOptions.focus"
+        :placeholder="appliedOptions.placeholder"
+        :label="computedLabel"
+        :hint="control.description"
+        :persistent-hint="persistentHint()"
+        :required="control.required"
+        :error-messages="control.errors"
+        v-bind="vuetifyProps('v-text-field')"
+        v-mask="mask"
+        :value="inputValue"
+        @input="onInputChange"
+        @focus="isFocused = true"
+        @blur="isFocused = false"
+      >
+        <template slot="append">
+          <v-icon v-if="hover" @click="clear">$clear</v-icon>
+        </template>
+        <template slot="prepend-inner">
+          <v-menu
+            ref="menu"
+            v-model="showMenu"
+            :close-on-content-click="false"
+            transition="scale-transition"
+            offset-y
+            min-width="580px"
           >
-            <template slot="append">
-              <v-icon v-if="hover" @click="clear">mdi-close</v-icon>
+            <template v-slot:activator="{ on: onMenu }">
+              <v-icon v-on="onMenu" tabindex="-1">mdi-calendar-clock</v-icon>
             </template>
-          </v-text-field>
-        </v-hover>
-      </template>
-      <v-card v-if="showMenu">
-        <v-row no-gutters>
-          <v-col min-width="290px" cols="auto">
-            <v-date-picker
-              v-if="showMenu"
-              :value="datePickerValue"
-              ref="datePicker"
-              v-bind="vuetifyProps('v-date-picker')"
-              :min="minDate"
-              :max="maxDate"
-            >
-            </v-date-picker>
-          </v-col>
-          <v-col min-width="290px" cols="auto">
-            <v-time-picker
-              :value="timePickerValue"
-              ref="timePicker"
-              v-bind="vuetifyProps('v-time-picker')"
-              :min="minTime"
-              :max="maxTime"
-              :use-seconds="useSeconds"
-              :format="ampm ? 'ampm' : '24hr'"
-            ></v-time-picker>
-          </v-col>
-        </v-row>
-        <v-card-actions>
-          <v-btn text @click="clear"> {{ clearLabel }} </v-btn>
-          <v-spacer></v-spacer>
-          <v-btn text @click="showMenu = false">
-            {{ cancelLabel }}
-          </v-btn>
-          <v-btn
-            text
-            color="primary"
-            @click="
-              () => {
-                onPickerChange(
-                  $refs.datePicker.inputDate,
-                  $refs.timePicker.genValue()
-                );
-                showMenu = false;
-              }
-            "
-          >
-            {{ okLabel }}
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-menu>
+            <v-card v-if="showMenu">
+              <v-row no-gutters>
+                <v-col min-width="290px" cols="auto">
+                  <v-date-picker
+                    v-if="showMenu"
+                    :value="datePickerValue"
+                    ref="datePicker"
+                    v-bind="vuetifyProps('v-date-picker')"
+                    :min="minDate"
+                    :max="maxDate"
+                  >
+                  </v-date-picker>
+                </v-col>
+                <v-col min-width="290px" cols="auto">
+                  <v-time-picker
+                    :value="timePickerValue"
+                    ref="timePicker"
+                    v-bind="vuetifyProps('v-time-picker')"
+                    :min="minTime"
+                    :max="maxTime"
+                    :use-seconds="useSeconds"
+                    :format="ampm ? 'ampm' : '24hr'"
+                  ></v-time-picker>
+                </v-col>
+              </v-row>
+              <v-card-actions>
+                <v-btn text @click="clear"> {{ clearLabel }} </v-btn>
+                <v-spacer></v-spacer>
+                <v-btn text @click="showMenu = false">
+                  {{ cancelLabel }}
+                </v-btn>
+                <v-btn
+                  text
+                  color="primary"
+                  @click="
+                    () => {
+                      onPickerChange(
+                        $refs.datePicker.inputDate,
+                        $refs.timePicker.genValue()
+                      );
+                      showMenu = false;
+                    }
+                  "
+                >
+                  {{ okLabel }}
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-menu>
+        </template>
+      </v-text-field>
+    </v-hover>
   </control-wrapper>
 </template>
 

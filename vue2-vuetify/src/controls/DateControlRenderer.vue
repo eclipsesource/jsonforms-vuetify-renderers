@@ -5,69 +5,71 @@
     :isFocused="isFocused"
     :appliedOptions="appliedOptions"
   >
-    <v-menu
-      v-model="showMenu"
-      :close-on-content-click="false"
-      transition="scale-transition"
-      offset-y
-      min-width="290px"
-    >
-      <template v-slot:activator="{ on: onMenu }">
-        <v-hover v-slot="{ hover }">
-          <v-text-field
-            v-disabled-icon-focus
-            :id="control.id + '-input'"
-            :class="styles.control.input"
-            :disabled="!control.enabled"
-            :autofocus="appliedOptions.focus"
-            :placeholder="appliedOptions.placeholder"
-            :label="computedLabel"
-            :hint="control.description"
-            :persistent-hint="persistentHint()"
-            :required="control.required"
-            :error-messages="control.errors"
-            v-bind="vuetifyProps('v-text-field')"
-            v-mask="mask"
-            v-on="onMenu"
-            :value="inputValue"
-            @input="onInputChange"
-            @focus="isFocused = true"
-            @blur="isFocused = false"
-          >
-            <template slot="append">
-              <v-icon v-if="hover" @click="clear">mdi-close</v-icon>
-            </template>
-          </v-text-field>
-        </v-hover>
-      </template>
-      <v-date-picker
-        v-if="showMenu"
-        :value="pickerValue"
-        ref="picker"
-        v-bind="vuetifyProps('v-date-picker')"
-        :min="minDate"
-        :max="maxDate"
-        :type="pickerType"
+    <v-hover v-slot="{ hover }">
+      <v-text-field
+        v-disabled-icon-focus
+        :id="control.id + '-input'"
+        :class="styles.control.input"
+        :disabled="!control.enabled"
+        :autofocus="appliedOptions.focus"
+        :placeholder="appliedOptions.placeholder"
+        :label="computedLabel"
+        :hint="control.description"
+        :persistent-hint="persistentHint()"
+        :required="control.required"
+        :error-messages="control.errors"
+        v-bind="vuetifyProps('v-text-field')"
+        v-mask="mask"
+        :value="inputValue"
+        @input="onInputChange"
+        @focus="isFocused = true"
+        @blur="isFocused = false"
       >
-        <v-btn text @click="clear"> {{ clearLabel }} </v-btn>
-        <v-spacer></v-spacer>
-        <v-btn text @click="showMenu = false">
-          {{ cancelLabel }}
-        </v-btn>
-        <v-btn
-          text
-          color="primary"
-          @click="
-            () => {
-              onPickerChange($refs.picker.inputDate);
-              showMenu = false;
-            }
-          "
-        >
-          {{ okLabel }}
-        </v-btn>
-      </v-date-picker>
-    </v-menu>
+        <template slot="append">
+          <v-icon v-if="hover" @click="clear">$clear</v-icon>
+        </template>
+        <template slot="prepend-inner">
+          <v-menu
+            v-model="showMenu"
+            :close-on-content-click="false"
+            transition="scale-transition"
+            offset-y
+            min-width="290px"
+          >
+            <template v-slot:activator="{ on: onMenu }">
+              <v-icon v-on="onMenu" tabindex="-1">mdi-calendar</v-icon>
+            </template>
+            <v-date-picker
+              v-if="showMenu"
+              :value="pickerValue"
+              ref="picker"
+              v-bind="vuetifyProps('v-date-picker')"
+              :min="minDate"
+              :max="maxDate"
+              :type="pickerType"
+            >
+              <v-btn text @click="clear"> {{ clearLabel }} </v-btn>
+              <v-spacer></v-spacer>
+              <v-btn text @click="showMenu = false">
+                {{ cancelLabel }}
+              </v-btn>
+              <v-btn
+                text
+                color="primary"
+                @click="
+                  () => {
+                    onPickerChange($refs.picker.inputDate);
+                    showMenu = false;
+                  }
+                "
+              >
+                {{ okLabel }}
+              </v-btn>
+            </v-date-picker>
+          </v-menu>
+        </template>
+      </v-text-field>
+    </v-hover>
   </control-wrapper>
 </template>
 
