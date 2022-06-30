@@ -35,13 +35,46 @@
             :close-on-content-click="false"
             transition="scale-transition"
             offset-y
-            min-width="580px"
+            :min-width="useTabLayout ? '290px' : '580px'"
           >
             <template v-slot:activator="{ on: onMenu }">
               <v-icon v-on="onMenu" tabindex="-1">mdi-calendar-clock</v-icon>
             </template>
             <v-card v-if="showMenu">
-              <v-row no-gutters>
+              <v-tabs v-if="useTabLayout" v-model="activeTab">
+                <v-tab key="date" href="#date" class="primary--text">
+                  <v-icon>mdi-calendar</v-icon>
+                </v-tab>
+                <v-spacer></v-spacer>
+                <v-tab key="time" href="#time" class="primary--text">
+                  <v-icon>mdi-clock-outline</v-icon>
+                </v-tab>
+
+                <v-tab-item value="date"
+                  ><v-date-picker
+                    v-if="showMenu"
+                    :value="datePickerValue"
+                    ref="datePicker"
+                    v-bind="vuetifyProps('v-date-picker')"
+                    :min="minDate"
+                    :max="maxDate"
+                    @input="activeTab = 'time'"
+                  >
+                  </v-date-picker>
+                </v-tab-item>
+                <v-tab-item value="time"
+                  ><v-time-picker
+                    :value="timePickerValue"
+                    ref="timePicker"
+                    v-bind="vuetifyProps('v-time-picker')"
+                    :min="minTime"
+                    :max="maxTime"
+                    :use-seconds="useSeconds"
+                    :format="ampm ? 'ampm' : '24hr'"
+                  ></v-time-picker>
+                </v-tab-item>
+              </v-tabs>
+              <v-row no-gutters v-else>
                 <v-col min-width="290px" cols="auto">
                   <v-date-picker
                     v-if="showMenu"
@@ -122,6 +155,9 @@ import {
   VCard,
   VCardTitle,
   VCardActions,
+  VTabs,
+  VTab,
+  VTabItem,
 } from 'vuetify/lib';
 import { parseDateTime, useTranslator, useVuetifyControl } from '../util';
 import { defineComponent } from '../vue';
@@ -163,6 +199,9 @@ const controlRenderer = defineComponent({
     VCard,
     VCardTitle,
     VCardActions,
+    VTabs,
+    VTab,
+    VTabItem,
   },
   directives: { DisabledIconFocus, Mask },
   props: {
@@ -171,15 +210,22 @@ const controlRenderer = defineComponent({
   setup(props: RendererProps<ControlElement>) {
     const t = useTranslator();
     const showMenu = ref(false);
+    const activeTab = ref('date');
     const mask = ref<((value: string) => (string | RegExp)[]) | undefined>(
       undefined
     );
     const adaptValue = (value: any) => value || undefined;
 
     const control = useVuetifyControl(useJsonFormsControl(props), adaptValue);
-    return { ...control, showMenu, mask, t, adaptValue };
+    return { ...control, showMenu, mask, t, adaptValue, activeTab };
   },
   watch: {
+    showMenu(show) {
+      if (!show) {
+        // menu is closing then reset the activeTab
+        this.activeTab = 'date';
+      }
+    },
     isFocused(newFocus) {
       if (newFocus && this.applyMask) {
         this.mask = this.maskFunction.bind(this);
@@ -193,6 +239,12 @@ const controlRenderer = defineComponent({
       return typeof this.appliedOptions.mask == 'boolean'
         ? this.appliedOptions.mask
         : true;
+    },
+    useTabLayout(): boolean {
+      if (this.$vuetify.breakpoint.smAndDown) {
+        return true;
+      }
+      return false;
     },
     dateTimeFormat(): string {
       return typeof this.appliedOptions.dateTimeFormat == 'string'
