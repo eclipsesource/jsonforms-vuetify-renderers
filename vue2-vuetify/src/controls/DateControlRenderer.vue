@@ -37,7 +37,7 @@
             min-width="290px"
           >
             <template v-slot:activator="{ on: onMenu }">
-              <v-icon v-on="onMenu" tabindex="-1">mdi-calendar</v-icon>
+              <v-icon v-on="onMenu" tabindex="-1">{{ pickerIcon }}</v-icon>
             </template>
             <v-date-picker
               v-if="showMenu"
@@ -156,6 +156,11 @@ const controlRenderer = defineComponent({
       return typeof this.appliedOptions.mask == 'boolean'
         ? this.appliedOptions.mask
         : true;
+    },
+    pickerIcon(): string {
+      return typeof this.appliedOptions.pickerIcon == 'string'
+        ? this.appliedOptions.pickerIcon
+        : 'mdi-calendar';
     },
     dateFormat(): string {
       return typeof this.appliedOptions.dateFormat == 'string'
