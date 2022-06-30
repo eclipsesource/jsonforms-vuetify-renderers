@@ -38,7 +38,7 @@
             :min-width="useTabLayout ? '290px' : '580px'"
           >
             <template v-slot:activator="{ on: onMenu }">
-              <v-icon v-on="onMenu" tabindex="-1">mdi-calendar-clock</v-icon>
+              <v-icon v-on="onMenu" tabindex="-1">{{ pickerIcon }}</v-icon>
             </template>
             <v-card v-if="showMenu">
               <v-tabs v-if="useTabLayout" v-model="activeTab">
@@ -239,6 +239,11 @@ const controlRenderer = defineComponent({
       return typeof this.appliedOptions.mask == 'boolean'
         ? this.appliedOptions.mask
         : true;
+    },
+    pickerIcon(): string {
+      return typeof this.appliedOptions.pickerIcon == 'string'
+        ? this.appliedOptions.pickerIcon
+        : 'mdi-calendar-clock';
     },
     useTabLayout(): boolean {
       if (this.$vuetify.breakpoint.smAndDown) {
