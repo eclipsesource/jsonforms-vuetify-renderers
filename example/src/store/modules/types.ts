@@ -20,6 +20,8 @@ export interface AppState {
       initCollapsed: boolean;
       breakHorizontal: false | string;
       hideAvatar: boolean;
+      addArrayItemButtonPosition: 'BottomLeft' | 'TopRight';
+      showArraySummaryValidation: boolean;
     };
     renderers: JsonFormsRendererRegistryEntry[];
     cells: JsonFormsCellRendererRegistryEntry[];

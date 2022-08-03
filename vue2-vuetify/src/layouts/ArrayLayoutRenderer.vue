@@ -1,24 +1,24 @@
 <template>
-  <v-card v-if="control.visible" :class="styles.arrayList.root" elevation="0">
+  <v-card v-if="control.visible" :class="styles.arrayList.root">
     <v-card-title>
       <v-toolbar flat :class="styles.arrayList.toolbar">
         <v-toolbar-title :class="styles.arrayList.label">{{
           computedLabel
         }}</v-toolbar-title>
         <validation-icon
-          v-if="control.childErrors.length > 0"
+          v-if="control.childErrors.length > 0 && showArraySummaryValidation"
           :errors="control.childErrors"
         />
         <v-spacer></v-spacer>
 
-        <v-tooltip bottom>
+        <v-tooltip v-if="addArrayItemButtonPosition == 'TopRight'" bottom>
           <template v-slot:activator="{ on: onTooltip }">
             <v-btn
               fab
               text
               elevation="0"
               small
-              :aria-label="`Add to ${control.label}`"
+              :aria-label="translatedAddArrayItemAriaLabel"
               v-on="onTooltip"
               :class="styles.arrayList.addButton"
               :disabled="
@@ -33,12 +33,16 @@
               <v-icon>mdi-plus</v-icon>
             </v-btn>
           </template>
-          {{ `Add to ${control.label}` }}
+          {{ translatedAddArrayItemAriaLabel }}
         </v-tooltip>
       </v-toolbar>
     </v-card-title>
     <v-card-text>
-      <v-container justify-space-around align-content-center>
+      <v-container
+        justify-space-around
+        align-content-center
+        :class="styles.arrayList.container"
+      >
         <v-row justify="center">
           <v-expansion-panels
             accordion
@@ -51,7 +55,7 @@
               :class="styles.arrayList.item"
             >
               <v-expansion-panel-header :class="styles.arrayList.itemHeader">
-                <v-container py-0>
+                <v-container py-0 :class="styles.arrayList.itemContainer">
                   <v-row
                     :style="`display: grid; grid-template-columns: ${
                       !hideAvatar ? 'min-content' : ''
@@ -179,6 +183,33 @@
         No data
       </v-container></v-card-text
     >
+    <v-card-actions
+      v-if="addArrayItemButtonPosition == 'BottomLeft'"
+      class="pb-8"
+    >
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on: onTooltip }">
+          <v-btn
+            color="primary"
+            rounded
+            :aria-label="translatedAddArrayItemAriaLabel"
+            v-on="onTooltip"
+            :class="styles.arrayList.addButton"
+            :disabled="
+              !control.enabled ||
+              (appliedOptions.restrict &&
+                arraySchema !== undefined &&
+                arraySchema.maxItems !== undefined &&
+                control.data.length >= arraySchema.maxItems)
+            "
+            @click="addButtonClick"
+          >
+            <v-icon>mdi-plus</v-icon> {{ translatedAddArrayItemLabel }}
+          </v-btn>
+        </template>
+        {{ translatedAddArrayItemAriaLabel }}
+      </v-tooltip>
+    </v-card-actions>
     <v-dialog
       :value="suggestToDelete !== null"
       max-width="600"
@@ -233,7 +264,7 @@ import {
   useJsonFormsArrayControl,
   RendererProps,
 } from '@jsonforms/vue2';
-import { useNested, useVuetifyArrayControl } from '../util';
+import { useNested, useVuetifyArrayControl, useTranslator } from '../util';
 import {
   VCard,
   VCardActions,
@@ -303,11 +334,30 @@ const controlRenderer = defineComponent({
     const suggestToDelete = ref<null | number>(null);
     // indicate to our child renderers that we are increasing the "nested" level
     useNested('array');
+    const t = useTranslator();
+    const defaultAddNewItemLabelText = 'Add new';
+    const defaultAddNewItemAriaLabelText = 'Add to';
+    // Apply TopRight as the default add array item button position
+    const addArrayItemButtonPosition = computed(() => {
+      return control.appliedOptions.value?.addArrayItemButtonPosition ===
+        'BottomLeft'
+        ? 'BottomLeft'
+        : 'TopRight';
+    });
+    // Always show array summary validation unless false is passed
+    const showArraySummaryValidation = computed(
+      () => control.appliedOptions.value.showArraySummaryValidation ?? true
+    );
     return {
       ...control,
+      addArrayItemButtonPosition,
       currentlyExpanded,
+      defaultAddNewItemLabelText,
+      defaultAddNewItemAriaLabelText,
       expansionPanelsProps,
+      showArraySummaryValidation,
       suggestToDelete,
+      t,
     };
   },
   computed: {
@@ -334,6 +384,35 @@ const controlRenderer = defineComponent({
     },
     hideAvatar(): boolean {
       return !!this.appliedOptions.hideAvatar;
+    },
+    translatedAddArrayItemLabel(): string | undefined {
+      if (this.uischema.options?.i18n) {
+        return this.t(
+          this.uischema.options.i18n,
+          this.defaultAddNewItemLabelText
+        );
+      }
+      return this.t(
+        this.defaultAddNewItemLabelText,
+        this.defaultAddNewItemLabelText
+      );
+    },
+    translatedAddArrayItemAriaLabel(): string | undefined {
+      if (this.uischema.options?.i18n) {
+        return this.t(
+          // this does not make a lot of sense without a translation function that
+          // supports value substitution
+          this.uischema.options.i18n,
+          `${this.defaultAddNewItemAriaLabelText} ${this.control.label}`,
+          {
+            label: this.control.label,
+          }
+        );
+      }
+      return this.t(
+        `${this.defaultAddNewItemAriaLabelText} ${this.control.label}`,
+        `${this.defaultAddNewItemAriaLabelText} ${this.control.label}`
+      );
     },
   },
   methods: {
