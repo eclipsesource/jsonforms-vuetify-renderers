@@ -207,12 +207,12 @@
             <v-tooltip bottom>
               <template v-slot:activator="{ on: onTooltip }">
                 <v-switch
-                  v-model="showArraySummaryValidation"
-                  label="Show array summary validation"
+                  v-model="hideArraySummaryValidation"
+                  label="Hide array summary validation"
                   v-on="onTooltip"
                 ></v-switch>
               </template>
-              If true, a summary of validation errors is shown on the array title
+              If true, the summary of validation errors in arrays is hidden
             </v-tooltip>
           </v-col>
         </v-row>
@@ -230,34 +230,6 @@
             </v-tooltip>
           </v-col>
         </v-row>
-        <v-container>
-          <v-row>
-            <v-row><v-col>Break horizontal layouts</v-col></v-row>
-            <v-col>
-              <v-select
-                outlined
-                persistent-hint
-                dense
-                v-model="breakHorizontal"
-                :items="breakHorizontals"
-              ></v-select>
-            </v-col>
-          </v-row>
-        </v-container>
-        <v-container>
-          <v-row>
-            <v-row><v-col>Add new array item button position</v-col></v-row>
-            <v-col>
-              <v-select
-                outlined
-                persistent-hint
-                dense
-                v-model="addArrayItemButtonPosition"
-                :items="addArrayItemButtonPositions"
-              ></v-select>
-            </v-col>
-          </v-row>
-        </v-container>
         <v-row>
           <v-col>
             <v-tooltip bottom>
@@ -272,6 +244,20 @@
             </v-tooltip>
           </v-col>
         </v-row>
+        <v-container>
+          <v-row>
+            <v-row><v-col>Break horizontal layouts</v-col></v-row>
+            <v-col>
+              <v-select
+                outlined
+                persistent-hint
+                dense
+                v-model="breakHorizontal"
+                :items="breakHorizontals"
+              ></v-select>
+            </v-col>
+          </v-row>
+        </v-container>
       </v-container>
 
       <v-divider />
@@ -297,11 +283,8 @@ export default {
     readonly: sync('app/jsonforms@readonly'),
     locale: sync('app/jsonforms@locale'),
     hideAvatar: sync('app/jsonforms@config.hideAvatar'),
-    addArrayItemButtonPosition: sync(
-      'app/jsonforms@config.addArrayItemButtonPosition'
-    ),
-    showArraySummaryValidation: sync(
-      'app/jsonforms@config.showArraySummaryValidation'
+    hideArraySummaryValidation: sync(
+      'app/jsonforms@config.hideArraySummaryValidation'
     ),
   },
   data: function () {
@@ -323,10 +306,6 @@ export default {
         { text: 'md', value: 'md' },
         { text: 'lg', value: 'lg' },
         { text: 'xl', value: 'xl' },
-      ],
-      addArrayItemButtonPositions: [
-        { text: 'Bottom left', value: 'BottomLeft' },
-        { text: 'Top right', value: 'TopRight' },
       ],
     };
   },
