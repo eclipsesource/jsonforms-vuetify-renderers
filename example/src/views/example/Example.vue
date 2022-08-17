@@ -244,7 +244,6 @@ export default {
   computed: {
     renderers: sync('app/jsonforms@renderers'),
     allRenderers(): JsonFormsRendererRegistryEntry[] {
-      console.log('renderers', this.renderers);
       return (this.example?.input.renderers ?? []).concat(this.renderers);
     },
     cells: sync('app/jsonforms@cells'),
