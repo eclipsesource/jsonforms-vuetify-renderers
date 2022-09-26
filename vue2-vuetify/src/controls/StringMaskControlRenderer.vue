@@ -191,8 +191,8 @@ const controlRenderer = defineComponent({
           .map((char, index) => {
             if (this.mask.length > index) {
               const replacer = this.maskReplacers[this.mask[index]];
-              // #, A, N, ?, X are default unless the replacer is null (override)
-              return (['#', 'A', 'N', '?', 'X'].includes(this.mask[index]) &&
+              // #, A, N, X are default unless the replacer is null (override)
+              return (['#', 'A', 'N', 'X'].includes(this.mask[index]) &&
                 replacer === undefined) ||
                 replacer
                 ? char
@@ -253,7 +253,10 @@ const controlRenderer = defineComponent({
           delete replacers[key];
         }
       });
-
+      if (replacers['?'] === undefined) {
+        //remove optional support because of complications when trying to unmask the input
+        replacers['?'] = null;
+      }
       return replacers;
     },
     maskFilter() {

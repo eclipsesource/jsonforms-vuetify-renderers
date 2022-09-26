@@ -22,10 +22,6 @@
     {
       "placeholder": "X",
       "format": "Any symbol"
-    },
-    {
-      "placeholder": "?",
-      "format": "Optional (next character)"
     }
   ]
 }
