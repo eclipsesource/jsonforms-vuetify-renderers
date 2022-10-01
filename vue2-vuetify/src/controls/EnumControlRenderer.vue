@@ -21,7 +21,7 @@
         :clearable="hover"
         :value="control.data"
         :items="control.options"
-        item-text="label"
+        :item-text="(item) => t(item.label, item.label)"
         item-value="value"
         v-bind="vuetifyProps('v-select')"
         @change="onChange"
@@ -46,7 +46,7 @@ import {
   RendererProps,
 } from '@jsonforms/vue2';
 import { default as ControlWrapper } from './ControlWrapper.vue';
-import { useVuetifyControl } from '../util';
+import { useVuetifyControl, useTranslator } from '../util';
 import { VSelect, VHover } from 'vuetify/lib';
 import { DisabledIconFocus } from './directives';
 
@@ -64,10 +64,15 @@ const controlRenderer = defineComponent({
     ...rendererProps<ControlElement>(),
   },
   setup(props: RendererProps<ControlElement>) {
-    return useVuetifyControl(
-      useJsonFormsEnumControl(props),
-      (value) => value || undefined
-    );
+    const t = useTranslator();
+
+    return {
+      ...useVuetifyControl(
+        useJsonFormsEnumControl(props),
+        (value) => value || undefined
+      ),
+      t,
+    };
   },
 });
 
