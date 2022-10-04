@@ -1,7 +1,4 @@
 {
-  "packages": [
-    "vue2-vuetify",
-    "example"
-  ],
+  "packages": ["vue2-vuetify", "vue2-vuetify-webcomponent", "example"],
   "version": "3.0.0-rc.1"
 }

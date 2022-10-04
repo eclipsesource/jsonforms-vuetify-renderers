@@ -1,0 +1,6 @@
+{
+  "restrict": true,
+  "trim": false,
+  "showUnfocusedDescription": false,
+  "hideRequiredAsterisk": true
+}

@@ -1,0 +1,84 @@
+{
+  "type": "object",
+  "definitions": {
+    "address": {
+      "type": "object",
+      "$id": "#/definitions/address",
+      "properties": {
+        "street": { "type": "string", "i18n": "address.street" },
+        "city": { "type": "string", "i18n": "address.city" },
+        "country": { "$ref": "#/definitions/address/definitions/country" },
+        "number": {
+          "type": "string",
+          "pattern": "[0-9]*",
+          "maxLength": 6,
+          "i18n": "address.number"
+        },
+        "postalCode": {
+          "type": "string",
+          "pattern": "[0-9]*",
+          "maxLength": 5,
+          "i18n": "address.postal-code"
+        }
+      },
+      "required": ["street", "city", "country"],
+      "definitions": {
+        "country": {
+          "type": "string",
+          "enum": ["USA", "Germany", "Bulgaria"],
+          "i18n": "address.country"
+        }
+      }
+    }
+  },
+  "properties": {
+    "name": {
+      "type": "string",
+      "minLength": 3,
+      "description": "Please enter your name",
+      "i18n": "name"
+    },
+    "vegetarian": {
+      "type": "boolean",
+      "i18n": "vegetarian"
+    },
+    "birthDate": {
+      "type": "string",
+      "format": "date",
+      "i18n": "birth"
+    },
+    "nationality": {
+      "type": "string",
+      "enum": ["DE", "IT", "JP", "US", "RU", "Other"],
+      "i18n": "nationality"
+    },
+    "personalData": {
+      "type": "object",
+      "properties": {
+        "age": {
+          "type": "integer",
+          "description": "Please enter your age.",
+          "i18n": "personal-data.age"
+        },
+        "height": {
+          "type": "number",
+          "i18n": "height"
+        },
+        "drivingSkill": {
+          "type": "number",
+          "maximum": 10,
+          "minimum": 1,
+          "default": 7,
+          "i18n": "personal-data.driving"
+        }
+      },
+      "required": ["age", "height"]
+    },
+    "occupation": {
+      "type": "string",
+      "i18n": "occupation"
+    },
+    "home_address": { "$ref": "#/definitions/address" }
+  },
+  "required": ["occupation", "nationality"]
+}

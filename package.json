@@ -7,6 +7,8 @@
     "watch": "cd vue2-vuetify && npm run watch",
     "test": "lerna run --scope \"**/*vuetify\" test",
     "clean": "lerna run clean",
+    "wc:serve": "cd vue2-vuetify-webcomponent && npm run serve",
+    "wc:build": "cd vue2-vuetify-webcomponent && npm run build",
     "example:serve": "cd example && npm run serve",
     "example:build": "cd example && npm run build"
   },

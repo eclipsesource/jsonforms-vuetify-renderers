@@ -1,0 +1,59 @@
+[
+  {
+    "tester": "(jsonSchema, schemaPath, path) => { return jsonSchema.$id === '#/definitions/address' ? 2 : NOT_APPLICABLE; }",
+    "uischema": {
+      "type": "HorizontalLayout",
+      "elements": [
+        {
+          "type": "Control",
+          "scope": "#/properties/number"
+        },
+        {
+          "type": "Control",
+          "scope": "#/properties/street"
+        },
+        {
+          "type": "Control",
+          "scope": "#/properties/city"
+        },
+        {
+          "type": "Control",
+          "scope": "#/properties/country"
+        },
+        {
+          "type": "Control",
+          "scope": "#/properties/postalCode"
+        }
+      ],
+      "options": {
+        "vuetify": {
+          "v-row": {
+            "no-gutters": true
+          },
+          "v-col": [
+            {
+              "cols": 12,
+              "md": 1
+            },
+            {
+              "cols": 12,
+              "md": 6
+            },
+            {
+              "cols": 12,
+              "md": 2
+            },
+            {
+              "cols": 12,
+              "md": 2
+            },
+            {
+              "cols": 12,
+              "md": 1
+            }
+          ]
+        }
+      }
+    }
+  }
+]

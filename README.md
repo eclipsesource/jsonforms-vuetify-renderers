@@ -28,6 +28,8 @@ Use Node 12+
 - Remove build artifacts: `npm run clean`
 - Run example app: `npm run example:serve`
 - Build example app for production: `npm run example:build`
+- Run Vuetify JsonForms Web Component: `npm run wc:serve`
+- Build Vuetify JsonForms Web Component for production: `npm run wc:build`
 
 Recommendations:
 
