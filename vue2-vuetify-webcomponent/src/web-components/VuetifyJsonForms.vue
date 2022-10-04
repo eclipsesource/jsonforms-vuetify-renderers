@@ -187,7 +187,7 @@ const vuetifyFormWc = defineComponent({
     readonly: {
       required: false,
       type: String,
-      default: false,
+      default: 'false',
     },
     uischemas: {
       required: false,
