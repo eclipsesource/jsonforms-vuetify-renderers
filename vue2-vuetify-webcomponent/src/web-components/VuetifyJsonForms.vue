@@ -61,7 +61,7 @@ import LoadScript from 'vue-plugin-load-script';
 import { VApp, VSheet } from 'vuetify/lib';
 import { VuetifyPreset } from 'vuetify/types/services/presets';
 import { ResolvedJsonForms } from '../components';
-import { createTranslator, VuetifyFormConfig } from '../core';
+import { createTranslator } from '../core';
 import vuetify, { preset as defaultPreset } from '../plugins/vuetify';
 
 Vue.use(LoadScript);
@@ -268,7 +268,7 @@ const vuetifyFormWc = defineComponent({
       },
     },
   },
-  setup(props: VuetifyFormConfig) {
+  setup(props) {
     let error: any = undefined;
 
     let dataToUse: any = undefined;
@@ -317,7 +317,7 @@ const vuetifyFormWc = defineComponent({
           ? JSON.parse(props.translations)
           : undefined;
 
-      localeToUse = props.locale ? props.locale : 'en';
+      localeToUse = props.locale ?? 'en';
       i18nToUse = {
         locale: localeToUse,
         translate: createTranslator(localeToUse, translationsToUse),
