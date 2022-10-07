@@ -1,5 +1,6 @@
 <template>
   <vuetify-json-forms
+    :custom-style="style"
     :schema="JSON.stringify(schema)"
     :uischema="JSON.stringify(uischema)"
     :data="JSON.stringify(data)"
@@ -10,15 +11,6 @@
     :translations="JSON.stringify(i18n)"
     @change="onChange"
   >
-    <!-- emulate the css since the VuetifyJsonForms are not build as actual web component that includes css during npm run serve -->
-    <custom-style slot="style" type="text/css">
-      @import
-      url('https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900');
-      @import
-      url('https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/6.5.95/css/materialdesignicons.min.css');
-      @import
-      url("https://cdnjs.cloudflare.com/ajax/libs/vuetify/2.6.3/vuetify.min.css");
-    </custom-style>
   </vuetify-json-forms>
 </template>
 
@@ -43,20 +35,18 @@ window.customElements.define(
   VuetifyJsonFormsElement as any
 );
 
-const CustomStyle = defineComponent({
-  name: 'custom-style',
-  render(createElement) {
-    return createElement('style', this.$slots.default);
-  },
-});
-
 export default defineComponent({
   name: 'App',
-  components: {
-    CustomStyle,
-  },
   data() {
+    // emulate the css since the VuetifyJsonForms are not build as actual web component that includes css during npm run serve
+    const style = `
+      @import url('https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900');
+      @import url('https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/6.5.95/css/materialdesignicons.min.css');
+      @import url("https://cdnjs.cloudflare.com/ajax/libs/vuetify/2.6.3/vuetify.min.css");
+    `;
+
     return {
+      style,
       data,
       schema,
       uischema,

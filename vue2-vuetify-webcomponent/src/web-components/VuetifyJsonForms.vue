@@ -1,44 +1,42 @@
 <template>
-  <v-app ref="root">
+  <div>
     <custom-style type="text/css" id="vuetify-theme">
       {{ vuetifyThemeCss }}
     </custom-style>
 
-    <slot
-      name="style"
-      v-if="!!$slots['style'] || !!$scopedSlots['style']"
-    ></slot>
-    <custom-style type="text/css" v-else>
-      .v-application--wrap { min-height: 0px; }
+    <custom-style type="text/css">
+      {{ customStyle }}
     </custom-style>
 
-    <div v-if="error !== undefined">
-      <v-container style="height: 400px">
-        <v-row class="fill-height" align-content="center" justify="center">
-          <v-col class="text-subtitle-1 text-center error" cols="12">
-            {{ error }}
-          </v-col>
-        </v-row>
-      </v-container>
-    </div>
-    <v-sheet v-else :dark="dark" tile>
-      <resolved-json-forms
-        :data="dataToUse"
-        :schema="schemaToUse"
-        :schemaUrl="schemaUrlToUse"
-        :uischema="uischemaToUse"
-        :renderers="renderers"
-        :cells="cells"
-        :config="configToUse"
-        :readonly="readonlyToUse"
-        :uischemas="uischemasToUse"
-        :validationMode="validationModeToUse"
-        :i18n="i18nToUse"
-        :additionalErrors="additionalErrorsToUse"
-        @change="onChange"
-      />
-    </v-sheet>
-  </v-app>
+    <v-app ref="root">
+      <div v-if="error !== undefined">
+        <v-container style="height: 400px">
+          <v-row class="fill-height" align-content="center" justify="center">
+            <v-col class="text-subtitle-1 text-center error" cols="12">
+              {{ error }}
+            </v-col>
+          </v-row>
+        </v-container>
+      </div>
+      <v-sheet v-else :dark="dark" tile>
+        <resolved-json-forms
+          :data="dataToUse"
+          :schema="schemaToUse"
+          :schemaUrl="schemaUrlToUse"
+          :uischema="uischemaToUse"
+          :renderers="renderers"
+          :cells="cells"
+          :config="configToUse"
+          :readonly="readonlyToUse"
+          :uischemas="uischemasToUse"
+          :validationMode="validationModeToUse"
+          :i18n="i18nToUse"
+          :additionalErrors="additionalErrorsToUse"
+          @change="onChange"
+        />
+      </v-sheet>
+    </v-app>
+  </div>
 </template>
 
 <script lang="ts">
@@ -222,6 +220,11 @@ const vuetifyFormWc = defineComponent({
       type: String,
       default: 'en',
     },
+    customStyle: {
+      required: false,
+      type: String,
+      default: '.v-application--wrap { min-height: 0px; }',
+    },
     translations: {
       required: false,
       type: String,
@@ -288,7 +291,6 @@ const vuetifyFormWc = defineComponent({
       typeof props.defaultPreset == 'string'
         ? merge({}, defaultPreset, JSON.parse(props.defaultPreset))
         : defaultPreset;
-
     try {
       dataToUse =
         typeof props.data == 'string' ? JSON.parse(props.data) : undefined;
@@ -317,7 +319,7 @@ const vuetifyFormWc = defineComponent({
           ? JSON.parse(props.translations)
           : undefined;
 
-      localeToUse = props.locale ?? 'en';
+      localeToUse = props.locale ? props.locale : localeToUse;
       i18nToUse = {
         locale: localeToUse,
         translate: createTranslator(localeToUse, translationsToUse),
@@ -478,7 +480,6 @@ const vuetifyFormWc = defineComponent({
           this.applyTheme();
         }
       },
-      deep: true,
     },
   },
   async mounted() {

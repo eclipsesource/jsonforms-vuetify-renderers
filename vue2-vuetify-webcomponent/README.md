@@ -22,6 +22,42 @@ Use the `vuetify-json-forms` webcomponent in your HTML page as follow.
     <style type="text/css">
       @import url('//cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/6.5.95/css/materialdesignicons.min.css');
     </style>
+    <style>
+      /* # =================================================================
+        # Global selectors
+        # ================================================================= */
+      html {
+        box-sizing: border-box;
+        overflow-y: scroll;
+        /* All browsers without overlaying scrollbars */
+        -webkit-text-size-adjust: 100%;
+        /* Prevent adjustments of font size after orientation changes in iOS */
+        word-break: normal;
+        -moz-tab-size: 4;
+        tab-size: 4;
+      }
+      
+      *,
+      ::before,
+      ::after {
+        background-repeat: no-repeat;
+        /* Set background-repeat: no-repeat to all elements and pseudo elements */
+        box-sizing: inherit;
+      }
+      
+      ::before,
+      ::after {
+        text-decoration: inherit;
+        /* Inherit text-decoration and vertical align to ::before and ::after pseudo elements */
+        vertical-align: inherit;
+      }
+      
+      * {
+        padding: 0;
+        /* Reset padding and margin of all elements */
+        margin: 0;
+      }
+    </style>    
   </head>
   <body>
     <script type="text/javascript">
@@ -59,16 +95,12 @@ Use the `vuetify-json-forms` webcomponent in your HTML page as follow.
     </script>
 
     <vuetify-json-forms id="vuetify-json-forms">
-      <style slot="style" type="text/css">
-        .v-application--wrap {
-          min-height: 0px;
-        }
-      </style>
     </vuetify-json-forms>
 
     <script>
       let form = document.getElementById('vuetify-json-forms');
 
+      form.setAttribute('custom-style', '.v-application--wrap { min-height: 0px; }');
       form.setAttribute('data', JSON.stringify(data));
       form.setAttribute('schema', JSON.stringify(schema));
       form.setAttribute('uischema', JSON.stringify(uischema));
