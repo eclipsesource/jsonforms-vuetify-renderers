@@ -1,14 +1,41 @@
-import dayjs from 'dayjs';
+import dayjs, { UnitType } from 'dayjs';
 import customParsingPlugin from 'dayjs/plugin/customParseFormat';
-import utcPlugin from 'dayjs/plugin/utc';
-import timezonePlugin from 'dayjs/plugin/timezone'; // dependent on utc plugin
 import durationPlugin from 'dayjs/plugin/duration';
+import timezonePlugin from 'dayjs/plugin/timezone'; // dependent on utc plugin
+import utcPlugin from 'dayjs/plugin/utc';
 
 // required for the custom save formats in the date, time and date-time pickers
 dayjs.extend(customParsingPlugin);
 dayjs.extend(utcPlugin);
 dayjs.extend(timezonePlugin);
 dayjs.extend(durationPlugin);
+
+export const dynamic = (args: any) => {
+  let func: string | undefined = undefined;
+  if (args?.func && typeof args.func === 'string') {
+    func = args?.func;
+  }
+
+  if (func) {
+    try {
+      const fn = new Function(
+        'args',
+        `const func = ${func}; return func(args);`
+      );
+      return () => {
+        try {
+          return fn(args);
+        } catch (e) {
+          console.error(`Error at dynamicDefaults 'dynamic': ${e}`);
+        }
+      };
+    } catch (e) {
+      console.error(`Error at dynamicDefaults 'dynamic': ${e}`);
+    }
+  }
+
+  throw new Error(`missing argument 'func' for dynamicDefaults func 'dynamic'`);
+};
 
 export const searchParams = (args: any) => {
   let paramName: string | undefined = undefined;
@@ -71,6 +98,22 @@ export const dateOffset = (args: any) => {
 
   if (date.isValid()) {
     result = date.local().format('YYYY-MM-DD');
+  }
+
+  return () => result;
+};
+
+export const dateUnit = (args: any) => {
+  const date = nowOffset(args);
+  let result: number | undefined = undefined;
+
+  if (date.isValid()) {
+    let unit: UnitType = 'millisecond';
+    if (args?.unit && typeof args.unit === 'string') {
+      unit = args?.unit;
+    }
+
+    result = date.local().get(unit);
   }
 
   return () => result;

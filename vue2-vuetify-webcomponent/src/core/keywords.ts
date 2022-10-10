@@ -1,12 +1,14 @@
+import Ajv from 'ajv';
 import keywords from 'ajv-keywords';
 import dynamicDefaults from 'ajv-keywords/dist/definitions/dynamicDefaults';
-import Ajv from 'ajv';
 import tranform from './transform';
 
 import {
-  searchParams,
-  datetimeOffset,
   dateOffset,
+  datetimeOffset,
+  dateUnit,
+  dynamic,
+  searchParams,
   timeOffset,
 } from './dynamicDefaults';
 
@@ -18,8 +20,10 @@ export const ajvKeywords = (ajv: Ajv) => {
   ajv.addKeyword(tranform());
 
   // register new dynamic defaults
+  (dynamicDefaults.DEFAULTS as any).dynamic = dynamic;
   (dynamicDefaults.DEFAULTS as any).searchParams = searchParams;
   (dynamicDefaults.DEFAULTS as any).datetime = datetimeOffset;
   (dynamicDefaults.DEFAULTS as any).date = dateOffset;
   (dynamicDefaults.DEFAULTS as any).time = timeOffset;
+  (dynamicDefaults.DEFAULTS as any).dateUnit = dateUnit;
 };
