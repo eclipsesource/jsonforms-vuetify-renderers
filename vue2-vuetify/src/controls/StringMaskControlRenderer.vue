@@ -70,8 +70,8 @@ class VueMaskPluginDirectiveCallback {
     this.mask = definition;
     return definition;
   }
-  filter(_id: string, _definition?: any) {
-    return _definition;
+  filter(_id: string, definition?: any) {
+    return definition;
   }
 }
 
@@ -81,9 +81,9 @@ class VueMaskPluginFilterCallback {
   directive(_id: string, definition?: DirectiveOptions) {
     return definition;
   }
-  filter(_id: string, _definition?: any) {
-    this.mask = _definition;
-    return _definition;
+  filter(_id: string, definition?: any) {
+    this.mask = definition;
+    return definition;
   }
 }
 
@@ -178,14 +178,14 @@ const controlRenderer = defineComponent({
   },
   methods: {
     maskedValue(value: string | undefined): string | undefined {
-      if (this.mask && !this.returnMaskedValue) {
+      if (!this.returnMaskedValue) {
         return this.maskFilter(value, this.mask);
       }
 
       return value;
     },
     unmaskedValue(value: string | undefined): string | undefined {
-      if (this.mask && !this.returnMaskedValue && value) {
+      if (!this.returnMaskedValue && value) {
         value = value
           .split('')
           .map((char, index) => {
@@ -209,7 +209,7 @@ const controlRenderer = defineComponent({
     maskModel: {
       get(): string | undefined {
         let value = this.control.data;
-        if (this.mask && !this.returnMaskedValue && value) {
+        if (!this.returnMaskedValue && value) {
           value = this.maskedValue(value);
         }
         return value;
@@ -217,24 +217,18 @@ const controlRenderer = defineComponent({
       set(val: string | undefined): void {
         let value = val;
 
-        if (this.mask) {
-          if (this.mask && !this.returnMaskedValue) {
-            value = this.unmaskedValue(value);
-          }
-          if (this.adaptValue(value) !== this.control.data) {
-            // only invoke onChange when values are different since v-mask is also listening on input which lead to loop
+        if (!this.returnMaskedValue) {
+          value = this.unmaskedValue(value);
+        }
+        if (this.adaptValue(value) !== this.control.data) {
+          // only invoke onChange when values are different since v-mask is also listening on input which lead to loop
 
-            this.onChange(value);
-          }
-        } else {
           this.onChange(value);
         }
       },
     },
     mask(): string {
-      return typeof this.appliedOptions.mask === 'string'
-        ? this.appliedOptions.mask
-        : undefined;
+      return this.appliedOptions.mask;
     },
     returnMaskedValue(): boolean {
       return this.appliedOptions['return-masked-value'] === true;
