@@ -50,7 +50,7 @@
   "peerDependencies": {
     "@jsonforms/core": "3.0.0-rc.1",
     "@jsonforms/vue2": "3.0.0-rc.1",
-    "@mdi/font": "^5.9.55",
+    "@mdi/font": "^7.0.96",
     "vue": "^2.7.0",
     "vuetify": "^2.4.0"
   },
