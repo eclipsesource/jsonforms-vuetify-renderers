@@ -87,7 +87,8 @@
       "options": {
         "placeholder": "(###)-###-####",
         "mask": "(###)-###-####",
-        "return-masked-value": true
+        "returnMaskedValue": true
+
       }
     }
   ]
