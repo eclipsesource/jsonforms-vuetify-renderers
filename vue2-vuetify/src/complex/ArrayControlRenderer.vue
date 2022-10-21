@@ -161,7 +161,7 @@
           </v-simple-table>
         </v-row>
       </v-container>
-      <v-container v-if="dataLength == 0" :class="styles.arrayList.noData">
+      <v-container v-if="dataLength === 0" :class="styles.arrayList.noData">
         No data
       </v-container>
     </v-card-text>
