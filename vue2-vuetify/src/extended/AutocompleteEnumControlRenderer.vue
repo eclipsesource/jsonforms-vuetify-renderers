@@ -89,16 +89,11 @@ const controlRenderer = defineComponent({
     ...rendererProps<ControlElement>(),
   },
   setup(props: RendererProps<ControlElement>) {
-    const t = useTranslator();
-
-    return {
-      ...useVuetifyControl(
-        useJsonFormsEnumControl(props),
-        (value) => value || undefined,
-        300
-      ),
-      t,
-    };
+    return useVuetifyControl(
+      useJsonFormsEnumControl(props),
+      (value) => (value !== null ? value : undefined),
+      300
+    );
   },
 });
 
