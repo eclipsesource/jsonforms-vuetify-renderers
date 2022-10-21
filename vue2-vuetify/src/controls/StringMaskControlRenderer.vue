@@ -231,7 +231,7 @@ const controlRenderer = defineComponent({
       return this.appliedOptions.mask;
     },
     returnMaskedValue(): boolean {
-      return this.appliedOptions['return-masked-value'] === true;
+      return this.appliedOptions.returnMaskedValue === true;
     },
     maskReplacers(): Record<string, RegExp> {
       const replacers =
