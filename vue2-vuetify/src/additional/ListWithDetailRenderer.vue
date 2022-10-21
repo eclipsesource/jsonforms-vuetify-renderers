@@ -43,7 +43,7 @@
         </v-toolbar>
       </v-col>
     </v-row>
-    <v-row v-if="dataLength == 0" :class="styles.listWithDetail.noData">
+    <v-row v-if="dataLength === 0" :class="styles.listWithDetail.noData">
       <v-col>No data</v-col>
     </v-row>
     <v-row v-else>
