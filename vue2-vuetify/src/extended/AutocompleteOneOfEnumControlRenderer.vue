@@ -59,20 +59,20 @@
 <script lang="ts">
 import {
   ControlElement,
+  isOneOfEnumControl,
   JsonFormsRendererRegistryEntry,
   rankWith,
-  isOneOfEnumControl,
 } from '@jsonforms/core';
-import { defineComponent } from 'vue';
 import {
   rendererProps,
-  useJsonFormsOneOfEnumControl,
   RendererProps,
+  useJsonFormsOneOfEnumControl,
 } from '@jsonforms/vue2';
+import { defineComponent } from 'vue';
+import { VAutocomplete, VHover, VSelect } from 'vuetify/lib';
 import { default as ControlWrapper } from '../controls/ControlWrapper.vue';
-import { useVuetifyControl, useTranslator } from '../util';
-import { VSelect, VHover, VAutocomplete } from 'vuetify/lib';
 import { DisabledIconFocus } from '../controls/directives';
+import { useVuetifyControl } from '../util';
 
 const controlRenderer = defineComponent({
   name: 'autocomplete-oneof-enum-control-renderer',
