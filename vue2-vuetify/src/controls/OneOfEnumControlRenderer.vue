@@ -46,7 +46,7 @@ import {
 } from '@jsonforms/vue2';
 import { defineComponent } from 'vue';
 import { VHover, VSelect } from 'vuetify/lib';
-import { useVuetifyControl } from '../util';
+import { useTranslator, useVuetifyControl } from '../util';
 import { default as ControlWrapper } from './ControlWrapper.vue';
 import { DisabledIconFocus } from './directives';
 
@@ -64,9 +64,13 @@ const controlRenderer = defineComponent({
     ...rendererProps<ControlElement>(),
   },
   setup(props: RendererProps<ControlElement>) {
-    return useVuetifyControl(useJsonFormsOneOfEnumControl(props), (value) =>
-      value !== null ? value : undefined
+    const t = useTranslator();
+
+    const control = useVuetifyControl(
+      useJsonFormsOneOfEnumControl(props),
+      (value) => (value !== null ? value : undefined)
     );
+    return { ...control, t };
   },
 });
 
