@@ -7,14 +7,14 @@ export const createTranslator =
       return defaultMessage;
     }
 
-    let localeTraslations = translations[locale];
-    if (!localeTraslations) {
+    let localeTranslations = translations[locale];
+    if (!localeTranslations) {
       // if specific locale like en-US is not available then use more generic like us
       const dashIndex = locale.indexOf('-');
-      localeTraslations =
+      localeTranslations =
         dashIndex > 0
           ? translations[locale.substring(0, dashIndex)]
           : translations['en'];
     }
-    return get(localeTraslations, key) ?? defaultMessage;
+    return get(localeTranslations, key) ?? defaultMessage;
   };
