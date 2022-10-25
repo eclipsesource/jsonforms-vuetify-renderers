@@ -6,7 +6,7 @@
     },
     "vegetarian": {
       "label": "Vegetarian",
-      "description": "Wether the person is a vegetarian"
+      "description": "Whether the person is a vegetarian"
     },
     "birth": {
       "label": "Birth Date",
