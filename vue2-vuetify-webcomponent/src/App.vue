@@ -40,9 +40,9 @@ export default defineComponent({
   data() {
     // emulate the css since the VuetifyJsonForms are not build as actual web component that includes css during npm run serve
     const style = `
-      @import url('https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900');
-      @import url('https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/6.5.95/css/materialdesignicons.min.css');
-      @import url("https://cdnjs.cloudflare.com/ajax/libs/vuetify/2.6.3/vuetify.min.css");
+      @import url('//fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900');
+      @import url('//cdn.jsdelivr.net/npm/@mdi/font@6.x/css/materialdesignicons.min.css');
+      @import url('//cdn.jsdelivr.net/npm/vuetify@2.6.12/dist/vuetify.min.css');
     `;
 
     return {
