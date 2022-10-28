@@ -245,20 +245,22 @@ import { examples } from '@/examples';
 import { find } from 'lodash';
 import { sync } from 'vuex-pathify';
 
-import { mergeStyles, defaultStyles } from '@jsonforms/vue2-vuetify';
-import { JsonFormsChangeEvent } from '@jsonforms/vue2';
-import MonacoEditor from '@/components/MonacoEditor.vue';
 import DemoForm from '@/components/DemoForm.vue';
-import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
+import MonacoEditor from '@/components/MonacoEditor.vue';
 import {
+  configureDataValidation,
   configureJsonSchemaValidation,
   configureUISchemaValidation,
-  configureDataValidation,
   EditorApi,
   getMonacoModelForUri,
 } from '@/core/jsonSchemaValidation';
 import { Example } from '@/core/types';
 import type { JsonFormsRendererRegistryEntry } from '@jsonforms/core';
+import { JsonFormsChangeEvent } from '@jsonforms/vue2';
+import { defaultStyles, mergeStyles } from '@jsonforms/vue2-vuetify';
+import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
+import { VImg } from 'vuetify/lib';
+import { ref } from 'vue';
 
 const myStyles = mergeStyles(defaultStyles, {
   control: { root: 'my-control' },
@@ -578,6 +580,14 @@ export default {
   },
   provide() {
     return {
+      // demo how we can extend the template layout components that we can use.
+      templateLayoutRendererComponentComponents: {
+        VImg,
+        MonacoEditor,
+      },
+      templateLayoutRendererContext: {
+        getMonacoDataModel: () => this.monacoDataModel,
+      },
       styles: myStyles,
     };
   },

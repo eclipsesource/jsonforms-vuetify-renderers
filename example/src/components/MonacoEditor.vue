@@ -29,6 +29,7 @@ export default {
     width: { type: [String, Number], default: '100%' },
     height: { type: [String, Number], default: '100%' },
     value: { type: Object as PropType<monaco.editor.ITextModel> },
+    code: { type: String },
     language: { type: String, default: 'javascript' },
     theme: { type: String, default: 'vs' },
     options: {
@@ -92,6 +93,13 @@ export default {
         }
       }
     },
+    code(newCode: string) {
+      if (this.editor) {
+        const { editor } = this;
+
+        editor.getModel()?.setValue(newCode);
+      }
+    },
     language(language: string, prev: string) {
       const { editor } = this;
       if (editor && prev !== language) {
@@ -146,10 +154,14 @@ export default {
       // Before initializing monaco editor
       const options = { ...this.options, ...this.editorWillMount() };
 
+      const model = this.value
+        ? this.value
+        : monaco.editor.createModel(this.code ?? '', this.language);
+
       this.editor = monaco.editor.create(
         this.$refs.containerElement as HTMLElement,
         {
-          model: this.value,
+          model: model,
           language,
           ...(className ? { extraEditorClassName: className } : {}),
           ...options,
@@ -159,6 +171,9 @@ export default {
       );
       // After initializing monaco editor
       this.editorDidMount(this.editor);
+      this.$nextTick(() => {
+        this.editor?.getAction('editor.action.formatDocument').run();
+      });
     },
     editorWillMount(): Record<string, any> {
       const options = this.editorBeforeMount(monaco);

@@ -1,6 +1,25 @@
 const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 
 module.exports = {
+  configureWebpack: {
+    optimization: {
+      splitChunks: {
+        chunks: 'async',
+        minSize: 10000,
+        cacheGroups: {
+          vendor: {
+            test: /[\\/]node_modules[\\/]/,
+            name(module) {
+              const packageName = module.context.match(
+                /[\\/]node_modules[\\/](.*?)([\\/]|$)/
+              )[1];
+              return `npm.${packageName.replace('@', '')}`;
+            },
+          },
+        },
+      },
+    },
+  },
   chainWebpack: (config) => {
     // remove typecheck
     config.plugins.delete('fork-ts-checker');
@@ -8,7 +27,7 @@ module.exports = {
     config.plugin('monaco-editor').use(MonacoWebpackPlugin, [
       {
         // Languages are loaded on demand at runtime
-        languages: ['json'],
+        languages: ['json', 'javascript', 'css', 'html', 'typescript'],
       },
     ]);
 

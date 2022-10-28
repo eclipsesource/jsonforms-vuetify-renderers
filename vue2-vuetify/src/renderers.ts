@@ -1,4 +1,5 @@
 import { additionalRenderers } from './additional';
+import { advancedRenderers, CompileFunction } from './advanced';
 import { arrayRenderers } from './array';
 import { complexRenderers } from './complex';
 import { controlRenderers } from './controls';
@@ -16,4 +17,9 @@ export const vuetifyRenderers = [
 export const extendedVuetifyRenderers = [
   ...extendedRenderers,
   ...vuetifyRenderers,
+];
+
+export const advancedVuetifyRenderers = (compile: () => CompileFunction) => [
+  ...advancedRenderers(compile),
+  ...extendedVuetifyRenderers,
 ];

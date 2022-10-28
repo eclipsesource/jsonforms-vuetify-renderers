@@ -3,7 +3,19 @@ import { make } from 'vuex-pathify';
 import { AppState } from './types';
 import { RootState } from '../types';
 import { Module } from 'vuex';
-import { createAjv, extendedVuetifyRenderers } from '@jsonforms/vue2-vuetify';
+// import {
+//   createAjv,
+//   extendedVuetifyRenderers as vuetifyRenderers,
+// } from '@jsonforms/vue2-vuetify';
+
+// async load of compiler to enable code split
+const compileToFunctions = () =>
+  import('vue-template-compiler').then((module) => {
+    const { compileToFunctions } = module;
+    return compileToFunctions;
+  });
+import { createAjv, advancedVuetifyRenderers } from '@jsonforms/vue2-vuetify';
+const vuetifyRenderers = advancedVuetifyRenderers(compileToFunctions);
 
 const ajv = createAjv({ useDefaults: true });
 
@@ -24,8 +36,8 @@ const state: AppState = {
       hideAvatar: false,
       hideArraySummaryValidation: false,
     },
-    renderers: extendedVuetifyRenderers,
-    cells: extendedVuetifyRenderers,
+    renderers: vuetifyRenderers,
+    cells: vuetifyRenderers,
     ajv,
     locale: 'en',
   },

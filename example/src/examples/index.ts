@@ -41,6 +41,7 @@ import { input as rule } from './rule';
 import { input as verticalLayout } from './vertical-layout';
 import { input as huge } from './huge';
 import { input as ifThenElse } from './if-then-else';
+import { input as templateLayout } from './template-layout';
 
 export const examples = [
   {
@@ -132,6 +133,11 @@ export const examples = [
     id: 'nested-layout',
     title: 'Nested Layout',
     input: nestedLayout,
+  },
+  {
+    id: 'template-layout',
+    title: 'Template Layout',
+    input: templateLayout,
   },
   {
     id: 'array',

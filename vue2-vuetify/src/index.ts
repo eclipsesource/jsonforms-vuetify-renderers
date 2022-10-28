@@ -1,4 +1,5 @@
 export * from './additional';
+export * from './advanced';
 export * from './array';
 export * from './complex';
 export * from './controls';
