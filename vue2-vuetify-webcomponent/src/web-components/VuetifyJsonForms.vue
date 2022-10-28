@@ -73,14 +73,6 @@ const CustomStyle = defineComponent({
   },
 });
 
-const theme = vuetify.framework.theme as any;
-// force vuetify to use checkOrCreateStyleElement
-theme.vueMeta = null;
-theme.checkOrCreateStyleElement = function () {
-  // do not update any style elements
-  return false;
-};
-
 const transformUISchemas = (
   uischemas?: string
 ): JsonFormsUISchemaRegistryEntry[] => {
@@ -320,6 +312,7 @@ const vuetifyFormWc = defineComponent({
           : undefined;
 
       localeToUse = props.locale ? props.locale : localeToUse;
+
       i18nToUse = {
         locale: localeToUse,
         translate: createTranslator(localeToUse, translationsToUse),
@@ -358,7 +351,9 @@ const vuetifyFormWc = defineComponent({
       localeToUse,
       additionalErrorsToUse,
       dataDefaultPreset,
-      vuetifyTheme: ref<{ generatedStyles: string }>(theme),
+      vuetifyTheme: ref<{ generatedStyles: string }>(
+        vuetify.framework.theme as any
+      ),
     };
   },
   watch: {
@@ -442,6 +437,7 @@ const vuetifyFormWc = defineComponent({
               this.translationsToUse
             ) as Translator,
           };
+          this.$vuetify.lang.current = this.localeToUse;
         }
       },
     },
@@ -493,6 +489,7 @@ const vuetifyFormWc = defineComponent({
     };
 
     this.applyTheme();
+    this.$vuetify.lang.current = this.localeToUse;
   },
   computed: {
     dark() {

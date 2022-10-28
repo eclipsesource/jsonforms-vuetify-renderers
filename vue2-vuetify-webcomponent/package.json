@@ -37,7 +37,8 @@
     "src"
   ],
   "scripts": {
-    "prebuild": "rimraf dist",
+    "prebuild": "rimraf dist && npm run wc-use-contenthash",
+    "wc-use-contenthash": "node ./patch-resolveWcEntry.js",
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build --target wc-async --inline-vue 'src/web-components/*.vue'"
   },
@@ -74,6 +75,7 @@
     "sass-loader": "^10.0.0",
     "typescript": "^4.7.3",
     "vue-cli-plugin-vuetify": "~2.4.2",
-    "vuetify-loader": "^1.7.0"
+    "vuetify-loader": "^1.7.0",
+    "replace-in-file": "^6.3.5"
   }
 }

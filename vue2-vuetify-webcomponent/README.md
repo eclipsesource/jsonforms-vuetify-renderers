@@ -20,7 +20,7 @@ Use the `vuetify-json-forms` webcomponent in your HTML page as follow.
 
     <!-- include the fonts outside the webcomponent for now - https://github.com/google/material-design-icons/issues/1165 -->
     <style type="text/css">
-      @import url('//cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/6.5.95/css/materialdesignicons.min.css');
+      @import url('//cdn.jsdelivr.net/npm/@mdi/font@6.x/css/materialdesignicons.min.css');
     </style>
     <style>
       /* # =================================================================

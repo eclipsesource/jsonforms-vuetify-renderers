@@ -42,8 +42,18 @@ export const preset: Partial<VuetifyPreset> = {
   },
 };
 
-export default new Vuetify({
+const vuetify = new Vuetify({
   preset,
   rtl: false,
   theme: { dark: false },
 });
+
+const theme = vuetify.framework.theme as any;
+// force vuetify to use checkOrCreateStyleElement
+theme.vueMeta = null;
+theme.checkOrCreateStyleElement = function () {
+  // do not update any style elements
+  return false;
+};
+
+export default vuetify;
