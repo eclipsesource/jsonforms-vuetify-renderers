@@ -63,6 +63,9 @@
       "type": "object",
       "$id": "#control",
       "properties": {
+        "name": {
+          "type": "string"
+        },
         "type": {
           "type": "string",
           "const": "Control",
@@ -102,6 +105,9 @@
       "type": "object",
       "$id": "#label",
       "properties": {
+        "name": {
+          "type": "string"
+        },
         "type": {
           "type": "string",
           "const": "Label",
@@ -134,6 +140,9 @@
       "type": "object",
       "$id": "#horizontallayout",
       "properties": {
+        "name": {
+          "type": "string"
+        },
         "type": {
           "type": "string",
           "const": "HorizontalLayout",
@@ -166,6 +175,9 @@
       "type": "object",
       "$id": "#verticallayout",
       "properties": {
+        "name": {
+          "type": "string"
+        },
         "type": {
           "type": "string",
           "const": "VerticalLayout",
@@ -198,6 +210,9 @@
       "type": "object",
       "$id": "#categorization",
       "properties": {
+        "name": {
+          "type": "string"
+        },
         "type": {
           "type": "string",
           "const": "Categorization",
@@ -230,6 +245,9 @@
       "type": "object",
       "$id": "#category",
       "properties": {
+        "name": {
+          "type": "string"
+        },
         "label": {
           "type": "string"
         },
@@ -265,6 +283,9 @@
       "type": "object",
       "$id": "#group",
       "properties": {
+        "name": {
+          "type": "string"
+        },
         "type": {
           "type": "string",
           "const": "Group",
@@ -302,6 +323,9 @@
       "type": "object",
       "$id": "#templatelayout",
       "properties": {
+        "name": {
+          "type": "string"
+        },
         "type": {
           "type": "string",
           "const": "TemplateLayout",
