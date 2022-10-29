@@ -329,7 +329,7 @@ const fileRenderer = defineComponent({
               key!,
               `size should be less than ${formatSize}`,
               {
-                size: `${formatSize}`,
+                limit: `${formatSize}`,
               }
             );
           }
@@ -354,7 +354,7 @@ const fileRenderer = defineComponent({
               key!,
               `size should be greater than ${formatSize}`,
               {
-                size: `${formatSize}`,
+                limit: `${formatSize}`,
               }
             );
           }
