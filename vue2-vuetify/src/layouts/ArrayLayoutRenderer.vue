@@ -242,57 +242,56 @@
 
 <script lang="ts">
 import {
-  JsonFormsRendererRegistryEntry,
-  ControlElement,
-  rankWith,
-  isObjectArrayWithNesting,
   composePaths,
+  ControlElement,
   createDefaultValue,
-  UISchemaElement,
   findUISchema,
-  Resolve,
-  JsonSchema,
   getControlPath,
   getI18nKey,
+  isObjectArrayWithNesting,
+  JsonFormsRendererRegistryEntry,
+  JsonSchema,
+  rankWith,
+  Resolve,
+  UISchemaElement,
 } from '@jsonforms/core';
-import { defineComponent } from 'vue';
 import {
   DispatchRenderer,
   rendererProps,
-  useJsonFormsArrayControl,
   RendererProps,
+  useJsonFormsArrayControl,
 } from '@jsonforms/vue2';
+import { ErrorObject } from 'ajv';
+import merge from 'lodash/merge';
+import { computed, defineComponent, ref } from 'vue';
 import {
-  useNested,
-  useVuetifyArrayControl,
-  useTranslator,
-  i18nDefaultMessages,
-} from '../util';
-import {
+  VAvatar,
+  VBtn,
   VCard,
   VCardActions,
-  VCardTitle,
   VCardText,
-  VDialog,
-  VRow,
+  VCardTitle,
   VCol,
   VContainer,
+  VDialog,
+  VExpansionPanel,
+  VExpansionPanelContent,
+  VExpansionPanelHeader,
+  VExpansionPanels,
+  VIcon,
+  VRow,
+  VSpacer,
   VToolbar,
   VToolbarTitle,
   VTooltip,
-  VIcon,
-  VBtn,
-  VAvatar,
-  VSpacer,
-  VExpansionPanels,
-  VExpansionPanel,
-  VExpansionPanelHeader,
-  VExpansionPanelContent,
 } from 'vuetify/lib';
-import { ValidationIcon, ValidationBadge } from '../controls/components/index';
-import { ErrorObject } from 'ajv';
-import { computed, ref } from 'vue';
-import merge from 'lodash/merge';
+import { ValidationBadge, ValidationIcon } from '../controls/components/index';
+import {
+  i18nDefaultMessages,
+  useNested,
+  useTranslator,
+  useVuetifyArrayControl,
+} from '../util';
 
 type I18nArrayLayoutKey = keyof typeof i18nDefaultMessages.arraylayout;
 
