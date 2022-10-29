@@ -61,7 +61,7 @@ import {
   useJsonFormsLayout,
 } from '@jsonforms/vue2';
 import { ErrorObject } from 'ajv';
-import { VueMaskDirective } from 'v-mask';
+import { VueMaskDirective, VueMaskFilter } from 'v-mask';
 import Vue, { defineComponent, inject, ref } from 'vue';
 import { DirectiveFunction, DirectiveOptions } from 'vue/types/umd';
 import { ComputedOptions, MethodOptions } from 'vue/types/v3-component-options';
@@ -255,6 +255,7 @@ const templateLayoutRenderer: any = defineComponent({
     },
     componentFilters() {
       const defaultFilters = {
+        VMask: VueMaskFilter,
         translate: this.translate.bind(this.parentComponent),
       } as MethodOptions;
 
