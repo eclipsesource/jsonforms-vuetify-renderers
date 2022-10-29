@@ -3,7 +3,7 @@
     "imageDataUri": {
       "label": "Image File",
       "error": {
-        "formatMaximum": "size should be less than ${limit}"
+        "formatMaximum": "size should be less than ${limitText}"
       }
     },
     "fileDataUriWithFileName": {
