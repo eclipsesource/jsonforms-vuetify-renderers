@@ -1,32 +1,50 @@
 <template>
   <component :is="compiled" v-if="compiled">
-    <template
-      v-if="elements !== undefined && elements.length == 1"
-      v-slot:default
-    >
-      <slot></slot>
+    <template v-if="defaultElement" v-slot:default>
+      <slot>
+        <dispatch-renderer
+          :key="`${layout.path}-${0}`"
+          :schema="layout.schema"
+          :uischema="defaultElement"
+          :path="layout.path"
+          :enabled="layout.enabled"
+          :renderers="layout.renderers"
+          :cells="layout.cells"
+      /></slot>
     </template>
 
-    <template v-for="(_element, index) in elements" v-slot:[`${index}`]>
-      <div :key="`${index}`">
-        <slot :name="`${index}`"></slot>
-      </div>
+    <template v-for="(element, index) in elements" v-slot:[`${element.name}`]>
+      <slot :name="element.name">
+        <dispatch-renderer
+          :key="`${layout.path}-${index}`"
+          :schema="layout.schema"
+          :uischema="element"
+          :path="layout.path"
+          :enabled="layout.enabled"
+          :renderers="layout.renderers"
+          :cells="layout.cells"
+        />
+      </slot>
     </template>
   </component>
 </template>
 
 <script lang="ts">
-import { UISchemaElement } from '@jsonforms/core';
+import { DispatchRenderer, useJsonFormsLayout } from '@jsonforms/vue2';
 import merge from 'lodash/merge';
 import Vue, { defineComponent, PropType, unref } from 'vue';
 import { CompiledResultFunctions } from 'vue-template-compiler';
 import { DirectiveFunction, DirectiveOptions } from 'vue/types/umd';
 import { ComputedOptions, MethodOptions } from 'vue/types/v3-component-options';
-import { compileToFunctions, Components } from '../compile';
+import { compileToFunctions, Components, NamedUISchemaElement } from '../types';
+
+type LayoutType = ReturnType<typeof useJsonFormsLayout>['layout'];
 
 const templateCompiler = defineComponent({
   name: 'template-compiler',
-
+  components: {
+    DispatchRenderer,
+  },
   inheritAttrs: false,
 
   props: {
@@ -37,6 +55,11 @@ const templateCompiler = defineComponent({
     template: {
       type: String,
       default: '<div></div>',
+    },
+
+    layout: {
+      type: Object as PropType<LayoutType>,
+      required: true,
     },
 
     componentDirectives: {
@@ -62,10 +85,9 @@ const templateCompiler = defineComponent({
     },
 
     elements: {
-      type: [Array] as PropType<UISchemaElement[]>,
+      type: [Array] as PropType<NamedUISchemaElement[]>,
     },
   },
-
   data() {
     return {
       compiled: null as CompiledResultFunctions | null,
@@ -104,6 +126,12 @@ const templateCompiler = defineComponent({
 
     parentProps() {
       return (this.parentComponent as any as Vue).$props || {};
+    },
+
+    defaultElement(): NamedUISchemaElement | undefined {
+      return this.elements !== undefined && this.elements.length == 1
+        ? this.elements[0]
+        : undefined;
     },
   },
   async created() {

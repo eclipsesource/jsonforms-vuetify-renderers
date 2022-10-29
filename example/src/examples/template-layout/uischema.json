@@ -1,13 +1,15 @@
 {
   "type": "TemplateLayout",
-  "template": "<v-card class=\"mx-auto my-12\" outlined><slot name=\"0\"></slot><v-card-title><h2>Custom TemplateLayout with JSONForms and Vuetify</h2></v-card-title><div v-for=\"(element, index) in elements\"><slot v-if=\"index > 0\" :name=\"index\"></slot><v-divider class=\"mx-6\"></v-divider></div></v-card>",
+  "template": "<v-card class=\"mx-auto my-12\" outlined><slot name=\"header\">Header</slot><v-card-title><h2>Custom TemplateLayout with JSONForms and Vuetify</h2></v-card-title><div v-for=\"element in elements\"><slot v-if=\"element.name != 'header'\" :name=\"element.name\"></slot><v-divider class=\"mx-6\"></v-divider></div></v-card>",
   "elements": [
     {
       "type": "TemplateLayout",
-      "template": "<v-container class=\"secondary lighten-2\" fluid><v-row align=\"center\" justify=\"center\"><v-col><v-img src=\"https://jsonforms.io/img/logo.svg\" max-width=\"200px\" max-height=\"200px\" style=\"filter: invert(1); margin: auto;\"></v-img></v-col><v-spacer></v-spacer><v-col><v-img src=\"https://cdn.vuetifyjs.com/docs/images/logos/vuetify-logo-dark-text.svg\" max-width=\"200px\" max-height=\"200px\" style=\"margin: auto;\"></v-img></v-col></v-row></v-container>"
+      "template": "<v-container class=\"secondary lighten-2\" fluid><v-row align=\"center\" justify=\"center\"><v-col><v-img src=\"https://jsonforms.io/img/logo.svg\" max-width=\"200px\" max-height=\"200px\" style=\"filter: invert(1); margin: auto;\"></v-img></v-col><v-spacer></v-spacer><v-col><v-img src=\"https://cdn.vuetifyjs.com/docs/images/logos/vuetify-logo-dark-text.svg\" max-width=\"200px\" max-height=\"200px\" style=\"margin: auto;\"></v-img></v-col></v-row></v-container>",
+      "name": "header"
     },
     {
       "type": "VerticalLayout",
+      "name": "test",
       "elements": [
         {
           "type": "HorizontalLayout",

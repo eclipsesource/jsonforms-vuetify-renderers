@@ -7,38 +7,14 @@
     <template-compiler
       :template="template"
       :parent="parentComponent"
-      :elements="elements"
+      :elements="namedElements"
       :componentComputed="componentComputed"
       :componentDirectives="componentDirectives"
       :componentMethods="componentMethods"
       :componentFilters="componentFilters"
       :componentComponents="componentComponents"
+      :layout="layout"
     >
-      <template
-        v-if="elements !== undefined && elements.length == 1"
-        v-slot:default
-      >
-        <dispatch-renderer
-          :key="`${layout.path}-${0}`"
-          :schema="layout.schema"
-          :uischema="elements[0]"
-          :path="layout.path"
-          :enabled="layout.enabled"
-          :renderers="layout.renderers"
-          :cells="layout.cells"
-        />
-      </template>
-      <template v-for="(element, index) in elements" v-slot:[`${index}`]>
-        <dispatch-renderer
-          :key="`${layout.path}-${index}`"
-          :schema="layout.schema"
-          :uischema="element"
-          :path="layout.path"
-          :enabled="layout.enabled"
-          :renderers="layout.renderers"
-          :cells="layout.cells"
-        />
-      </template>
     </template-compiler>
   </v-flex>
 </template>
@@ -47,10 +23,7 @@
 import {
   JsonFormsRendererRegistryEntry,
   JsonFormsSubStates,
-  JsonSchema,
-  Layout,
   rankWith,
-  Translator,
   UISchemaElement,
   uiTypeIs,
 } from '@jsonforms/core';
@@ -115,31 +88,15 @@ import {
   VTooltip,
 } from 'vuetify/lib';
 import { useTranslator, useVuetifyLayout } from '../util';
-import { Components } from './compile';
 import TemplateCompiler from './components/TemplateCompiler.vue';
+import {
+  Components,
+  NamedUISchemaElement,
+  TemplateContext,
+  TemplateLayout,
+} from './types';
 
-export interface TemplateContext {
-  jsonforms: JsonFormsSubStates;
-
-  // below are just the shortcuts for acessing the jsonforms.core
-  locale?: string;
-  translate?: Translator;
-  data?: any;
-  schema?: JsonSchema;
-  uischema?: UISchemaElement;
-  errors?: ErrorObject[];
-  additionalErrors?: ErrorObject[];
-}
-
-export interface TemplateElement extends Layout {
-  type: 'TemplateLayout';
-  /**
-   * The template string.
-   */
-  template: string;
-}
-
-const templateLayoutRenderer: any = defineComponent({
+const templateLayoutRenderer = defineComponent({
   name: 'template-layout-renderer',
   components: {
     DispatchRenderer,
@@ -150,9 +107,9 @@ const templateLayoutRenderer: any = defineComponent({
     VFlex,
   },
   props: {
-    ...rendererProps<Layout>(),
+    ...rendererProps<TemplateLayout>(),
   },
-  setup(props: RendererProps<Layout>) {
+  setup(props: RendererProps<TemplateLayout>) {
     const t = useTranslator();
     const layout = useVuetifyLayout(useJsonFormsLayout(props));
 
@@ -210,10 +167,17 @@ const templateLayoutRenderer: any = defineComponent({
       return jsonforms.core?.errors;
     },
     template(): string | undefined {
-      return (this.layout.uischema as TemplateElement).template;
+      return (this.layout.uischema as TemplateLayout).template;
     },
-    elements(): UISchemaElement[] {
-      return (this.layout.uischema as TemplateElement).elements;
+    namedElements(): NamedUISchemaElement[] {
+      return (this.layout.uischema as TemplateLayout).elements?.map(
+        (element, index) => {
+          if ((element as any).name === undefined) {
+            (element as any).name = `${index}`;
+          }
+          return element as UISchemaElement & { name: string };
+        }
+      );
     },
     componentDirectives(): Record<
       string,
@@ -232,7 +196,7 @@ const templateLayoutRenderer: any = defineComponent({
 
       defaultComputed.data = () => this.data;
       defaultComputed.errors = () => this.errors;
-      defaultComputed.elements = () => this.elements;
+      defaultComputed.elements = () => this.namedElements;
       defaultComputed.context = () => this.templateContext;
 
       const override = inject<ComputedOptions | undefined>(

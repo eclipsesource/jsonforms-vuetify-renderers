@@ -1,6 +1,6 @@
 export { default as TemplateLayoutRenderer } from './TemplateLayoutRenderer.vue';
 
-import { CompileFunction, compileToFunctions } from './compile';
+import { CompileFunction, compileToFunctions } from './types';
 import { entry as templateLayoutRendererEntry } from './TemplateLayoutRenderer.vue';
 
 const renderers = [templateLayoutRendererEntry];
@@ -21,4 +21,4 @@ export const advancedRenderers = (compile: () => CompileFunction) => {
   return renderers;
 };
 
-export { CompileFunction } from './compile';
+export * from './types';
