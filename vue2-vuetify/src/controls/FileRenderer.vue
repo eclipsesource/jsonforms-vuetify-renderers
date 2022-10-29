@@ -68,7 +68,7 @@ import {
   useJsonFormsControl,
 } from '@jsonforms/vue2';
 import toNumber from 'lodash/toNumber';
-import { computed, defineComponent, ref, unref } from 'vue';
+import { defineComponent, ref } from 'vue';
 import {
   VBtn,
   VCard,
@@ -111,6 +111,14 @@ const getFileSize = (
     formatExclusiveMaximum: any;
     contentSchema?: { minItems: any; maxItems: any };
   },
+  uioptions:
+    | {
+        formatMinimum: any;
+        formatMaximum: any;
+        formatExclusiveMinimum: any;
+        formatExclusiveMaximum: any;
+      }
+    | undefined,
   variant: 'min' | 'max'
 ): [number | undefined, boolean] => {
   let exclusive = false;
@@ -125,6 +133,15 @@ const getFileSize = (
     if (fileSize === undefined) {
       fileSize = toNonNegativeNumber(schema?.contentSchema?.minItems);
     }
+
+    if (fileSize === undefined && uioptions) {
+      if (typeof uioptions.formatMinimum === 'number') {
+        fileSize = toNonNegativeNumber(uioptions.formatMinimum);
+      } else if (typeof uioptions.formatExclusiveMinimum === 'number') {
+        fileSize = toNonNegativeNumber(uioptions.formatExclusiveMinimum);
+        exclusive = true;
+      }
+    }
   } else {
     fileSize = toNonNegativeNumber(schema?.formatMaximum);
     if (fileSize === undefined) {
@@ -133,6 +150,15 @@ const getFileSize = (
     }
     if (fileSize === undefined) {
       fileSize = toNonNegativeNumber(schema?.contentSchema?.maxItems);
+    }
+
+    if (fileSize === undefined && uioptions) {
+      if (typeof uioptions.formatMaximum === 'number') {
+        fileSize = toNonNegativeNumber(uioptions.formatMaximum);
+      } else if (typeof uioptions.formatExclusiveMaximum === 'number') {
+        fileSize = toNonNegativeNumber(uioptions.formatExclusiveMaximum);
+        exclusive = true;
+      }
     }
   }
 
@@ -208,21 +234,6 @@ const fileRenderer = defineComponent({
     const progressIndeterminate = ref(true);
     const progressValue = ref(0);
 
-    // implement the validation outside the Ajv since we do not want even to transform invalid files into string and then implement custom Avj validator
-    const minFileSize = computed(
-      () => getFileSize(unref(input.control).schema as any, 'min')[0]
-    );
-    const minFileSizeExclusive = computed(
-      () => getFileSize(unref(input.control).schema as any, 'min')[1]
-    );
-
-    const maxFileSize = computed(
-      () => getFileSize(unref(input.control).schema as any, 'max')[0]
-    );
-    const maxFileSizeExclusive = computed(
-      () => getFileSize(unref(input.control).schema as any, 'max')[1]
-    );
-
     return {
       ...useVuetifyControl(input),
       t,
@@ -232,10 +243,6 @@ const fileRenderer = defineComponent({
       currentFile,
       currentFileReader,
       currentFileValidationErrors,
-      maxFileSize,
-      maxFileSizeExclusive,
-      minFileSize,
-      minFileSizeExclusive,
     };
   },
   computed: {
@@ -248,6 +255,34 @@ const fileRenderer = defineComponent({
     },
     standby(): string {
       return this.t('Attaching file...', 'Attaching file...');
+    },
+    minFileSize(): number | undefined {
+      return getFileSize(
+        this.control.schema as any,
+        this.appliedOptions,
+        'min'
+      )[0];
+    },
+    minFileSizeExclusive(): boolean | undefined {
+      return getFileSize(
+        this.control.schema as any,
+        this.appliedOptions,
+        'min'
+      )[1];
+    },
+    maxFileSize(): number | undefined {
+      return getFileSize(
+        this.control.schema as any,
+        this.appliedOptions,
+        'max'
+      )[0];
+    },
+    maxFileSizeExclusive(): boolean | undefined {
+      return getFileSize(
+        this.control.schema as any,
+        this.appliedOptions,
+        'max'
+      )[1];
     },
   },
   methods: {
@@ -288,6 +323,7 @@ const fileRenderer = defineComponent({
             );
           }
         }
+
         if (this.minFileSize) {
           const minFileSizeValid = this.minFileSizeExclusive
             ? value.size > this.minFileSize
