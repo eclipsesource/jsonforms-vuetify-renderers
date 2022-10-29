@@ -109,7 +109,6 @@ const getFileSize = (
     formatMaximum: any;
     formatExclusiveMinimum: any;
     formatExclusiveMaximum: any;
-    contentSchema?: { minItems: any; maxItems: any };
   },
   uioptions:
     | {
@@ -126,36 +125,42 @@ const getFileSize = (
 
   if (variant === 'min') {
     fileSize = toNonNegativeNumber(schema?.formatMinimum);
-    if (fileSize === undefined) {
+    if (fileSize === undefined && schema?.formatExclusiveMinimum) {
       fileSize = toNonNegativeNumber(schema?.formatExclusiveMinimum);
       exclusive = true;
     }
-    if (fileSize === undefined) {
-      fileSize = toNonNegativeNumber(schema?.contentSchema?.minItems);
-    }
 
     if (fileSize === undefined && uioptions) {
-      if (typeof uioptions.formatMinimum === 'number') {
+      if (
+        typeof uioptions.formatMinimum === 'number' ||
+        typeof uioptions.formatMinimum === 'string'
+      ) {
         fileSize = toNonNegativeNumber(uioptions.formatMinimum);
-      } else if (typeof uioptions.formatExclusiveMinimum === 'number') {
+      } else if (
+        typeof uioptions.formatExclusiveMinimum === 'number' ||
+        typeof uioptions.formatExclusiveMinimum === 'string'
+      ) {
         fileSize = toNonNegativeNumber(uioptions.formatExclusiveMinimum);
         exclusive = true;
       }
     }
   } else {
     fileSize = toNonNegativeNumber(schema?.formatMaximum);
-    if (fileSize === undefined) {
+    if (fileSize === undefined && schema?.formatExclusiveMaximum) {
       fileSize = toNonNegativeNumber(schema?.formatExclusiveMaximum);
       exclusive = true;
     }
-    if (fileSize === undefined) {
-      fileSize = toNonNegativeNumber(schema?.contentSchema?.maxItems);
-    }
 
     if (fileSize === undefined && uioptions) {
-      if (typeof uioptions.formatMaximum === 'number') {
+      if (
+        typeof uioptions.formatMaximum === 'number' ||
+        typeof uioptions.formatMaximum === 'string'
+      ) {
         fileSize = toNonNegativeNumber(uioptions.formatMaximum);
-      } else if (typeof uioptions.formatExclusiveMaximum === 'number') {
+      } else if (
+        typeof uioptions.formatExclusiveMaximum === 'number' ||
+        typeof uioptions.formatExclusiveMaximum === 'string'
+      ) {
         fileSize = toNonNegativeNumber(uioptions.formatExclusiveMaximum);
         exclusive = true;
       }
@@ -314,12 +319,18 @@ const fileRenderer = defineComponent({
               this.control.schema,
               this.control.uischema,
               this.control.path,
-              'error.contentSchema.maxItems'
+              this.maxFileSizeExclusive
+                ? 'error.formatExclusiveMaximum'
+                : 'error.formatMaximum'
             );
 
+            const formatSize = formatBytes(this.maxFileSize);
             this.currentFileValidationErrors = this.t(
               key!,
-              `size should be less than ${formatBytes(this.maxFileSize)}`
+              `size should be less than ${formatSize}`,
+              {
+                size: `${formatSize}`,
+              }
             );
           }
         }
@@ -333,11 +344,18 @@ const fileRenderer = defineComponent({
               this.control.schema,
               this.control.uischema,
               this.control.path,
-              'error.contentSchema.minItems'
+              this.minFileSizeExclusive
+                ? 'error.formatExclusiveMinimum'
+                : 'error.formatMinimum'
             );
+
+            const formatSize = formatBytes(this.minFileSize);
             this.currentFileValidationErrors = this.t(
               key!,
-              `size should be greater than ${formatBytes(this.minFileSize)}`
+              `size should be greater than ${formatSize}`,
+              {
+                size: `${formatSize}`,
+              }
             );
           }
         }
