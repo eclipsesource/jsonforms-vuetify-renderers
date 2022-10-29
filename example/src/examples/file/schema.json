@@ -1,4 +1,5 @@
 {
+  "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
   "properties": {
     "imageDataUri": {
@@ -11,6 +12,7 @@
     "fileDataUriWithFileName": {
       "type": "string",
       "format": "binary",
+      "formatMaximum": "1048576",
       "description": "File with maximum size of 1MB encoded as data URI and including the file name"
     },
     "base64String": {

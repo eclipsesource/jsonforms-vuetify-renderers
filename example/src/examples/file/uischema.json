@@ -6,7 +6,7 @@
       "scope": "#/properties/imageDataUri",
       "options": {
         "showUnfocusedDescription": true,
-        "formatMaximum": 1048576,
+        "formatMaximum": "1048576",
         "vuetify": {
           "v-file-input": {
             "showSize": true
@@ -19,7 +19,6 @@
       "scope": "#/properties/fileDataUriWithFileName",
       "options": {
         "showUnfocusedDescription": true,
-        "formatMaximum": 1048576,
         "vuetify": {
           "v-file-input": {
             "showSize": true
