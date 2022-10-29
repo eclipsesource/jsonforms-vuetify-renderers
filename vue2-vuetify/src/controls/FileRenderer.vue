@@ -326,7 +326,7 @@ const fileRenderer = defineComponent({
 
             const formatSize = formatBytes(this.maxFileSize);
             this.currentFileValidationErrors = this.t(
-              key!,
+              key,
               `size should be less than ${formatSize}`,
               {
                 limitText: `${formatSize}`,
@@ -352,7 +352,7 @@ const fileRenderer = defineComponent({
 
             const formatSize = formatBytes(this.minFileSize);
             this.currentFileValidationErrors = this.t(
-              key!,
+              key,
               `size should be greater than ${formatSize}`,
               {
                 limitText: `${formatSize}`,
