@@ -1,4 +1,5 @@
 {
+  "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
   "properties": {
     "oneOfMultiEnum": {
@@ -26,11 +27,7 @@
       "uniqueItems": true,
       "items": {
         "type": "string",
-        "enum": [
-          "foo",
-          "bar",
-          "foobar"
-        ]
+        "enum": ["foo", "bar", "foobar"]
       }
     }
   }
