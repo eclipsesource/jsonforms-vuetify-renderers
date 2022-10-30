@@ -30,6 +30,8 @@ export interface AppState {
   monaco: {
     schemaModel: monaco.editor.ITextModel | undefined;
     uischemaModel: monaco.editor.ITextModel | undefined;
+    uischemasModel: monaco.editor.ITextModel | undefined;
     dataModel: monaco.editor.ITextModel | undefined;
+    i18nModel: monaco.editor.ITextModel | undefined;
   };
 }

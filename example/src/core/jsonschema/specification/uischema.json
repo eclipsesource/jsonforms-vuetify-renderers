@@ -24,6 +24,12 @@
     },
     {
       "$ref": "#/definitions/templatelayout"
+    },
+    {
+      "$ref": "#/definitions/template"
+    },
+    {
+      "$ref": "#/definitions/slot"
     }
   ],
   "definitions": {
@@ -55,6 +61,12 @@
           },
           {
             "$ref": "#/definitions/templatelayout"
+          },
+          {
+            "$ref": "#/definitions/template"
+          },
+          {
+            "$ref": "#/definitions/slot"
           }
         ]
       }
@@ -355,6 +367,77 @@
           "type": "Layout should have a string property \"type\""
         },
         "additionalProperties": "Layout should not have properties other than type, template, elements, options and rule"
+      }
+    },
+    "template": {
+      "type": "object",
+      "$id": "#template",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "const": "Template",
+          "default": "Template"
+        },
+        "elements": {
+          "$ref": "#/definitions/elements"
+        },
+        "options": {
+          "$ref": "#/definitions/options"
+        },
+        "rule": {
+          "$ref": "#/definitions/rule"
+        }
+      },
+      "required": ["type", "name"],
+      "additionalProperties": false,
+      "errorMessage": {
+        "properties": {
+          "type": "type should be equal to one of the allowed values"
+        },
+        "required": {
+          "name": "Layout should have an string property \"name\"",
+          "type": "Layout should have a string property \"type\""
+        },
+        "additionalProperties": "Layout should not have properties other than type, name, elements, options and rule"
+      }
+    },
+    "slot": {
+      "type": "object",
+      "$id": "#slot",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "const": "Slot",
+          "default": "Slot"
+        },
+        "elements": {
+          "$ref": "#/definitions/elements",
+          "maxItems": 1
+        },
+        "options": {
+          "$ref": "#/definitions/options"
+        },
+        "rule": {
+          "$ref": "#/definitions/rule"
+        }
+      },
+      "required": ["type", "name"],
+      "additionalProperties": false,
+      "errorMessage": {
+        "properties": {
+          "type": "type should be equal to one of the allowed values"
+        },
+        "required": {
+          "name": "Layout should have an string property \"name\"",
+          "type": "Layout should have a string property \"type\""
+        },
+        "additionalProperties": "Layout should not have properties other than type, name, elements, options and rule"
       }
     },
     "rule": {

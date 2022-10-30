@@ -50,19 +50,21 @@
 </template>
 
 <script lang="ts">
-import { PropType } from 'vue';
-import { Example, ResolvedSchema } from '@/core/types';
-import { Ajv } from 'ajv';
+import { JsonExample, ResolvedSchema } from '@/core/types';
+import { createJsonFormsUISchemaRegistryEntry } from '@/core/util';
 import {
-  ValidationMode,
-  JsonFormsUISchemaRegistryEntry,
-  JsonFormsRendererRegistryEntry,
   JsonFormsCellRendererRegistryEntry,
-  JsonSchema,
   JsonFormsI18nState,
+  JsonFormsRendererRegistryEntry,
+  JsonFormsUISchemaRegistryEntry,
+  JsonSchema,
+  ValidationMode,
 } from '@jsonforms/core';
 import { JsonForms, JsonFormsChangeEvent } from '@jsonforms/vue2';
+import { Ajv } from 'ajv';
 import JsonRefs from 'json-refs';
+import _get from 'lodash/get';
+import { PropType } from 'vue';
 import { createTranslator } from '../i18n';
 
 export default {
@@ -71,7 +73,7 @@ export default {
     JsonForms,
   },
   props: {
-    example: { type: Object as PropType<Example>, required: true },
+    example: { type: Object as PropType<JsonExample>, required: true },
     renderers: {
       required: true,
       type: Array as PropType<JsonFormsRendererRegistryEntry[]>,
@@ -90,11 +92,6 @@ export default {
       required: false,
       type: Boolean,
       default: false,
-    },
-    uischemas: {
-      required: false,
-      type: Array as PropType<JsonFormsUISchemaRegistryEntry[]>,
-      default: () => [],
     },
     validationMode: {
       required: false,
@@ -123,21 +120,29 @@ export default {
         locale: this.locale,
         translate: createTranslator(this.locale, this.example?.input?.i18n),
       } as JsonFormsI18nState,
+      uischemas:
+        (this.example.input.uischemas?.map((entry) =>
+          createJsonFormsUISchemaRegistryEntry(entry.tester, entry.uischema)
+        ) as JsonFormsUISchemaRegistryEntry[]) ?? [],
     };
   },
   watch: {
     example: {
       deep: true,
-      handler(newExample: Example, oldExample: Example): void {
+      handler(newExample: JsonExample, oldExample: JsonExample): void {
         this.resolveSchema(newExample.input.schema);
         this.i18n.translate = createTranslator(
           this.locale,
           newExample?.input?.i18n as any
         );
+
+        this.uischemas =
+          newExample.input.uischemas?.map((entry) =>
+            createJsonFormsUISchemaRegistryEntry(entry.tester, entry.uischema)
+          ) ?? [];
       },
     },
     locale(newLocale: string): void {
-      console.log('LOCALE SWITCH', newLocale);
       this.i18n.locale = newLocale;
       this.i18n.translate = createTranslator(
         newLocale,
@@ -145,6 +150,7 @@ export default {
       );
     },
   },
+
   mounted() {
     this.resolveSchema(this.example.input.schema);
   },
@@ -159,7 +165,34 @@ export default {
       resolvedSchema.error = undefined;
 
       if (schema) {
-        JsonRefs.resolveRefs(schema).then(
+        // have custom filter
+        // if not using resolve ref  then the case
+        //   { "$ref": "#/definitions/state" }
+        //   "definitions": {
+        //    "state": { "type": "string", "enum": ["CA", "NY", "FL"] }
+        //   }
+        // then state won't be renderer automatically - needs to have a specified control
+        //
+        // if using a resolve ref but then it points to definition with $id if we resolve those then we will get
+        // Error: reference "{ref}" resolves to more than one schema
+        const refFilter = (refDetails: any, _path: string): boolean => {
+          if (refDetails.type === 'local') {
+            let uri: string | undefined = refDetails?.uriDetails?.fragment;
+            uri = uri ? uri.replace(/\//g, '.') : uri;
+            if (uri?.startsWith('.')) {
+              uri = uri.substring(1);
+            }
+            if (uri && _get(schema, uri)?.$id) {
+              // do not resolve ref that points to def with $id
+              return false;
+            }
+          }
+          return true;
+        };
+
+        JsonRefs.resolveRefs(schema, {
+          filter: refFilter,
+        }).then(
           function (res) {
             resolvedSchema.schema = res.resolved;
             resolvedSchema.resolved = true;

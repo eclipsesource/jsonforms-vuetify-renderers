@@ -44,7 +44,9 @@ const state: AppState = {
   monaco: {
     schemaModel: undefined,
     uischemaModel: undefined,
+    uischemasModel: undefined,
     dataModel: undefined,
+    i18nModel: undefined,
   },
 };
 

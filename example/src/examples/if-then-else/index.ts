@@ -1,10 +1,6 @@
-import schema from './schema.json';
+import { JsonExampleInput } from '@/core/types';
 import data from './data.json';
-import { UISchemaElement, JsonSchema } from '@jsonforms/core';
+import schema from './schema.json';
 
 const uischema = undefined;
-export const input: {
-  schema: JsonSchema;
-  uischema: UISchemaElement | undefined;
-  data: any;
-} = { schema, uischema, data };
+export const input: JsonExampleInput = { schema, uischema, data };

@@ -1,3 +1,4 @@
+import { JsonExample } from '@/core/types';
 import { input as allOf } from './allOf';
 import { input as anyOf } from './anyOf';
 import { input as anyOfSimple } from './anyOf-simple';
@@ -11,13 +12,14 @@ import { input as categorizationStepperNav } from './categorization-stepper-nav'
 import { input as control } from './control';
 import { input as controlOptions } from './control-options';
 import { input as customRenderer } from './custom-renderer';
-import { input as enumExample } from './enum';
 import { input as dateExample } from './date';
-import { input as timeExample } from './time';
 import { input as dateTimeExample } from './datetime';
+import { input as enumExample } from './enum';
 import { input as enumInArray } from './enum-in-array';
 import { input as groupLayout } from './group-layout';
 import { input as horizontalLayout } from './horizontal-layout';
+import { input as huge } from './huge';
+import { input as ifThenElse } from './if-then-else';
 import { input as listWithDetails } from './list-with-details';
 import { input as listWithDetailsAndReorder } from './list-with-details-and-reorder';
 import { input as listWithDetailsRestrict } from './list-with-details-restrict';
@@ -38,12 +40,12 @@ import { input as radio } from './radio';
 import { input as radioGroup } from './radio-group';
 import { input as rootObject } from './root-object';
 import { input as rule } from './rule';
-import { input as verticalLayout } from './vertical-layout';
-import { input as huge } from './huge';
-import { input as ifThenElse } from './if-then-else';
 import { input as templateLayout } from './template-layout';
+import { input as templateSlot } from './template-slot';
+import { input as timeExample } from './time';
+import { input as verticalLayout } from './vertical-layout';
 
-export const examples = [
+export const examples: JsonExample[] = [
   {
     id: 'main',
     title: 'Main',
@@ -140,6 +142,11 @@ export const examples = [
     input: templateLayout,
   },
   {
+    id: 'template-slot',
+    title: 'Template/Slot Layout',
+    input: templateSlot,
+  },
+  {
     id: 'array',
     title: 'Array',
     input: array,
@@ -202,6 +209,7 @@ export const examples = [
   {
     id: 'root-object',
     title: 'Root Object',
+    note: 'Change `return NOT_APPLICABLE;` to `return 1;` in UI Schemas tab, and then save, to see the difference in the Demo tab',
     input: rootObject,
   },
   {

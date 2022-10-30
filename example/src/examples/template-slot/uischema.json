@@ -1,0 +1,11 @@
+{
+  "type": "Template",
+  "name": "my-template",
+  "elements": [
+    {
+      "type": "Label",
+      "name": "footer",
+      "text": "Overridden Footer"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+[
+  {
+    "tester": "(jsonSchema, schemaPath, path) => { return NOT_APPLICABLE; }",
+    "uischema": {
+      "type": "VerticalLayout",
+      "elements": [
+        {
+          "type": "Label",
+          "text": "Demo"
+        }
+      ]
+    }
+  }
+]
