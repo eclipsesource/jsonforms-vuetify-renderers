@@ -134,11 +134,11 @@ const templateCompiler = defineComponent({
         : undefined;
     },
   },
-  async created() {
-    await this.compile();
+  created() {
+    this.compile();
   },
   methods: {
-    async compile() {
+    compile() {
       const component = compileToFunctions.value!(this.template);
       const compiled = merge(component, unref(this.componentProps));
       this.compiled = compiled;
