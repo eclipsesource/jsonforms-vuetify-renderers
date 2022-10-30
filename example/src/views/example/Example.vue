@@ -258,9 +258,9 @@ import { Example } from '@/core/types';
 import type { JsonFormsRendererRegistryEntry } from '@jsonforms/core';
 import { JsonFormsChangeEvent } from '@jsonforms/vue2';
 import { defaultStyles, mergeStyles } from '@jsonforms/vue2-vuetify';
+import cloneDeep from 'lodash/cloneDeep';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import { VImg } from 'vuetify/lib';
-import { ref } from 'vue';
 
 const myStyles = mergeStyles(defaultStyles, {
   control: { root: 'my-control' },
@@ -323,17 +323,7 @@ export default {
     },
     setExample(example: Example): void {
       if (example) {
-        this.example = {
-          id: example.id,
-          title: example.title,
-          input: {
-            schema: example.input.schema,
-            uischema: example.input.uischema,
-            data: example.input.data,
-            i18n: example.input.i18n,
-            renderers: example.input.renderers,
-          },
-        };
+        this.example = cloneDeep(example);
         this.updateMonacoModels(this.example);
       }
     },
