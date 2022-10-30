@@ -1,6 +1,6 @@
 {
   "type": "TemplateLayout",
-  "template": "<v-card class=\"mx-auto my-12\" outlined><slot name=\"header\">Header</slot><v-card-title><h2>Custom TemplateLayout with JSONForms and Vuetify</h2></v-card-title><div v-for=\"element in elements\"><slot v-if=\"element.name != 'header'\" :name=\"element.name\"></slot><v-divider class=\"mx-6\"></v-divider></div></v-card>",
+  "template": "<v-card class=\"mx-auto my-12\" outlined><slot name=\"header\"></slot><v-card-title><h2>Custom TemplateLayout with JSONForms and Vuetify</h2></v-card-title><div v-for=\"element in elements\"><slot v-if=\"element.name != 'header'\" :name=\"element.name\"></slot><v-divider class=\"mx-6\"></v-divider></div></v-card>",
   "elements": [
     {
       "type": "TemplateLayout",
