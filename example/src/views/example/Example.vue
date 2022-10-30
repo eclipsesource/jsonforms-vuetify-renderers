@@ -295,6 +295,7 @@ import {
   configureDataValidation,
   configureJsonSchemaValidation,
   configureUISchemaValidation,
+  configureUISchemasValidation,
   EditorApi,
   getMonacoModelForUri,
 } from '@/core/jsonSchemaValidation';
@@ -597,6 +598,7 @@ export default {
     registerValidations(editor: EditorApi) {
       configureJsonSchemaValidation(editor, ['*.schema.json']);
       configureUISchemaValidation(editor, ['*.uischema.json']);
+      configureUISchemasValidation(editor, ['*.uischemas.json']);
       for (let example of examples) {
         const schema = {
           ...example.input.schema,

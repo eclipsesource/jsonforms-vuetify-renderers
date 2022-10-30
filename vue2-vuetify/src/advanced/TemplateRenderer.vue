@@ -29,10 +29,11 @@ import {
 } from '@jsonforms/vue2';
 import find from 'lodash/find';
 import isEmpty from 'lodash/isEmpty';
-import { defineComponent, inject } from 'vue';
+import { computed, defineComponent, inject, unref } from 'vue';
 import { useVuetifyLayout } from '../util';
+import { provide } from 'vue';
 
-const referenceControlRenderer = defineComponent({
+const templateRenderer = defineComponent({
   name: 'template-renderer',
   components: {
     DispatchRenderer,
@@ -50,32 +51,9 @@ const referenceControlRenderer = defineComponent({
       );
     }
 
-    const slotContents = inject<Record<string, UISchemaElement> | undefined>(
-      'templateRendererSlotContents',
-      undefined
-    );
-
-    return {
-      ...layout,
-      slotContents,
-      jsonforms,
-    };
-  },
-  provide() {
-    const slotContents = this.slotContents
-      ? Object.assign({}, this.slotContents, this.elementTemplates)
-      : this.elementTemplates;
-
-    return {
-      templateRendererSlotContents: slotContents,
-    };
-  },
-  computed: {
-    name(): string {
-      return (this.layout.uischema as any).name;
-    },
-    elementTemplates(): Record<string, UISchemaElement> {
-      const elements = (this.layout.uischema as Layout)?.elements || [];
+    const elementTemplates = computed(() => {
+      const elements =
+        (unref(layout.layout).uischema as Layout)?.elements || [];
 
       return elements.reduce(function (result, element) {
         const name: string = (element as any).name;
@@ -84,6 +62,26 @@ const referenceControlRenderer = defineComponent({
         }
         return result;
       }, {} as Record<string, UISchemaElement>);
+    });
+
+    const parentSlotContents = inject<
+      Record<string, UISchemaElement> | undefined
+    >('templateRendererSlotContents', undefined);
+
+    const slotContents = parentSlotContents
+      ? Object.assign({}, parentSlotContents, elementTemplates.value)
+      : elementTemplates.value;
+
+    provide('templateRendererSlotContents', slotContents);
+
+    return {
+      ...layout,
+      jsonforms,
+    };
+  },
+  computed: {
+    name(): string {
+      return (this.layout.uischema as any).name;
     },
     template(): UISchemaElement | undefined {
       const uischemas = this.jsonforms.uischemas;
@@ -96,13 +94,13 @@ const referenceControlRenderer = defineComponent({
   },
 });
 
-export default referenceControlRenderer;
+export default templateRenderer;
 
 export const hasName = (uischema: any) =>
   !isEmpty(uischema) && typeof uischema.name === 'string';
 
 export const entry: JsonFormsRendererRegistryEntry = {
-  renderer: referenceControlRenderer,
+  renderer: templateRenderer,
   tester: rankWith(1, and(uiTypeIs('Template'), hasName)),
 };
 </script>

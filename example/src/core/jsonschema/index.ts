@@ -1,6 +1,7 @@
 import rule from './specification/rule.json';
 import schema from './specification/schema.json';
 import uischema from './specification/uischema.json';
+import uischemas from './specification/uischemas.json';
 import { JsonSchema } from '@jsonforms/core';
 
 export const jsonSchemaDraft7 = {
@@ -11,6 +12,10 @@ export const jsonSchemaDraft7 = {
 export const uiSchema = {
   uri: 'http://jsonforms.io/uischema',
   schema: uischema as JsonSchema,
+};
+export const uiSchemas = {
+  uri: 'http://jsonforms.io/uischemas',
+  schema: uischemas as JsonSchema,
 };
 export const ruleSchema = {
   uri: 'http://jsonforms.io/uischema/rule',

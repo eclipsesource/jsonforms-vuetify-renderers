@@ -2,7 +2,12 @@ import editorApi from 'monaco-editor/esm/vs/editor/editor.api';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import { JsonSchema } from '@jsonforms/core';
 
-import { jsonSchemaDraft7, ruleSchema, uiSchema } from '../core/jsonschema';
+import {
+  jsonSchemaDraft7,
+  ruleSchema,
+  uiSchema,
+  uiSchemas,
+} from '../core/jsonschema';
 
 export type EditorApi = typeof editorApi;
 
@@ -80,6 +85,23 @@ export const configureUISchemaValidation = (
   ]);
 };
 
+/**
+ * Configures the Monaco Editor to validate the input against the UI Schemas meta-schema.
+ */
+export const configureUISchemasValidation = (
+  editor: EditorApi,
+  fileMatch: string[]
+): void => {
+  /** Note that the Monaco Editor only supports JSON Schema Draft 7 itself,
+   * so if we also want to support a later standard we still have to formalize
+   * it in JSON Schema Draft 7*/
+  addSchema(editor, [
+    { ...jsonSchemaDraft7 },
+    { ...ruleSchema },
+    { ...uiSchema },
+    { ...uiSchemas, fileMatch },
+  ]);
+};
 /**
  * Configures the Monaco Editor to validate the input against JSON Schema model schema.
  */

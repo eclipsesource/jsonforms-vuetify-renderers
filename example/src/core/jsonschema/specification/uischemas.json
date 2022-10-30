@@ -1,0 +1,16 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "http://jsonforms.io/uischemas",
+  "title": "UI schemas meta-schema",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "tester": {
+        "type": "string",
+        "pattern": "^\\(jsonSchema, schemaPath, path\\) => {.*}$"
+      },
+      "uischema": { "$ref": "http://jsonforms.io/uischema" }
+    }
+  }
+}
