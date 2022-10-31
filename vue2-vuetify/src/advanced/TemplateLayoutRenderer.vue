@@ -1,22 +1,21 @@
 <template>
-  <v-flex v-if="layout.visible" v-bind="vuetifyProps('v-flex')">
-    <div v-if="templateError !== null" class="error">
-      Template Error: {{ templateError }}
-    </div>
+  <div v-if="templateError !== null" class="error">
+    Template Error: {{ templateError }}
+  </div>
 
-    <template-compiler
-      :template="template"
-      :parent="parentComponent"
-      :elements="namedElements"
-      :componentComputed="componentComputed"
-      :componentDirectives="componentDirectives"
-      :componentMethods="componentMethods"
-      :componentFilters="componentFilters"
-      :componentComponents="componentComponents"
-      :layout="layout"
-    >
-    </template-compiler>
-  </v-flex>
+  <template-compiler
+    v-else-if="layout.visible"
+    :template="template"
+    :parent="parentComponent"
+    :elements="namedElements"
+    :componentComputed="componentComputed"
+    :componentDirectives="componentDirectives"
+    :componentMethods="componentMethods"
+    :componentFilters="componentFilters"
+    :componentComponents="componentComponents"
+    :layout="layout"
+  >
+  </template-compiler>
 </template>
 
 <script lang="ts">
