@@ -544,4 +544,6 @@ export default vuetifyFormWc;
 @import url('//fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900');
 @import url('//cdn.jsdelivr.net/npm/@mdi/font@6.x/css/materialdesignicons.min.css');
 @import url('//cdn.jsdelivr.net/npm/vuetify@2.6.12/dist/vuetify.min.css');
+
+@import '~@jsonforms/vue2-vuetify/lib/jsonforms-vue2-vuetify.esm.css';
 </style>
