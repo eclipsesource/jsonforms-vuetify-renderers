@@ -23,6 +23,7 @@
 import {
   JsonFormsRendererRegistryEntry,
   JsonFormsSubStates,
+  Layout,
   rankWith,
   UISchemaElement,
   uiTypeIs,
@@ -89,12 +90,15 @@ import {
 } from 'vuetify/lib';
 import { useTranslator, useVuetifyLayout } from '../util';
 import TemplateCompiler from './components/TemplateCompiler.vue';
-import {
-  Components,
-  NamedUISchemaElement,
-  TemplateContext,
-  TemplateLayout,
-} from './types';
+import { Components, NamedUISchemaElement, TemplateContext } from './types';
+
+export interface TemplateLayout extends Layout {
+  type: 'TemplateLayout';
+  /**
+   * The template string.
+   */
+  template: string;
+}
 
 const templateLayoutRenderer = defineComponent({
   name: 'template-layout-renderer',

@@ -1,7 +1,6 @@
 import {
   JsonFormsSubStates,
   JsonSchema,
-  Layout,
   Translator,
   UISchemaElement,
 } from '@jsonforms/core';
@@ -20,14 +19,6 @@ export interface TemplateContext {
   uischema?: UISchemaElement;
   errors?: ErrorObject[];
   additionalErrors?: ErrorObject[];
-}
-
-export interface TemplateLayout extends Layout {
-  type: 'TemplateLayout';
-  /**
-   * The template string.
-   */
-  template: string;
 }
 
 export type Components = {
