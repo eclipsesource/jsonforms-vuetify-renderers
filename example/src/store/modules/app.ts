@@ -14,10 +14,12 @@ const compileToFunctions = () =>
     const { compileToFunctions } = module;
     return compileToFunctions;
   });
-import { createAjv, advancedVuetifyRenderers } from '@jsonforms/vue2-vuetify';
+import { advancedVuetifyRenderers } from '@jsonforms/vue2-vuetify';
+import { createAjv } from '../validate/validate';
+
 const vuetifyRenderers = advancedVuetifyRenderers(compileToFunctions);
 
-const ajv = createAjv({ useDefaults: true });
+const ajv = createAjv();
 
 // Data
 const state: AppState = {
