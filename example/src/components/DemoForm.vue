@@ -182,7 +182,7 @@ export default {
             if (uri?.startsWith('.')) {
               uri = uri.substring(1);
             }
-            if (uri && _get(schema, uri)?.$id) {
+            if (uri && (_get(schema, uri) as any)?.$id) {
               // do not resolve ref that points to def with $id
               return false;
             }
