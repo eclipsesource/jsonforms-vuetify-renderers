@@ -73,6 +73,8 @@
                     :max="maxTime"
                     :use-seconds="useSeconds"
                     :format="ampm ? 'ampm' : '24hr'"
+                    @click:minute="onMinute"
+                    @click:second="onSecond"
                   ></v-time-picker>
                 </v-tab-item>
               </v-tabs>
@@ -97,10 +99,12 @@
                     :max="maxTime"
                     :use-seconds="useSeconds"
                     :format="ampm ? 'ampm' : '24hr'"
+                    @click:minute="onMinute"
+                    @click:second="onSecond"
                   ></v-time-picker>
                 </v-col>
               </v-row>
-              <v-card-actions>
+              <v-card-actions v-if="showActions">
                 <v-btn text @click="clear"> {{ clearLabel }} </v-btn>
                 <v-spacer></v-spacer>
                 <v-btn text @click="showMenu = false">
@@ -410,7 +414,7 @@ const controlRenderer = defineComponent({
         return date ? date.format('YYYY-MM-DD') : undefined;
       },
       set(val: string) {
-        this.onPickerChange(val, (this.$refs.timePicker as any).genValue());
+        this.onPickerChange(val, this.timePickerValue);
       },
     },
     timePickerValue: {
@@ -426,7 +430,7 @@ const controlRenderer = defineComponent({
           : undefined;
       },
       set(val: string) {
-        this.onPickerChange((this.$refs.datePicker as any).inputDate, val);
+        this.onPickerChange(this.datePickerValue, val);
       },
     },
     pickerValue: {
@@ -441,7 +445,9 @@ const controlRenderer = defineComponent({
       },
       set(val: string) {
         const dateTime = parseDateTime(val, 'YYYY-MM-DDTHH:mm:ss.SSSZ');
-        this.onChange(dateTime!.format(this.dateTimeSaveFormat));
+        if (dateTime && this.showActions) {
+          this.onChange(dateTime.format(this.dateTimeSaveFormat));
+        }
       },
     },
     clearLabel(): string {
@@ -450,7 +456,7 @@ const controlRenderer = defineComponent({
           ? this.appliedOptions.clearLabel
           : 'Clear';
 
-      return label;
+      return this.t(label, label);
     },
     cancelLabel(): string {
       const label =
@@ -458,14 +464,17 @@ const controlRenderer = defineComponent({
           ? this.appliedOptions.cancelLabel
           : 'Cancel';
 
-      return label;
+      return this.t(label, label);
     },
     okLabel(): string {
       const label =
         typeof this.appliedOptions.okLabel == 'string'
           ? this.appliedOptions.okLabel
           : 'OK';
-      return label;
+      return this.t(label, label);
+    },
+    showActions(): boolean {
+      return this.appliedOptions.showActions === true;
     },
   },
   methods: {
@@ -477,7 +486,7 @@ const controlRenderer = defineComponent({
         this.onChange(newdata);
       }
     },
-    onPickerChange(dateValue: string, timeValue: string): void {
+    onPickerChange(dateValue?: string, timeValue?: string): void {
       const date = parseDateTime(dateValue, 'YYYY-MM-DD');
       const time = parseDateTime(
         timeValue ?? (this.useSeconds ? '00:00:00' : '00:00'),
@@ -497,6 +506,16 @@ const controlRenderer = defineComponent({
     okHandler(): void {
       (this.$refs.menu as any).save(this.pickerValue);
       this.showMenu = false;
+    },
+    onMinute(): void {
+      if (!this.showActions && !this.useSeconds) {
+        this.okHandler();
+      }
+    },
+    onSecond(): void {
+      if (!this.showActions && this.useSeconds) {
+        this.okHandler();
+      }
     },
     clear(): void {
       this.mask = undefined;
