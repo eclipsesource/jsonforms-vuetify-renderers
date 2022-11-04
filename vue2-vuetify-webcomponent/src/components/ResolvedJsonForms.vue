@@ -15,7 +15,7 @@
       :i18n="i18n"
       :additionalErrors="additionalErrors"
       @change="onChange"
-    />
+    ></json-forms>
     <v-container v-else style="height: 400px">
       <v-row
         v-if="!resolved"

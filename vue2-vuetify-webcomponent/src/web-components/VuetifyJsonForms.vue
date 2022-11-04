@@ -479,12 +479,17 @@ const vuetifyFormWc = defineComponent({
     },
   },
   async mounted() {
-    const shadowRoot = (this.$refs['root'] as any).$el as HTMLDivElement;
+    const root = this.$el;
 
-    // Monkey patch querySelector to properly find root element
+    // Vuetify patch querySelector to properly find root element
     const { querySelector } = document;
     document.querySelector = function (selector: any) {
-      if (selector === '[data-app]') return shadowRoot;
+      if (
+        selector === '[data-app]' &&
+        root.getRootNode() instanceof ShadowRoot
+      ) {
+        return (root.getRootNode() as ShadowRoot).querySelector(selector);
+      }
       return querySelector.call(this, selector);
     };
 
