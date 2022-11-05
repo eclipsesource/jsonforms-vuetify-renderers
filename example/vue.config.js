@@ -30,7 +30,7 @@ module.exports = {
         patterns: [
           {
             context: 'node_modules/@jsonforms/vue2-vuetify-webcomponent/dist/',
-            from: '*.min.js',
+            from: '*.min.js*',
             to: './js',
           },
         ],

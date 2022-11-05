@@ -21,6 +21,7 @@
                       <v-tooltip bottom>
                         <template v-slot:activator="{ on: onTooltip }">
                           <v-btn
+                            color="primary"
                             icon
                             v-on="onTooltip"
                             :to="{
@@ -36,18 +37,26 @@
                       </v-tooltip>
                       <v-tooltip bottom>
                         <template v-slot:activator="{ on: onTooltip }">
-                          <v-switch
+                          <v-btn
+                            icon
+                            :outlined="useWebComponentView"
+                            color="primary"
+                            @click="useWebComponentView = !useWebComponentView"
                             v-on="onTooltip"
-                            v-model="useWebComponentView"
                           >
                             <v-img
-                              :src="require('@/assets/webcomponent.svg')"
                               max-height="24"
                               max-width="24"
+                              v-on="onTooltip"
+                              :src="require('@/assets/webcomponent.svg')"
                             />
-                          </v-switch>
+                          </v-btn>
                         </template>
-                        {{ `Render with vuetify-json-forms WebComponent` }}
+                        {{
+                          !useWebComponentView
+                            ? `Use webcomponent`
+                            : `Do not use webcomponent`
+                        }}
                       </v-tooltip>
                     </v-toolbar>
                   </v-card-title>
@@ -67,7 +76,7 @@
                     ></demo-form>
                     <vuetify-json-forms-wrapper
                       v-else
-                      :custom-style="``"
+                      :custom-style="`.v-application--wrap { min-height: 0px; }`"
                       :data="
                         app.example.input.data
                           ? JSON.stringify(app.example.input.data)
@@ -284,11 +293,11 @@
         :ajv="ajv"
         :readonly="readonly"
         :locale="locale"
-        @change="onWebComponentChange"
+        @change="onChange"
       />
       <vuetify-json-forms-wrapper
         v-if="app.example != null && formonly && useWebComponentView"
-        :custom-style="``"
+        :custom-style="`.v-application--wrap { min-height: 0px; }`"
         :data="
           app.example.input.data
             ? JSON.stringify(app.example.input.data)
@@ -318,7 +327,7 @@
             ? JSON.stringify(app.example.input.i18n)
             : undefined
         "
-        @change="onChange"
+        @change="onWebComponentChange"
       ></vuetify-json-forms-wrapper>
     </div>
   </div>
