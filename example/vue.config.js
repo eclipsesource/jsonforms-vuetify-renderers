@@ -32,6 +32,7 @@ module.exports = {
             context: 'node_modules/@jsonforms/vue2-vuetify-webcomponent/dist/',
             from: '*.min.js*',
             to: './js',
+            noErrorOnMissing: true,
           },
         ],
       },
