@@ -1,4 +1,5 @@
 const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
 
 module.exports = {
   configureWebpack: {
@@ -24,6 +25,17 @@ module.exports = {
     // remove typecheck
     config.plugins.delete('fork-ts-checker');
 
+    config.plugin('copy').use(CopyPlugin, [
+      {
+        patterns: [
+          {
+            context: 'node_modules/@jsonforms/vue2-vuetify-webcomponent/dist/',
+            from: '*.min.js',
+            to: './js',
+          },
+        ],
+      },
+    ]);
     config.plugin('monaco-editor').use(MonacoWebpackPlugin, [
       {
         // Languages are loaded on demand at runtime

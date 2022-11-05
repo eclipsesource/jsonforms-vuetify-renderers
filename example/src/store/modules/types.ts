@@ -4,9 +4,12 @@ import {
 } from '@jsonforms/core';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import Ajv from 'ajv';
+import { Example } from '@/core/types';
 
 // declare your own store states
 export interface AppState {
+  example: Example | undefined;
+  examples: Example[];
   drawer: boolean | null;
   jsonforms: {
     readonly: boolean;

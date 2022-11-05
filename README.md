@@ -34,5 +34,5 @@ Use Node 12+
 Recommendations:
 
 - For development use `npm run watch` combined with `npm run example:serve`.
-- To test production use `npm run build` combined with `npm run example:build`.
+- To test production use `npm run build` followed by `npm run wc:build` combined with `npm run example:build`.
   Then serve the built application from `example/dist` with a web server of your choice, e.g. `npx http-server example/dist`.

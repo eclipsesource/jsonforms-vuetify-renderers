@@ -4,11 +4,14 @@ import { AppState } from './types';
 import { RootState } from '../types';
 import { Module } from 'vuex';
 import { createAjv, extendedVuetifyRenderers } from '@jsonforms/vue2-vuetify';
+import { examples } from '@/examples';
 
 const ajv = createAjv({ useDefaults: true });
 
 // Data
 const state: AppState = {
+  example: undefined,
+  examples: examples,
   drawer: null,
   jsonforms: {
     readonly: false,

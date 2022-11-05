@@ -37,7 +37,7 @@
 import { sync } from 'vuex-pathify';
 import Settings from '@/components/Settings.vue';
 import ThemeChanger from '@/components/ThemeChanger.vue';
-import { AppStore } from '../store/modules/types';
+import { AppStore } from '@/store/modules/types';
 
 export default {
   name: 'DefaultAppBar',

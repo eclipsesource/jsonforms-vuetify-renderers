@@ -1,9 +1,9 @@
 <template>
   <div>
-    <v-container fluid class="demo" v-if="example != null && !formonly">
+    <v-container fluid class="demo" v-if="app.example != null && !formonly">
       <v-flex>
         <v-card>
-          <v-card-title>{{ example.title }}</v-card-title>
+          <v-card-title>{{ app.example.title }}</v-card-title>
           <v-card-text>
             <v-tabs v-model="activeTab">
               <v-tab :key="0">Demo</v-tab>
@@ -34,12 +34,28 @@
                         </template>
                         {{ `Show JsonForm Only` }}
                       </v-tooltip>
+                      <v-tooltip bottom>
+                        <template v-slot:activator="{ on: onTooltip }">
+                          <v-switch
+                            v-on="onTooltip"
+                            v-model="useWebComponentView"
+                          >
+                            <v-img
+                              :src="require('@/assets/webcomponent.svg')"
+                              max-height="24"
+                              max-width="24"
+                            />
+                          </v-switch>
+                        </template>
+                        {{ `Render with vuetify-json-forms WebComponent` }}
+                      </v-tooltip>
                     </v-toolbar>
                   </v-card-title>
                   <v-divider class="mx-4"></v-divider>
                   <div class="json-forms">
                     <demo-form
-                      :example="example"
+                      v-if="!useWebComponentView"
+                      :example="app.example"
                       :renderers="allRenderers"
                       :cells="cells"
                       :config="config"
@@ -48,7 +64,41 @@
                       :readonly="readonly"
                       :locale="locale"
                       @change="onChange"
-                    />
+                    ></demo-form>
+                    <vuetify-json-forms-wrapper
+                      v-else
+                      :custom-style="``"
+                      :data="
+                        app.example.input.data
+                          ? JSON.stringify(app.example.input.data)
+                          : undefined
+                      "
+                      :schema="
+                        app.example.input.schema
+                          ? JSON.stringify(app.example.input.schema)
+                          : undefined
+                      "
+                      :uischema="
+                        app.example.input.uischema
+                          ? JSON.stringify(app.example.input.uischema)
+                          : undefined
+                      "
+                      :uischemas="
+                        app.example.input.uischemas
+                          ? JSON.stringify(app.example.input.uischemas)
+                          : undefined
+                      "
+                      :config="config ? JSON.stringify(config) : undefined"
+                      :validationMode="validationMode"
+                      :readonly="readonly"
+                      :locale="locale"
+                      :translations="
+                        app.example.input.i18n
+                          ? JSON.stringify(app.example.input.i18n)
+                          : undefined
+                      "
+                      @change="onWebComponentChange"
+                    ></vuetify-json-forms-wrapper>
                   </div>
                 </v-card>
               </v-tab-item>
@@ -225,8 +275,8 @@
     </v-container>
     <div class="json-forms">
       <demo-form
-        v-if="example != null && formonly"
-        :example="example"
+        v-if="app.example != null && formonly && !useWebComponentView"
+        :example="app.example"
         :renderers="allRenderers"
         :cells="cells"
         :config="config"
@@ -234,31 +284,66 @@
         :ajv="ajv"
         :readonly="readonly"
         :locale="locale"
-        @change="onChange"
+        @change="onWebComponentChange"
       />
+      <vuetify-json-forms-wrapper
+        v-if="app.example != null && formonly && useWebComponentView"
+        :custom-style="``"
+        :data="
+          app.example.input.data
+            ? JSON.stringify(app.example.input.data)
+            : undefined
+        "
+        :schema="
+          app.example.input.schema
+            ? JSON.stringify(app.example.input.schema)
+            : undefined
+        "
+        :uischema="
+          app.example.input.uischema
+            ? JSON.stringify(app.example.input.uischema)
+            : undefined
+        "
+        :uischemas="
+          app.example.input.uischemas
+            ? JSON.stringify(app.example.input.uischemas)
+            : undefined
+        "
+        :config="config ? JSON.stringify(config) : undefined"
+        :validationMode="validationMode"
+        :readonly="readonly"
+        :locale="locale"
+        :translations="
+          app.example.input.i18n
+            ? JSON.stringify(app.example.input.i18n)
+            : undefined
+        "
+        @change="onChange"
+      ></vuetify-json-forms-wrapper>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { examples } from '@/examples';
 import { find } from 'lodash';
 import { sync } from 'vuex-pathify';
 
-import { mergeStyles, defaultStyles } from '@jsonforms/vue2-vuetify';
-import { JsonFormsChangeEvent } from '@jsonforms/vue2';
-import MonacoEditor from '@/components/MonacoEditor.vue';
 import DemoForm from '@/components/DemoForm.vue';
-import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
+import MonacoEditor from '@/components/MonacoEditor.vue';
+import VuetifyJsonFormsWrapper from '@/components/VuetifyJsonFormsWrapper.vue';
 import {
+  configureDataValidation,
   configureJsonSchemaValidation,
   configureUISchemaValidation,
-  configureDataValidation,
   EditorApi,
   getMonacoModelForUri,
 } from '@/core/jsonSchemaValidation';
 import { Example } from '@/core/types';
-import type { JsonFormsRendererRegistryEntry } from '@jsonforms/core';
+import { AppStore } from '@/store/modules/types';
+import { JsonFormsRendererRegistryEntry } from '@jsonforms/core';
+import { JsonFormsChangeEvent } from '@jsonforms/vue2';
+import { defaultStyles, mergeStyles } from '@jsonforms/vue2-vuetify';
+import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 
 const myStyles = mergeStyles(defaultStyles, {
   control: { root: 'my-control' },
@@ -269,21 +354,22 @@ export default {
   components: {
     MonacoEditor,
     DemoForm,
+    VuetifyJsonFormsWrapper,
   },
   data() {
     return {
+      useWebComponentView: false,
       activeTab: 0,
-      examples,
-      example: undefined,
       snackbar: false,
       snackbarText: '',
       snackbarTimeout: 3000,
     };
   },
   computed: {
+    app: sync<AppStore>('app/'),
     renderers: sync('app/jsonforms@renderers'),
     allRenderers(): JsonFormsRendererRegistryEntry[] {
-      return (this.example?.input.renderers ?? []).concat(this.renderers);
+      return (this.app.example?.input.renderers ?? []).concat(this.renderers);
     },
     cells: sync('app/jsonforms@cells'),
     config: sync('app/jsonforms@config'),
@@ -301,27 +387,49 @@ export default {
   },
   mounted() {
     this.setExample(
-      find(this.examples, (example) => example.id === this.$route.params.id)
+      find(this.app.examples, (example) => example.id === this.$route.params.id)
     );
   },
   watch: {
     '$route.params.id'(id) {
-      this.setExample(find(this.examples, (example) => example.id === id));
+      this.setExample(find(this.app.examples, (example) => example.id === id));
     },
   },
   methods: {
-    onChange(event: JsonFormsChangeEvent) {
+    onChange(event: JsonFormsChangeEvent): void {
+      const data = event.data;
+      // preserve data into the input so that it is saved when we switch to webcomponet and back
+      this.$set(this.app.example.input, 'data', data);
+
       this.$store.set(
         'app/monaco@dataModel',
         getMonacoModelForUri(
-          monaco.Uri.parse(this.toDataUri(this.example.id)),
-          event.data ? JSON.stringify(event.data, null, 2) : ''
+          monaco.Uri.parse(this.toDataUri(this.app.example.id)),
+          data ? JSON.stringify(data, null, 2) : ''
         )
       );
     },
+    onWebComponentChange(customEvent: CustomEvent): void {
+      const details = customEvent.detail as any[];
+      if (details && details.length > 0) {
+        const event: JsonFormsChangeEvent = details[0];
+        const data = event.data;
+
+        // preserve data into the input so that it is saved when we switch to webcomponet and back
+        this.$set(this.app.example.input, 'data', data);
+
+        this.$store.set(
+          'app/monaco@dataModel',
+          getMonacoModelForUri(
+            monaco.Uri.parse(this.toDataUri(this.app.example.id)),
+            data ? JSON.stringify(data, null, 2) : ''
+          )
+        );
+      }
+    },
     setExample(example: Example): void {
       if (example) {
-        this.example = {
+        this.app.example = {
           id: example.id,
           title: example.title,
           input: {
@@ -332,12 +440,12 @@ export default {
             renderers: example.input.renderers,
           },
         };
-        this.updateMonacoModels(this.example);
+        this.updateMonacoModels(this.app.example);
       }
     },
-    reloadMonacoSchema() {
+    reloadMonacoSchema(): void {
       const example = find(
-        this.examples,
+        this.app.examples,
         (example) => example.id === this.$route.params.id
       );
 
@@ -354,9 +462,9 @@ export default {
         this.toast('Original example schema loaded. Apply it to take effect.');
       }
     },
-    saveMonacoSchema() {
+    saveMonacoSchema(): void {
       const model = this.monacoSchemaModel as monaco.editor.ITextModel;
-      const example = this.example;
+      const example = this.app.example;
 
       if (model && example) {
         // TODO: is there a better way how to get errors including the error message from monaco editor ?
@@ -369,17 +477,17 @@ export default {
         const modelValue = model.getValue();
         if (modelValue && !hasError) {
           const newJson: Record<string, any> = JSON.parse(modelValue);
-          example.input.schema = newJson;
 
+          this.$set(example.input, 'schema', newJson);
           this.toast('New schema applied');
         } else if (hasError) {
           this.toast('Error: schema is invalid');
         }
       }
     },
-    reloadMonacoUiSchema() {
+    reloadMonacoUiSchema(): void {
       const example = find(
-        this.examples,
+        this.app.examples,
         (example) => example.id === this.$route.params.id
       );
 
@@ -398,9 +506,9 @@ export default {
         );
       }
     },
-    saveMonacoUiSchema() {
+    saveMonacoUiSchema(): void {
       const model = this.monacoUiSchemaModel as monaco.editor.ITextModel;
-      const example = this.example;
+      const example = this.app.example;
 
       if (model && example) {
         // TODO: is there a better way how to get errors including the error message from monaco editor ?
@@ -413,16 +521,17 @@ export default {
         const modelValue = model.getValue();
         if (modelValue && !hasError) {
           const newJson: Record<string, any> = JSON.parse(modelValue);
-          example.input.uischema = newJson;
+
+          this.$set(example.input, 'uischema', newJson);
           this.toast('New UI schema applied');
         } else if (hasError) {
           this.toast('Error: UI schema is invalid');
         }
       }
     },
-    reloadMonacoData() {
+    reloadMonacoData(): void {
       const example = find(
-        this.examples,
+        this.app.examples,
         (example) => example.id === this.$route.params.id
       );
 
@@ -439,9 +548,9 @@ export default {
         this.toast('Original example data loaded. Apply it to take effect.');
       }
     },
-    saveMonacoData() {
+    saveMonacoData(): void {
       const model = this.monacoDataModel as monaco.editor.ITextModel;
-      const example = this.example;
+      const example = this.app.example;
 
       if (model && example) {
         // do not check for monaco errors just if this is valid JSON becase we want to see when we have validation errors
@@ -457,15 +566,15 @@ export default {
           }
 
           if (newJson) {
-            example.input.data = newJson;
+            this.$set(example.input, 'data', newJson);
             this.toast('New data applied');
           }
         }
       }
     },
-    reloadMonacoI18N() {
+    reloadMonacoI18N(): void {
       const example = find(
-        this.examples,
+        this.app.examples,
         (example) => example.id === this.$route.params.id
       );
 
@@ -482,9 +591,9 @@ export default {
         this.toast('Original example i18n loaded. Apply it to take effect.');
       }
     },
-    saveMonacoI18N() {
+    saveMonacoI18N(): void {
       const model = this.monacoI18NModel as monaco.editor.ITextModel;
-      const example = this.example;
+      const example = this.app.example;
 
       if (model && example) {
         // do not check for monaco errors just if this is valid JSON becase we want to see when we have validation errors
@@ -500,16 +609,16 @@ export default {
           }
 
           if (newJson) {
-            example.input.i18n = newJson;
+            this.$set(example.input, 'i18n', newJson);
             this.toast('New i18n applied');
           }
         }
       }
     },
-    registerValidations(editor: EditorApi) {
+    registerValidations(editor: EditorApi): Record<string, any> {
       configureJsonSchemaValidation(editor, ['*.schema.json']);
       configureUISchemaValidation(editor, ['*.uischema.json']);
-      for (let example of examples) {
+      for (let example of this.app.examples) {
         const schema = {
           ...example.input.schema,
           title: example.title,
@@ -524,8 +633,11 @@ export default {
           );
         }
       }
+
+      const options: Record<string, any> = {};
+      return options;
     },
-    updateMonacoModels(example) {
+    updateMonacoModels(example: Example): void {
       this.$store.set(
         'app/monaco@schemaModel',
         getMonacoModelForUri(
