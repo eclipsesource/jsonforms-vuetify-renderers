@@ -256,11 +256,10 @@ import {
   configureDataValidation,
   configureJsonSchemaValidation,
   configureUISchemaValidation,
-  configureUISchemasValidation,
   EditorApi,
   getMonacoModelForUri,
 } from '@/core/jsonSchemaValidation';
-import { Example, JsonExample } from '@/core/types';
+import { Example } from '@/core/types';
 import type { JsonFormsRendererRegistryEntry } from '@jsonforms/core';
 import { JsonFormsChangeEvent } from '@jsonforms/vue2';
 import {
@@ -268,10 +267,9 @@ import {
   mergeStyles,
   ValidationIcon,
 } from '@jsonforms/vue2-vuetify';
+import { ErrorObject } from 'ajv';
 import cloneDeep from 'lodash/cloneDeep';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
-import { VImg } from 'vuetify/lib';
-import { ErrorObject } from 'ajv';
 
 const myStyles = mergeStyles(defaultStyles, {
   control: { root: 'my-control' },
