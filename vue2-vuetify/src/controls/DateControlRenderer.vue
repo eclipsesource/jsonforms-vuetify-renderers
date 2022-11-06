@@ -155,9 +155,19 @@ const controlRenderer = defineComponent({
         : true;
     },
     pickerIcon(): string {
-      return typeof this.appliedOptions.pickerIcon == 'string'
-        ? this.appliedOptions.pickerIcon
-        : 'mdi-calendar';
+      if (typeof this.appliedOptions.pickerIcon == 'string') {
+        return this.appliedOptions.pickerIcon;
+      }
+
+      if (this.pickerType == 'year') {
+        return 'mdi-alpha-y-box-outline';
+      }
+
+      if (this.pickerType == 'month') {
+        return 'mdi-calendar-month';
+      }
+
+      return 'mdi-calendar';
     },
     dateFormat(): string {
       return typeof this.appliedOptions.dateFormat == 'string'
@@ -176,8 +186,8 @@ const controlRenderer = defineComponent({
         ...JSON_SCHEMA_DATE_FORMATS,
       ];
     },
-    pickerType(): string {
-      if (!this.dateFormat.includes('M')) {
+    pickerType(): 'date' | 'month' | 'year' {
+      if (!this.dateFormat.includes('M') && !this.dateFormat.includes('D')) {
         return 'year';
       }
       if (!this.dateFormat.includes('D')) {
@@ -227,14 +237,19 @@ const controlRenderer = defineComponent({
     },
     inputValue(): string | undefined {
       const value = this.control.data;
-      const date = parseDateTime(value, this.formats);
+      const date = parseDateTime(
+        typeof value === 'number' ? value.toString() : value,
+        this.formats
+      );
       return date ? date.format(this.dateFormat) : value;
     },
     pickerValue: {
       get(): string | undefined {
         const value = this.control.data;
-
-        const date = parseDateTime(value, this.formats);
+        const date = parseDateTime(
+          typeof value === 'number' ? value.toString() : value,
+          this.formats
+        );
         // show only valid values
         return date ? date.format('YYYY-MM-DD') : undefined;
       },
@@ -272,15 +287,36 @@ const controlRenderer = defineComponent({
   methods: {
     onInputChange(value: string): void {
       const date = parseDateTime(value, this.dateFormat);
-      const newdata = date ? date.format(this.dateSaveFormat) : value;
+      let newdata: string | number = date
+        ? date.format(this.dateSaveFormat)
+        : value;
+      // if only numbers and the target is number type then convert (this will support when we want year as an integer/number)
+      if (
+        (this.control.schema.type === 'integer' ||
+          this.control.schema.type === 'number') &&
+        /^[\d]*$/.test(newdata)
+      ) {
+        newdata = parseInt(value, 10) || newdata;
+      }
       if (this.adaptValue(newdata) !== this.control.data) {
         // only invoke onChange when values are different since v-mask is also listening on input which lead to loop
-        this.onChange(date ? date.format(this.dateSaveFormat) : value);
+        this.onChange(newdata);
       }
     },
     onPickerChange(value: string): void {
       const date = parseDateTime(value, 'YYYY-MM-DD');
-      this.onChange(date ? date.format(this.dateSaveFormat) : value);
+      let newdata: string | number = date
+        ? date.format(this.dateSaveFormat)
+        : value;
+      // check if is is only year and the target type is number or integer
+      if (
+        (this.control.schema.type === 'integer' ||
+          this.control.schema.type === 'number') &&
+        /^[\d]*$/.test(newdata)
+      ) {
+        newdata = parseInt(value, 10) || newdata;
+      }
+      this.onChange(newdata);
     },
     clear(): void {
       this.mask = undefined;
