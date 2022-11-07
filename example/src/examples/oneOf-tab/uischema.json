@@ -6,7 +6,7 @@
       "label": "Basic Information",
       "scope": "#/properties/addressOrUser",
       "options": {
-        "variant": "select"
+        "variant": "tab"
       }
     }
   ]

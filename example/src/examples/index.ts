@@ -36,11 +36,12 @@ import { input as object } from './object';
 import { input as objectNested } from './object-nested';
 import { input as oneOf } from './oneOf';
 import { input as oneOfWithProps } from './oneOf-with-props';
-import { input as oneOfSelect } from './oneOf-select';
+import { input as oneOfTab } from './oneOf-tab';
 import { input as oneOfRecursive } from './oneOf-recursive';
 import { input as radio } from './radio';
 import { input as radioGroup } from './radio-group';
 import { input as rootObject } from './root-object';
+import { input as additionalProperties } from './additionalProperties';
 import { input as rule } from './rule';
 import { input as verticalLayout } from './vertical-layout';
 import { input as huge } from './huge';
@@ -203,6 +204,11 @@ export const examples = [
     input: rootObject,
   },
   {
+    id: 'additional-properties',
+    title: 'Additional Properties',
+    input: additionalProperties,
+  },
+  {
     id: 'no-ui-schema',
     title: 'Generate UI Schema',
     input: noUISchema,
@@ -223,9 +229,9 @@ export const examples = [
     input: oneOfWithProps,
   },
   {
-    id: 'one-of-select',
-    title: 'Combinators oneOf Select',
-    input: oneOfSelect,
+    id: 'one-of-tab',
+    title: 'Combinators oneOf tab',
+    input: oneOfTab,
   },
   {
     id: 'one-of-recursive',
