@@ -6,6 +6,9 @@
       "type": "string"
     }
   },
+  "propertyNames": {
+    "minLength": 2
+  },
   "patternProperties": {
     "^int$": {
       "type": "integer"

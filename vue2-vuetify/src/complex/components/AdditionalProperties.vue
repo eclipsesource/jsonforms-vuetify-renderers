@@ -10,13 +10,13 @@
             v-disabled-icon-focus
             :required="true"
             :class="styles.control.input"
+            :error-messages="errors"
             v-model="newPropertyName"
             :clearable="hover"
+            :placeholder="`New Item`"
           >
           </v-text-field>
         </v-hover>
-        <v-spacer></v-spacer>
-
         <v-tooltip bottom>
           <template v-slot:activator="{ on: onTooltip }">
             <v-btn
@@ -95,14 +95,18 @@ import {
   composePaths,
   createControlElement,
   createDefaultValue,
+  formatErrorMessage,
   Generate,
   JsonSchema,
   UISchemaElement,
+  validate,
 } from '@jsonforms/core';
 import {
   DispatchRenderer,
   useJsonFormsControlWithDetail,
 } from '@jsonforms/vue2';
+import Ajv, { ErrorObject, ValidateFunction } from 'ajv';
+import union from 'lodash/union';
 import { defineComponent, PropType, Ref, ref } from 'vue';
 import {
   VBtn,
@@ -121,7 +125,7 @@ import {
 } from 'vuetify/lib';
 import { DisabledIconFocus } from '../../controls/directives';
 import { useStyles } from '../../styles';
-import { useControlAppliedOptions } from '../../util';
+import { useAjv, useControlAppliedOptions } from '../../util';
 
 type Input = ReturnType<typeof useJsonFormsControlWithDetail>;
 interface AdditionalPropertyType {
@@ -130,6 +134,16 @@ interface AdditionalPropertyType {
   schema: JsonSchema | undefined;
   uischema: UISchemaElement | undefined;
 }
+
+const reuseAjvForSchema = (ajv: Ajv, schema: JsonSchema): Ajv => {
+  if (
+    Object.prototype.hasOwnProperty.call(schema, 'id') ||
+    Object.prototype.hasOwnProperty.call(schema, '$id')
+  ) {
+    ajv.removeSchema(schema);
+  }
+  return ajv;
+};
 
 export default defineComponent({
   name: 'additional-properties',
@@ -196,7 +210,7 @@ export default defineComponent({
         propUiSchema =
           propSchema.type === 'object' || propSchema.type === 'array'
             ? Generate.uiSchema(propSchema, 'VerticalLayout')
-            : createControlElement('#/' + propName);
+            : createControlElement(control.value.path + '/' + propName);
       }
 
       return {
@@ -217,8 +231,25 @@ export default defineComponent({
 
     const styles = useStyles(control.value.uischema);
     const newPropertyName = ref<string>('');
+    const ajv = useAjv();
+    let propertyNameValidator: ValidateFunction<unknown> | undefined =
+      undefined;
+
+    // TODO: create issue against jsonforms to add propertyNames into the JsonSchema interface
+    // propertyNames exist in draft-6 but not defined in the JsonSchema
+    if (typeof (control.value.schema as any).propertyNames === 'object') {
+      propertyNameValidator = reuseAjvForSchema(
+        ajv,
+        (control.value.schema as any).propertyNames
+      ).compile((control.value.schema as any).propertyNames);
+    }
+
+    const propertyNameErrors: ErrorObject[] = [];
 
     return {
+      ajv,
+      propertyNameValidator,
+      propertyNameErrors,
       control,
       styles,
       appliedOptions,
@@ -228,6 +259,12 @@ export default defineComponent({
     };
   },
   computed: {
+    errors(): string {
+      const messages = this.propertyNameErrors
+        .map((error) => error.message)
+        .filter((message) => message) as string[];
+      return formatErrorMessage(union(messages));
+    },
     reservedPropertyNames(): string[] {
       return Object.keys(this.control.schema.properties || {});
     },
@@ -265,6 +302,17 @@ export default defineComponent({
         // special character that JsonForms at the moment uses so prohibit those for now
         return false;
       }
+
+      if (this.propertyNameValidator) {
+        this.propertyNameErrors = validate(
+          this.propertyNameValidator,
+          this.newPropertyName
+        );
+
+        if (this.propertyNameErrors.length > 0) {
+          return false;
+        }
+      }
       return true;
     },
   },
@@ -286,6 +334,7 @@ export default defineComponent({
           this.control.data[this.newPropertyName] = createDefaultValue(
             additionaProperty.schema
           );
+          this.input.handleChange(this.control.path, this.control.data);
         }
       }
       this.newPropertyName = '';
@@ -294,8 +343,9 @@ export default defineComponent({
       this.additionalPropertyItems = this.additionalPropertyItems.filter(
         (d) => d.propertyName !== propName
       );
-      if (propName !== '') {
-        this.input.handleChange(propName, undefined);
+      if (typeof this.control.data === 'object') {
+        delete this.control.data[propName];
+        this.input.handleChange(this.control.path, this.control.data);
       }
     },
   },
