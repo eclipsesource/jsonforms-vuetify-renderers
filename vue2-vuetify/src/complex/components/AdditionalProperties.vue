@@ -244,7 +244,7 @@ export default defineComponent({
       ).compile((control.value.schema as any).propertyNames);
     }
 
-    const propertyNameErrors: ErrorObject[] = [];
+    const propertyNameErrors = ref<ErrorObject[]>([]);
 
     return {
       ajv,
@@ -263,7 +263,9 @@ export default defineComponent({
       const messages = this.propertyNameErrors
         .map((error) => error.message)
         .filter((message) => message) as string[];
-      return formatErrorMessage(union(messages));
+      const result = formatErrorMessage(union(messages));
+      console.log('errors=' + result);
+      return result;
     },
     reservedPropertyNames(): string[] {
       return Object.keys(this.control.schema.properties || {});
