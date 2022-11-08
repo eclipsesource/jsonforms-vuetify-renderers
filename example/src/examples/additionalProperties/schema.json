@@ -6,8 +6,14 @@
       "type": "string"
     }
   },
+  "patternProperties": {
+    "^int$": {
+      "type": "integer"
+    }
+  },
   "additionalProperties": {
     "type": "string",
     "title": "labels"
-  }
+  },
+  "maxProperties": 5
 }
