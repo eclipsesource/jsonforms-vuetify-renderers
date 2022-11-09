@@ -311,6 +311,33 @@ export default defineComponent({
       return this.control.schema.title;
     },
   },
+  watch: {
+    'control.data': {
+      handler(newData) {
+        // revert back any undefined values back to the default value when the key is part of the addtional properties since we want to preserved the key
+        // for example when we have a string additonal property then when we clear the text component the componet by default sets the value to undefined to remove the property from the object - for additional properties we do not want that behaviour
+        if (typeof this.control.data === 'object') {
+          const keys = Object.keys(newData);
+          let hasChanges = false;
+          this.additionalPropertyItems.forEach((ap) => {
+            if (
+              (!keys.includes(ap.propertyName) ||
+                newData[ap.propertyName] === undefined ||
+                newData[ap.propertyName] === null) &&
+              ap.schema
+            ) {
+              hasChanges = true;
+              newData[ap.propertyName] = createDefaultValue(ap.schema);
+            }
+          });
+          if (hasChanges) {
+            this.input.handleChange(this.control.path, newData);
+          }
+        }
+      },
+      deep: true,
+    },
+  },
   methods: {
     composePaths,
     addProperty() {
