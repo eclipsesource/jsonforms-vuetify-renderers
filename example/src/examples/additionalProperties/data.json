@@ -1,1 +1,5 @@
-{ "test": "data" }
+{
+  "test": "data",
+  "stringArray": ["value1", "value2"],
+  "string": "string value"
+}

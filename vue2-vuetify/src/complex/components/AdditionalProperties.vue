@@ -33,7 +33,8 @@
                   control.data &&
                   Object.keys(control.data).length >=
                     control.schema.maxProperties) ||
-                !validNewPropertyName
+                errors.length > 0 ||
+                newPropertyName === ''
               "
               @click="addProperty"
             >
@@ -95,18 +96,18 @@ import {
   composePaths,
   createControlElement,
   createDefaultValue,
-  formatErrorMessage,
+  encode,
   Generate,
+  GroupLayout,
   JsonSchema,
   UISchemaElement,
-  validate,
 } from '@jsonforms/core';
 import {
   DispatchRenderer,
   useJsonFormsControlWithDetail,
 } from '@jsonforms/vue2';
 import Ajv, { ErrorObject, ValidateFunction } from 'ajv';
-import union from 'lodash/union';
+import startCase from 'lodash/startCase';
 import { defineComponent, PropType, Ref, ref } from 'vue';
 import {
   VBtn,
@@ -207,10 +208,15 @@ export default defineComponent({
       }
 
       if (propSchema) {
-        propUiSchema =
-          propSchema.type === 'object' || propSchema.type === 'array'
-            ? Generate.uiSchema(propSchema, 'VerticalLayout')
-            : createControlElement(control.value.path + '/' + propName);
+        if (propSchema.type === 'object' || propSchema.type === 'array') {
+          propUiSchema = Generate.uiSchema(propSchema, 'Group');
+          (propUiSchema as GroupLayout).label =
+            propSchema.title ?? startCase(propName);
+        } else {
+          propUiSchema = createControlElement(
+            control.value.path + '/' + encode(propName)
+          );
+        }
       }
 
       return {
@@ -232,6 +238,7 @@ export default defineComponent({
     const styles = useStyles(control.value.uischema);
     const newPropertyName = ref<string>('');
     const ajv = useAjv();
+
     let propertyNameValidator: ValidateFunction<unknown> | undefined =
       undefined;
 
@@ -259,13 +266,35 @@ export default defineComponent({
     };
   },
   computed: {
-    errors(): string {
+    errors(): string[] {
       const messages = this.propertyNameErrors
         .map((error) => error.message)
         .filter((message) => message) as string[];
-      const result = formatErrorMessage(union(messages));
-      console.log('errors=' + result);
-      return result;
+
+      if (
+        this.reservedPropertyNames.includes(this.newPropertyName) ||
+        this.additionalPropertyItems.find(
+          (ap) => ap.propertyName === this.newPropertyName
+        ) !== undefined
+      ) {
+        // already defined
+        messages.push(
+          'Property ' + this.newPropertyName + ' is already defined'
+        );
+      }
+
+      // JSONForms has special means for "[]." chars - those are part of the path composition so for not we can't support those without special handling
+      if (this.newPropertyName.includes('[')) {
+        messages.push('Property name contains invalid char: [');
+      }
+      if (this.newPropertyName.includes(']')) {
+        messages.push('Property name contains invalid char: ]');
+      }
+      if (this.newPropertyName.includes('.')) {
+        messages.push('Property name contains invalid char: .');
+      }
+
+      return messages;
     },
     reservedPropertyNames(): string[] {
       return Object.keys(this.control.schema.properties || {});
@@ -281,64 +310,28 @@ export default defineComponent({
 
       return this.control.schema.title;
     },
-    validNewPropertyName(): boolean {
-      if (!this.newPropertyName) {
-        // empty string
-        return false;
-      }
-
-      if (
-        this.reservedPropertyNames.includes(this.newPropertyName) ||
-        this.additionalPropertyItems.find(
-          (ap) => ap.propertyName === this.newPropertyName
-        ) !== undefined
-      ) {
-        // already defined
-        return false;
-      }
-
-      if (
-        this.newPropertyName.includes('.') ||
-        this.newPropertyName.includes('/')
-      ) {
-        // special character that JsonForms at the moment uses so prohibit those for now
-        return false;
-      }
-
-      if (this.propertyNameValidator) {
-        this.propertyNameErrors = validate(
-          this.propertyNameValidator,
-          this.newPropertyName
-        );
-
-        if (this.propertyNameErrors.length > 0) {
-          return false;
-        }
-      }
-      return true;
-    },
   },
   methods: {
     composePaths,
     addProperty() {
-      if (this.validNewPropertyName) {
-        const additionaProperty = this.toAdditionalPropertyType(
-          this.newPropertyName
-        );
-        if (additionaProperty) {
-          this.additionalPropertyItems = [
-            ...this.additionalPropertyItems,
-            additionaProperty,
-          ];
-        }
-
-        if (typeof this.control.data === 'object' && additionaProperty.schema) {
-          this.control.data[this.newPropertyName] = createDefaultValue(
-            additionaProperty.schema
-          );
-          this.input.handleChange(this.control.path, this.control.data);
-        }
+      const additionaProperty = this.toAdditionalPropertyType(
+        this.newPropertyName
+      );
+      if (additionaProperty) {
+        this.additionalPropertyItems = [
+          ...this.additionalPropertyItems,
+          additionaProperty,
+        ];
       }
+
+      if (typeof this.control.data === 'object' && additionaProperty.schema) {
+        this.control.data[this.newPropertyName] = createDefaultValue(
+          additionaProperty.schema
+        );
+        // we need always to preserve the key even when the value is "empty"
+        this.input.handleChange(this.control.path, this.control.data);
+      }
+
       this.newPropertyName = '';
     },
     removeProperty(propName: string): void {

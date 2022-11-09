@@ -10,13 +10,36 @@
     "minLength": 2
   },
   "patternProperties": {
-    "^int$": {
+    "^string$": {
+      "type": "string"
+    },
+    "^number$": {
+      "type": "number"
+    },
+    "^integer$": {
       "type": "integer"
+    },
+    "^object$": {
+      "type": "object",
+      "properties": {
+        "prop1": {
+          "type": "string"
+        }
+      }
+    },
+    "^stringArray$": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "^boolean$": {
+      "type": "boolean"
     }
   },
   "additionalProperties": {
     "type": "string",
-    "title": "labels"
+    "title": "Additional Properties"
   },
   "maxProperties": 5
 }
