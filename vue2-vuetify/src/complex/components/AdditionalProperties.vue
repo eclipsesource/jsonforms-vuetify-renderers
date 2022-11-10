@@ -208,6 +208,10 @@ export default defineComponent({
         propSchema = control.value.schema.additionalProperties;
       }
 
+      if (!propSchema && control.value.schema.additionalProperties === true) {
+        propSchema = { type: 'string' };
+      }
+
       if (propSchema) {
         if (propSchema.type === 'object' || propSchema.type === 'array') {
           propUiSchema = Generate.uiSchema(propSchema, 'Group');

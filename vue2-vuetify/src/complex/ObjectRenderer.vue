@@ -62,7 +62,8 @@ const controlRenderer = defineComponent({
     hasAdditionalProperties(): boolean {
       return (
         !isEmpty(this.control.schema.patternProperties) ||
-        isObject(this.control.schema.additionalProperties)
+        isObject(this.control.schema.additionalProperties) ||
+        this.control.schema.additionalProperties === true
       );
     },
     detailUiSchema(): UISchemaElement {
