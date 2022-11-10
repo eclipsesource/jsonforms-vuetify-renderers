@@ -56,7 +56,7 @@ const controlRenderer = defineComponent({
   setup(props: RendererProps<ControlElement>) {
     return useVuetifyControl(
       useJsonFormsControl(props),
-      (value) => parseInt(value, 10) || undefined,
+      (value) => parseFloat(value) || undefined,
       300
     );
   },
