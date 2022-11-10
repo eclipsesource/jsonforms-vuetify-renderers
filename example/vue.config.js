@@ -2,6 +2,7 @@ const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 
 module.exports = {
+  parallel: false,
   configureWebpack: {
     optimization: {
       splitChunks: {

@@ -499,20 +499,6 @@ const vuetifyFormWc = defineComponent({
     },
   },
   async mounted() {
-    const root = this.$el;
-
-    // Vuetify patch querySelector to properly find root element
-    const { querySelector } = document;
-    document.querySelector = function (selector: any) {
-      if (
-        selector === '[data-app]' &&
-        root.getRootNode() instanceof ShadowRoot
-      ) {
-        return (root.getRootNode() as ShadowRoot).querySelector(selector);
-      }
-      return querySelector.call(this, selector);
-    };
-
     this.applyTheme();
     this.vuetifyLocale = this.$vuetify.lang.current;
     this.setVuetifyLocale(this.localeToUse);

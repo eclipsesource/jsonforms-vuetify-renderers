@@ -37,8 +37,9 @@
     "src"
   ],
   "scripts": {
-    "prebuild": "rimraf dist && npm run wc-use-contenthash",
     "wc-use-contenthash": "node ./patch-resolveWcEntry.js",
+    "fix-vuetify-query-selector": "node ./patch-vuetify.js",
+    "prebuild": "npm run wc-use-contenthash && npm run fix-vuetify-query-selector",
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build --target wc-async --inline-vue 'src/web-components/*.vue'"
   },
