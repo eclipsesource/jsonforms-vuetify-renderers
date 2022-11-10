@@ -2,7 +2,7 @@
   <v-card v-if="control.visible" elevation="0">
     <v-card-title>
       <v-toolbar flat>
-        <v-toolbar-title>{{ computedLabel }}</v-toolbar-title>
+        <v-toolbar-title>{{ additionalPropertiesTitle }}</v-toolbar-title>
         <v-spacer></v-spacer>
 
         <v-hover v-slot="{ hover }">
@@ -13,7 +13,8 @@
             :error-messages="errors"
             v-model="newPropertyName"
             :clearable="hover"
-            :placeholder="`New Item`"
+            :placeholder="placeholder"
+            v-bind="vuetifyProps('v-text-field')"
           >
           </v-text-field>
         </v-hover>
@@ -24,7 +25,7 @@
               text
               elevation="0"
               small
-              :aria-label="`Add to ${computedLabel}`"
+              :aria-label="addToLabel"
               v-on="onTooltip"
               :disabled="
                 !control.enabled ||
@@ -41,7 +42,7 @@
               <v-icon>mdi-plus</v-icon>
             </v-btn>
           </template>
-          {{ `Add to ${computedLabel}` }}
+          {{ addToLabel }}
         </v-tooltip>
       </v-toolbar>
     </v-card-title>
@@ -69,7 +70,7 @@
                 text
                 elevation="0"
                 small
-                aria-label="Delete"
+                :aria-label="deleteLabel"
                 :disabled="
                   !control.enabled ||
                   (appliedOptions.restrict &&
@@ -83,7 +84,7 @@
                 <v-icon class="notranslate">mdi-delete</v-icon>
               </v-btn>
             </template>
-            Delete
+            {{ deleteLabel }}
           </v-tooltip></v-col
         >
       </v-row>
@@ -98,8 +99,10 @@ import {
   createDefaultValue,
   encode,
   Generate,
+  getI18nKey,
   GroupLayout,
   JsonSchema,
+  JsonSchema7,
   UISchemaElement,
   validate,
 } from '@jsonforms/core';
@@ -108,6 +111,8 @@ import {
   useJsonFormsControlWithDetail,
 } from '@jsonforms/vue2';
 import Ajv, { ValidateFunction } from 'ajv';
+import get from 'lodash/get';
+import isPlainObject from 'lodash/isPlainObject';
 import startCase from 'lodash/startCase';
 import { defineComponent, PropType, Ref, ref } from 'vue';
 import {
@@ -127,7 +132,7 @@ import {
 } from 'vuetify/lib';
 import { DisabledIconFocus } from '../../controls/directives';
 import { useStyles } from '../../styles';
-import { useAjv, useControlAppliedOptions } from '../../util';
+import { useAjv, useControlAppliedOptions, useTranslator } from '../../util';
 
 type Input = ReturnType<typeof useJsonFormsControlWithDetail>;
 interface AdditionalPropertyType {
@@ -187,7 +192,8 @@ export default defineComponent({
     );
 
     const toAdditionalPropertyType = (
-      propName: string
+      propName: string,
+      propValue: any
     ): AdditionalPropertyType => {
       let propSchema: JsonSchema | undefined = undefined;
       let propUiSchema: UISchemaElement | undefined = undefined;
@@ -208,8 +214,16 @@ export default defineComponent({
         propSchema = control.value.schema.additionalProperties;
       }
 
-      if (!propSchema && control.value.schema.additionalProperties === true) {
-        propSchema = { type: 'string' };
+      if (!propSchema && propValue !== undefined) {
+        // can't find the propertySchema so use the schema based on the value
+        // this covers case where the data in invalid according to the schema
+        propSchema = Generate.jsonSchema(
+          { prop: propValue },
+          {
+            additionalProperties: false,
+            required: () => false,
+          }
+        ).properties?.prop;
       }
 
       if (propSchema) {
@@ -236,7 +250,10 @@ export default defineComponent({
     const additionalPropertyItems = ref<AdditionalPropertyType[]>([]);
 
     additionalKeys.forEach((propName) => {
-      const additionaProperty = toAdditionalPropertyType(propName);
+      const additionaProperty = toAdditionalPropertyType(
+        propName,
+        control.value.data[propName]
+      );
       additionalPropertyItems.value.push(additionaProperty);
     });
 
@@ -244,19 +261,47 @@ export default defineComponent({
     const newPropertyName = ref<string | null>('');
     const ajv = useAjv();
 
+    let propertyNameSchema: JsonSchema7 | undefined = undefined;
     let propertyNameValidator: ValidateFunction<unknown> | undefined =
       undefined;
 
     // TODO: create issue against jsonforms to add propertyNames into the JsonSchema interface
     // propertyNames exist in draft-6 but not defined in the JsonSchema
     if (typeof (control.value.schema as any).propertyNames === 'object') {
-      propertyNameValidator = reuseAjvForSchema(
-        ajv,
-        (control.value.schema as any).propertyNames
-      ).compile((control.value.schema as any).propertyNames);
+      propertyNameSchema = (control.value.schema as any).propertyNames;
     }
 
+    if (
+      typeof control.value.schema.additionalProperties !== 'object' &&
+      typeof control.value.schema.patternProperties === 'object'
+    ) {
+      const matchPatternPropeertiesKeys: JsonSchema7 = {
+        type: 'string',
+        pattern: Object.keys(control.value.schema.patternProperties).join('|'),
+      };
+
+      propertyNameSchema = propertyNameSchema
+        ? { allOf: [propertyNameSchema, matchPatternPropeertiesKeys] }
+        : matchPatternPropeertiesKeys;
+    }
+
+    if (propertyNameSchema) {
+      propertyNameValidator = reuseAjvForSchema(
+        ajv,
+        propertyNameSchema
+      ).compile(propertyNameSchema);
+    }
+
+    const vuetifyProps = (path: string) => {
+      const props = get(appliedOptions.value?.vuetify, path);
+
+      return props && isPlainObject(props) ? props : {};
+    };
+
+    const t = useTranslator();
     return {
+      t,
+      vuetifyProps,
       ajv,
       propertyNameValidator,
       control,
@@ -283,9 +328,10 @@ export default defineComponent({
         ) {
           // already defined
           messages.push(
-            'Property ' + this.newPropertyName + ' is already defined'
+            `Property '${this.newPropertyName}' is already defined`
           );
         }
+
         // JSONForms has special means for "[]." chars - those are part of the path composition so for not we can't support those without special handling
         if (this.newPropertyName.includes('[')) {
           messages.push('Property name contains invalid char: [');
@@ -302,19 +348,44 @@ export default defineComponent({
 
       return [];
     },
+    placeholder(): string {
+      return this.t(this.i18nKey('newProperty.placeholder'), 'New Property');
+    },
     reservedPropertyNames(): string[] {
       return Object.keys(this.control.schema.properties || {});
     },
-    computedLabel(): string | undefined {
+    additionalPropertiesTitle(): string | undefined {
       const additionalProperties = this.control.schema.additionalProperties;
-      if (
+
+      const label =
         typeof additionalProperties === 'object' &&
         Object.prototype.hasOwnProperty.call(additionalProperties, 'title')
-      ) {
-        return additionalProperties.title;
-      }
+          ? additionalProperties.title ?? 'Additional Properties'
+          : 'Additional Properties';
 
-      return this.control.schema.title;
+      return this.t(this.i18nKey('title'), label);
+    },
+    addToLabel(): string {
+      return this.t(
+        this.i18nKey('btn.add'),
+        'Add to ${additionalProperties.title}',
+        {
+          additionalProperties: {
+            title: this.additionalPropertiesTitle,
+          },
+        }
+      );
+    },
+    deleteLabel(): string {
+      return this.t(
+        this.i18nKey('btn.delete'),
+        'Delete from ${additionalProperties.title}',
+        {
+          additionalProperties: {
+            title: this.additionalPropertiesTitle,
+          },
+        }
+      );
     },
   },
   watch: {
@@ -346,10 +417,19 @@ export default defineComponent({
   },
   methods: {
     composePaths,
+    i18nKey(key: string): string {
+      return getI18nKey(
+        this.control.schema,
+        this.control.uischema,
+        this.control.path,
+        `additionalProperties.${key}`
+      );
+    },
     addProperty() {
       if (this.newPropertyName) {
         const additionaProperty = this.toAdditionalPropertyType(
-          this.newPropertyName
+          this.newPropertyName,
+          undefined
         );
         if (additionaProperty) {
           this.additionalPropertyItems = [

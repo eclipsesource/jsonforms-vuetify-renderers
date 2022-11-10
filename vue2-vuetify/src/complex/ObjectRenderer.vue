@@ -62,8 +62,8 @@ const controlRenderer = defineComponent({
     hasAdditionalProperties(): boolean {
       return (
         !isEmpty(this.control.schema.patternProperties) ||
-        isObject(this.control.schema.additionalProperties) ||
-        this.control.schema.additionalProperties === true
+        isObject(this.control.schema.additionalProperties)
+        // do not support - additionalProperties === true - since then the type should be any and we won't know what kind of renderer we should use for new properties
       );
     },
     detailUiSchema(): UISchemaElement {

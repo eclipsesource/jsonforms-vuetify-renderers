@@ -4,11 +4,6 @@
   "properties": {
     "propertiesString": {
       "type": "string"
-    },
-    "propertiesStringArray": {
-      "items": {
-        "type": "string"
-      }
     }
   },
   "propertyNames": {
