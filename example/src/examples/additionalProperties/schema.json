@@ -2,8 +2,13 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
   "properties": {
-    "test": {
+    "propertiesString": {
       "type": "string"
+    },
+    "propertiesStringArray": {
+      "items": {
+        "type": "string"
+      }
     }
   },
   "propertyNames": {
@@ -27,19 +32,48 @@
         }
       }
     },
+    "^boolean$": {
+      "type": "boolean"
+    },
     "^stringArray$": {
       "type": "array",
       "items": {
         "type": "string"
       }
     },
-    "^boolean$": {
-      "type": "boolean"
+    "^numberArray$": {
+      "type": "array",
+      "items": {
+        "type": "number"
+      }
+    },
+    "^integerArray$": {
+      "type": "array",
+      "items": {
+        "type": "integer"
+      }
+    },
+    "^objectArray$": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "prop1": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "^booleanArray$": {
+      "type": "array",
+      "items": {
+        "type": "boolean"
+      }
     }
   },
   "additionalProperties": {
     "type": "string",
     "title": "Additional Properties"
   },
-  "maxProperties": 5
+  "maxProperties": 15
 }
