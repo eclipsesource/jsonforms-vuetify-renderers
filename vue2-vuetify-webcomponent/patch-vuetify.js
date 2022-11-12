@@ -1,9 +1,12 @@
+// we need this patch until https://github.com/vuetifyjs/vuetify/issues/16076 is fixed
 const fs = require('fs');
 const glob = require('glob');
 const replace = require('replace-in-file');
 
+const node_modules_path = '../node_modules';
+
 glob(
-  '../node_modules/vuetify/lib/mixins/detachable/index.js',
+  `${node_modules_path}/vuetify/lib/mixins/detachable/index.js`,
   null,
   (err, files) => {
     if (err) {
@@ -13,7 +16,7 @@ glob(
         {
           files,
           from: "target = document.querySelector('[data-app]');",
-          to: "target = this.$el.getRootNode() instanceof ShadowRoot ? this.$el.getRootNode().querySelector('[data-app]') : document.querySelector('[data-app]');",
+          to: "target = this.$el && this.$el.getRootNode() instanceof ShadowRoot ? this.$el.getRootNode().querySelector('[data-app]') : document.querySelector('[data-app]');",
         },
         (err, results) => {
           if (err) {
@@ -25,7 +28,7 @@ glob(
         {
           files,
           from: 'target = document.querySelector(this.attach);',
-          to: 'target = this.$el.getRootNode() instanceof ShadowRoot ? this.$el.getRootNode().querySelector(this.attach) : document.querySelector(this.attach);',
+          to: 'target = this.$el && this.$el.getRootNode() instanceof ShadowRoot ? this.$el.getRootNode().querySelector(this.attach) : document.querySelector(this.attach);',
         },
         (err, results) => {
           if (err) {
@@ -38,7 +41,7 @@ glob(
 );
 
 glob(
-  '../node_modules/vuetify/lib/mixins/overlayable/index.js',
+  `${node_modules_path}/vuetify/lib/mixins/overlayable/index.js`,
   null,
   (err, files) => {
     if (err) {
@@ -61,7 +64,7 @@ glob(
 );
 
 glob(
-  '../node_modules/vuetify/lib/components/VSlider/VSlider.js',
+  `${node_modules_path}/vuetify/lib/components/VSlider/VSlider.js`,
   null,
   (err, files) => {
     if (err) {
@@ -71,7 +74,7 @@ glob(
         {
           files,
           from: "this.app = document.querySelector('[data-app]')",
-          to: "this.app = (this.$el.getRootNode() instanceof ShadowRoot ? this.$el.getRootNode().querySelector('[data-app]') : document.querySelector('[data-app]'))",
+          to: "this.app = (this.$el && this.$el.getRootNode() instanceof ShadowRoot ? this.$el.getRootNode().querySelector('[data-app]') : document.querySelector('[data-app]'))",
         },
         (err, results) => {
           if (err) {
