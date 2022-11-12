@@ -10,7 +10,7 @@
       :cells="control.cells"
     />
     <additional-properties
-      v-if="hasAdditionalProperties"
+      v-if="hasAdditionalProperties && showAdditionalProperties"
       :input="input"
     ></additional-properties>
   </div>
@@ -64,6 +64,14 @@ const controlRenderer = defineComponent({
         !isEmpty(this.control.schema.patternProperties) ||
         isObject(this.control.schema.additionalProperties)
         // do not support - additionalProperties === true - since then the type should be any and we won't know what kind of renderer we should use for new properties
+      );
+    },
+    showAdditionalProperties(): boolean {
+      const showAdditionalProperties =
+        this.control.uischema.options?.showAdditionalProperties;
+      return (
+        showAdditionalProperties === undefined ||
+        showAdditionalProperties === true
       );
     },
     detailUiSchema(): UISchemaElement {
