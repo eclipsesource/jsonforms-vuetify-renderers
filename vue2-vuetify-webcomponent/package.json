@@ -44,6 +44,7 @@
     "build": "vue-cli-service build --target wc-async --inline-vue 'src/web-components/*.vue'"
   },
   "dependencies": {
+    "@fontsource/roboto": "^4.5.8",
     "@jsonforms/core": "3.0.0",
     "@jsonforms/vue2": "3.0.0",
     "@jsonforms/vue2-vuetify": "3.0.0",

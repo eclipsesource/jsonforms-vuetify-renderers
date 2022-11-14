@@ -18,10 +18,6 @@ Use the `vuetify-json-forms` webcomponent in your HTML page as follow.
     <meta charset="utf-8" />
     <title>vuetify-json-forms demo</title>
 
-    <!-- include the fonts outside the webcomponent for now - https://github.com/google/material-design-icons/issues/1165 -->
-    <style type="text/css">
-      @import url('//cdn.jsdelivr.net/npm/@mdi/font@6.x/css/materialdesignicons.min.css');
-    </style>
     <style>
       /* # =================================================================
         # Global selectors

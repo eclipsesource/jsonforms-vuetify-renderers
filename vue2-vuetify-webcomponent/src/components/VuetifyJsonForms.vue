@@ -502,6 +502,18 @@ const vuetifyFormWc = defineComponent({
     this.applyTheme();
     this.vuetifyLocale = this.$vuetify.lang.current;
     this.setVuetifyLocale(this.localeToUse);
+    if (this.$el.getRootNode() instanceof ShadowRoot) {
+      this.exportFont(
+        this.$el.getRootNode() as ShadowRoot,
+        'camunda-json-forms-materialdesignicons',
+        '@font-face{font-family:Material Design Icons;'
+      );
+      this.exportFont(
+        this.$el.getRootNode() as ShadowRoot,
+        'camunda-json-forms-roboto',
+        '@font-face{font-family:Roboto;'
+      );
+    }
   },
   computed: {
     dark() {
@@ -512,6 +524,28 @@ const vuetifyFormWc = defineComponent({
     },
   },
   methods: {
+    // include the fonts outside the webcomponent for now - https://github.com/google/material-design-icons/issues/1165
+    exportFont(root: ShadowRoot, id: string, startsWith: string): void {
+      let el = document.querySelector(`style[id="${id}"]`);
+      if (!el) {
+        el = document.createElement('style');
+        el.id = id;
+
+        if (root.hasChildNodes()) {
+          let children = root.childNodes;
+          for (const node of children) {
+            if (
+              node.nodeName.toLowerCase() === 'style' &&
+              node.textContent?.startsWith(startsWith)
+            ) {
+              el.textContent = node.textContent;
+              break;
+            }
+          }
+        }
+        document.head.appendChild(el);
+      }
+    },
     applyTheme(): void {
       let preset: Partial<VuetifyPreset> | null = null;
       if (this.uischemaToUse?.options) {
@@ -561,9 +595,8 @@ export default vuetifyFormWc;
 </script>
 
 <style scoped>
-@import url('//fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900');
-@import url('//cdn.jsdelivr.net/npm/@mdi/font@6.x/css/materialdesignicons.min.css');
-@import url('//cdn.jsdelivr.net/npm/vuetify@2.6.12/dist/vuetify.min.css');
-
+@import '~@fontsource/roboto/index.css';
+@import '~@mdi/font/css/materialdesignicons.min.css';
+@import '~vuetify/dist/vuetify.min.css';
 @import '~@jsonforms/vue2-vuetify/lib/jsonforms-vue2-vuetify.esm.css';
 </style>
