@@ -18,7 +18,17 @@
     ></json-forms>
     <v-container v-else style="height: 400px">
       <v-row
-        v-if="!resolved"
+        v-if="error !== undefined"
+        class="fill-height"
+        align-content="center"
+        justify="center"
+      >
+        <v-col class="text-subtitle-1 text-center" cols="12">
+          <v-alert color="red" dark>{{ errorMessage }}: {{ error }}</v-alert>
+        </v-col>
+      </v-row>
+      <v-row
+        v-else-if="!resolved"
         class="fill-height"
         align-content="center"
         justify="center"
@@ -32,16 +42,6 @@
             rounded
             height="6"
           ></v-progress-linear>
-        </v-col>
-      </v-row>
-      <v-row
-        v-else-if="error !== undefined"
-        class="fill-height"
-        align-content="center"
-        justify="center"
-      >
-        <v-col class="text-subtitle-1 text-center" cols="12">
-          <v-alert color="red" dark>{{ errorMessage }}: {{ error }}</v-alert>
         </v-col>
       </v-row>
     </v-container>

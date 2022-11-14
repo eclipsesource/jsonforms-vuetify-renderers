@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div ref="root">
     <custom-style type="text/css" id="vuetify-theme">
       {{ vuetifyThemeCss }}
     </custom-style>
@@ -8,7 +8,7 @@
       {{ customStyle }}
     </custom-style>
 
-    <v-app ref="root">
+    <v-app>
       <div v-if="error !== undefined">
         <v-container style="height: 400px">
           <v-row class="fill-height" align-content="center" justify="center">
@@ -54,13 +54,14 @@ import { extendedVuetifyRenderers } from '@jsonforms/vue2-vuetify';
 import { ErrorObject } from 'ajv';
 import { isArray, isPlainObject, merge } from 'lodash';
 import get from 'lodash/get';
+import * as shadyCss from 'shady-css-parser';
 import Vue, { defineComponent, PropType, ref } from 'vue';
 import LoadScript from 'vue-plugin-load-script';
 import { VApp, VSheet } from 'vuetify/lib';
 import { VuetifyPreset } from 'vuetify/types/services/presets';
-import ResolvedJsonForms from './ResolvedJsonForms.vue';
 import { createTranslator } from '../core';
 import vuetify, { preset as defaultPreset } from '../plugins/vuetify';
+import ResolvedJsonForms from './ResolvedJsonForms.vue';
 
 Vue.use(LoadScript);
 
@@ -502,18 +503,7 @@ const vuetifyFormWc = defineComponent({
     this.applyTheme();
     this.vuetifyLocale = this.$vuetify.lang.current;
     this.setVuetifyLocale(this.localeToUse);
-    if (this.$el.getRootNode() instanceof ShadowRoot) {
-      this.exportFont(
-        this.$el.getRootNode() as ShadowRoot,
-        'camunda-json-forms-materialdesignicons',
-        '@font-face{font-family:Material Design Icons;'
-      );
-      this.exportFont(
-        this.$el.getRootNode() as ShadowRoot,
-        'camunda-json-forms-roboto',
-        '@font-face{font-family:Roboto;'
-      );
-    }
+    this.injectShadowFontsInDocument();
   },
   computed: {
     dark() {
@@ -525,25 +515,59 @@ const vuetifyFormWc = defineComponent({
   },
   methods: {
     // include the fonts outside the webcomponent for now - https://github.com/google/material-design-icons/issues/1165
-    exportFont(root: ShadowRoot, id: string, startsWith: string): void {
-      let el = document.querySelector(`style[id="${id}"]`);
-      if (!el) {
-        el = document.createElement('style');
-        el.id = id;
-
-        if (root.hasChildNodes()) {
-          let children = root.childNodes;
-          for (const node of children) {
+    injectShadowFontsInDocument(): void {
+      const root = this.$el.getRootNode();
+      if (root instanceof ShadowRoot && root.hasChildNodes()) {
+        const parser = new shadyCss.Parser();
+        class FaceFontStringifier extends shadyCss.Stringifier {
+          insideFontFace = false;
+          visit(node: shadyCss.Node): string | undefined {
+            if (node.type === shadyCss.nodeType.stylesheet) {
+              return super.visit(node);
+            }
             if (
-              node.nodeName.toLowerCase() === 'style' &&
-              node.textContent?.startsWith(startsWith)
+              node.type === shadyCss.nodeType.atRule &&
+              node.name === 'font-face'
             ) {
-              el.textContent = node.textContent;
-              break;
+              try {
+                this.insideFontFace = true;
+                return super.visit(node);
+              } finally {
+                this.insideFontFace = false;
+              }
+            }
+            return this.insideFontFace ? super.visit(node) : '';
+          }
+        }
+        const faceFontStringifier = new FaceFontStringifier();
+
+        // we have css with scope so we should have unique id
+        const rootTemplate = this.$refs['root'] as Element;
+        const dataAttrNames = rootTemplate
+          .getAttributeNames()
+          .filter((an) => an.startsWith('data-v-'));
+        const uniqueId =
+          dataAttrNames && dataAttrNames.length > 0 ? dataAttrNames[0] : '';
+
+        let children = root.childNodes;
+        for (let i = 0; i < children.length; i++) {
+          const node = children[i];
+          if (node.nodeName.toLowerCase() === 'style' && node.textContent) {
+            try {
+              const id = `vuetify-json-forms-${uniqueId}-ff-${i}`;
+              let el = document.querySelector(`style[id="${id}"]`);
+              if (!el) {
+                el = document.createElement('style');
+                el.id = id;
+                const ast = parser.parse(node.textContent);
+                el.textContent = faceFontStringifier.stringify(ast);
+                document.head.appendChild(el);
+              }
+            } catch (e) {
+              console.log(e);
             }
           }
         }
-        document.head.appendChild(el);
       }
     },
     applyTheme(): void {
