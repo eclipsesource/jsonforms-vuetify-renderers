@@ -19,7 +19,7 @@ export const preset: Partial<VuetifyPreset> = {
     disable: false,
     options: {
       cspNonce: undefined,
-      customProperties: undefined,
+      customProperties: true,
       minifyTheme: undefined,
       themeCache: undefined,
     },
