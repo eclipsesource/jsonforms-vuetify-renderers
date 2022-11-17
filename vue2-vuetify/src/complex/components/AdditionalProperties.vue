@@ -14,6 +14,7 @@
             v-model="newPropertyName"
             :clearable="hover"
             :placeholder="placeholder"
+            :disabled="!control.enabled"
             v-bind="vuetifyProps('v-text-field')"
           >
           </v-text-field>
