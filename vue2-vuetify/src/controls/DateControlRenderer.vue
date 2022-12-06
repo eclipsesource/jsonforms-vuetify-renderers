@@ -162,7 +162,7 @@ const controlRenderer = defineComponent({
         return this.appliedOptions.pickerIcon;
       }
 
-      if (this.pickerType == 'year') {
+      if (this.pickerType === 'year') {
         return 'mdi-alpha-y-box-outline';
       }
 
