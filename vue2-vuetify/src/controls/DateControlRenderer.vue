@@ -158,7 +158,7 @@ const controlRenderer = defineComponent({
         : true;
     },
     pickerIcon(): string {
-      if (typeof this.appliedOptions.pickerIcon == 'string') {
+      if (typeof this.appliedOptions.pickerIcon === 'string') {
         return this.appliedOptions.pickerIcon;
       }
 
