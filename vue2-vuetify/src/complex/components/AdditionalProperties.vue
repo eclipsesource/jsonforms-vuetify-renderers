@@ -399,10 +399,11 @@ export default defineComponent({
           let hasChanges = false;
           this.additionalPropertyItems.forEach((ap) => {
             if (
+              ap.schema &&
               (!keys.includes(ap.propertyName) ||
                 newData[ap.propertyName] === undefined ||
-                newData[ap.propertyName] === null) &&
-              ap.schema
+                (newData[ap.propertyName] === null &&
+                  ap.schema.type !== 'null')) // createDefaultValue will return null only when the ap.schema.type is 'null'
             ) {
               hasChanges = true;
               newData[ap.propertyName] = createDefaultValue(ap.schema);
