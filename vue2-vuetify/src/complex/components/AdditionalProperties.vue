@@ -251,11 +251,11 @@ export default defineComponent({
     const additionalPropertyItems = ref<AdditionalPropertyType[]>([]);
 
     additionalKeys.forEach((propName) => {
-      const additionaProperty = toAdditionalPropertyType(
+      const additionalProperty = toAdditionalPropertyType(
         propName,
         control.value.data[propName]
       );
-      additionalPropertyItems.value.push(additionaProperty);
+      additionalPropertyItems.value.push(additionalProperty);
     });
 
     const styles = useStyles(control.value.uischema);
@@ -282,8 +282,8 @@ export default defineComponent({
       };
 
       propertyNameSchema = propertyNameSchema
-        ? { allOf: [propertyNameSchema, matchPatternPropeertiesKeys] }
-        : matchPatternPropeertiesKeys;
+        ? { allOf: [propertyNameSchema, matchPatternPropertiesKeys] }
+        : matchPatternPropertiesKeys;
     }
 
     if (propertyNameSchema) {
@@ -428,20 +428,23 @@ export default defineComponent({
     },
     addProperty() {
       if (this.newPropertyName) {
-        const additionaProperty = this.toAdditionalPropertyType(
+        const additionalProperty = this.toAdditionalPropertyType(
           this.newPropertyName,
           undefined
         );
-        if (additionaProperty) {
+        if (additionalProperty) {
           this.additionalPropertyItems = [
             ...this.additionalPropertyItems,
-            additionaProperty,
+            additionalProperty,
           ];
         }
 
-        if (typeof this.control.data === 'object' && additionaProperty.schema) {
+        if (
+          typeof this.control.data === 'object' &&
+          additionalProperty.schema
+        ) {
           this.control.data[this.newPropertyName] = createDefaultValue(
-            additionaProperty.schema
+            additionalProperty.schema
           );
           // we need always to preserve the key even when the value is "empty"
           this.input.handleChange(this.control.path, this.control.data);
