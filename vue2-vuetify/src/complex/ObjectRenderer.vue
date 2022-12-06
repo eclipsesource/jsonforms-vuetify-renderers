@@ -38,7 +38,7 @@ import isEmpty from 'lodash/isEmpty';
 import isObject from 'lodash/isObject';
 import { defineComponent } from 'vue';
 import { useNested, useVuetifyControl } from '../util';
-import AdditionalProperties from './components/AdditionalProperties.vue';
+import { AdditionalProperties } from './components';
 
 const controlRenderer = defineComponent({
   name: 'object-renderer',
