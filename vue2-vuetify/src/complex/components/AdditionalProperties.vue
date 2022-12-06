@@ -276,7 +276,7 @@ export default defineComponent({
       typeof control.value.schema.additionalProperties !== 'object' &&
       typeof control.value.schema.patternProperties === 'object'
     ) {
-      const matchPatternPropeertiesKeys: JsonSchema7 = {
+      const matchPatternPropertiesKeys: JsonSchema7 = {
         type: 'string',
         pattern: Object.keys(control.value.schema.patternProperties).join('|'),
       };
