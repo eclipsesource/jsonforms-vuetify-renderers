@@ -405,8 +405,9 @@ export default defineComponent({
                 (newData[ap.propertyName] === null &&
                   ap.schema.type !== 'null')) // createDefaultValue will return null only when the ap.schema.type is 'null'
             ) {
-              hasChanges = true;
-              newData[ap.propertyName] = createDefaultValue(ap.schema);
+              const newValue = createDefaultValue(ap.schema);
+              hasChanges = newData[ap.propertyName] !== newValue;
+              newData[ap.propertyName] = newValue;
             }
           });
           if (hasChanges) {
