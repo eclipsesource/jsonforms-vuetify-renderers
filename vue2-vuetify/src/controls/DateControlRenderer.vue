@@ -166,7 +166,7 @@ const controlRenderer = defineComponent({
         return 'mdi-alpha-y-box-outline';
       }
 
-      if (this.pickerType == 'month') {
+      if (this.pickerType === 'month') {
         return 'mdi-calendar-month';
       }
 
