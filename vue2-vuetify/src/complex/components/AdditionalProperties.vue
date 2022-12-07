@@ -10,7 +10,7 @@
             v-disabled-icon-focus
             :required="true"
             :class="styles.control.input"
-            :error-messages="errors"
+            :error-messages="newPropertyErrors"
             v-model="newPropertyName"
             :clearable="hover"
             :placeholder="placeholder"
@@ -28,16 +28,7 @@
               small
               :aria-label="addToLabel"
               v-on="onTooltip"
-              :disabled="
-                !control.enabled ||
-                (appliedOptions.restrict &&
-                  control.schema.maxProperties !== undefined &&
-                  control.data &&
-                  Object.keys(control.data).length >=
-                    control.schema.maxProperties) ||
-                errors.length > 0 ||
-                !newPropertyName
-              "
+              :disabled="addPropertyDisabled"
               @click="addProperty"
             >
               <v-icon>mdi-plus</v-icon>
@@ -72,14 +63,7 @@
                 elevation="0"
                 small
                 :aria-label="deleteLabel"
-                :disabled="
-                  !control.enabled ||
-                  (appliedOptions.restrict &&
-                    control.schema.minProperties !== undefined &&
-                    control.data &&
-                    Object.keys(control.data).length <=
-                      control.schema.minProperties)
-                "
+                :disabled="removePropertyDisabled"
                 @click="removeProperty(element.propertyName)"
               >
                 <v-icon class="notranslate">mdi-delete</v-icon>
@@ -314,7 +298,44 @@ export default defineComponent({
     };
   },
   computed: {
-    errors(): string[] {
+    addPropertyDisabled(): boolean {
+      return (
+        // add is disabled because the overall control is disabled
+        !this.control.enabled ||
+        // add is disabled because of contraints
+        (this.appliedOptions.restrict && this.maxPropertiesReached) ||
+        // add is disabled because there are errors for the new property name or it is not specified
+        this.newPropertyErrors.length > 0 ||
+        !this.newPropertyName
+      );
+    },
+    maxPropertiesReached(): boolean {
+      return (
+        this.control.schema.maxProperties !== undefined && // we have maxProperties constraint
+        this.control.data && // we have data to check
+        // the current number of properties in the object is greater or equals to the maxProperties
+        Object.keys(this.control.data).length >=
+          this.control.schema.maxProperties
+      );
+    },
+    removePropertyDisabled(): boolean {
+      return (
+        // add is disabled because the overall control is disabled
+        !this.control.enabled ||
+        // add is disabled because of contraints
+        (this.appliedOptions.restrict && this.minPropertiesReached)
+      );
+    },
+    minPropertiesReached(): boolean {
+      return (
+        this.control.schema.minProperties !== undefined && // we have minProperties constraint
+        this.control.data && // we have data to check
+        // the current number of properties in the object is less or equals to the minProperties
+        Object.keys(this.control.data).length <=
+          this.control.schema.minProperties
+      );
+    },
+    newPropertyErrors(): string[] {
       if (this.newPropertyName) {
         const messages = this.propertyNameValidator
           ? (validate(this.propertyNameValidator, this.newPropertyName)
