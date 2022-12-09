@@ -7,6 +7,7 @@
   >
     <v-hover v-slot="{ hover }">
       <v-text-field
+        ref="input"
         :step="step"
         :id="control.id + '-input'"
         :class="styles.control.input"
@@ -18,7 +19,7 @@
         :persistent-hint="persistentHint()"
         :required="control.required"
         :error-messages="control.errors"
-        :value="control.data"
+        :value="inputValue"
         :clearable="hover"
         v-bind="vuetifyProps('v-text-field')"
         @input="onInputChange"
@@ -36,7 +37,7 @@ import {
   rankWith,
   isNumberControl,
 } from '@jsonforms/core';
-import { defineComponent } from 'vue';
+import { defineComponent, ref, unref } from 'vue';
 import {
   rendererProps,
   useJsonFormsControl,
@@ -45,6 +46,8 @@ import {
 import { default as ControlWrapper } from './ControlWrapper.vue';
 import { useVuetifyControl } from '../util';
 import { VHover, VTextField } from 'vuetify/lib';
+
+const NUMBER_REGEX_TEST = /^[+-]?\d+([.]\d+)?([eE][+-]?\d+)?$/;
 
 const controlRenderer = defineComponent({
   name: 'number-control-renderer',
@@ -57,11 +60,14 @@ const controlRenderer = defineComponent({
     ...rendererProps<ControlElement>(),
   },
   setup(props: RendererProps<ControlElement>) {
-    return useVuetifyControl(
-      useJsonFormsControl(props),
-      (value: any) => value || undefined,
-      300
-    );
+    const adaptValue = (value: any) =>
+      typeof value === 'number' ? value : value || undefined;
+    const input = useVuetifyControl(useJsonFormsControl(props), adaptValue);
+
+    // preserve the value as it was typed by the user - for example when the user type very long number if we rely on the control.data to return back the actual data then the string could appear with exponent form and etc.
+    // otherwise while typing the string in the input can suddenly change
+    const inputValue = ref(unref(input.control).data);
+    return { ...input, adaptValue, inputValue };
   },
   computed: {
     step(): number {
@@ -71,17 +77,19 @@ const controlRenderer = defineComponent({
   },
   methods: {
     onInputChange(value: string): void {
-      const result = parseFloat(value);
-      if (
-        // the number is too large, too small or NaN
-        !isFinite(result) ||
-        !isFinite(Number(value)) // make sure that if we have any letters inside the number this will result in invalid number - Number() parses the string with different rules than parseFloat
-      ) {
-        // if we can't convert successfully the value then preserve the value that is entered but AJV will mark that as invalid
-        this.onChange(value);
-      } else {
-        this.onChange(result);
+      this.inputValue = value;
+      this.onChange(this.toNumberOrString(value));
+    },
+    toNumberOrString(value: string): number | string {
+      // have a regex test before parseFloat to make sure that invalid input won't be ignored and will lead to errors, parseFloat will parse invalid input such 7.22m6 as 7.22
+      if (NUMBER_REGEX_TEST.test(value)) {
+        const num = Number.parseFloat(value);
+        if (Number.isFinite(num)) {
+          // return the parsed number only if it is not NaN or Infinite
+          return num;
+        }
       }
+      return value;
     },
   },
 });
