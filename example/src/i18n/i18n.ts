@@ -42,5 +42,10 @@ function templateToMessage(
     interpolate: /\${([\s\S]+?)}/g, // ${myVar}
   });
 
-  return compiled(params);
+  try {
+    return compiled(params);
+  } catch (e) {
+    console.log(`Unable to generate message from template: ${templateMessage}`);
+    return templateMessage;
+  }
 }

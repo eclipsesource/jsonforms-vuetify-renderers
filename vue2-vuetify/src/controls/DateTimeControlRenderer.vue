@@ -26,7 +26,9 @@
         @blur="isFocused = false"
       >
         <template slot="append">
-          <v-icon v-if="hover" tabindex="-1" @click="clear">$clear</v-icon>
+          <v-icon v-if="hover && control.enabled" tabindex="-1" @click="clear"
+            >$clear</v-icon
+          >
         </template>
         <template slot="prepend-inner">
           <v-menu
@@ -38,6 +40,7 @@
             offset-y
             :min-width="useTabLayout ? '290px' : '580px'"
             v-bind="vuetifyProps('v-menu')"
+            :disabled="!control.enabled"
           >
             <template v-slot:activator="{ on: onMenu }">
               <v-icon v-on="onMenu" tabindex="-1">{{ pickerIcon }}</v-icon>
@@ -414,7 +417,7 @@ const controlRenderer = defineComponent({
         return date ? date.format('YYYY-MM-DD') : undefined;
       },
       set(val: string) {
-        this.onPickerChange(val, (this.$refs.timePicker as any).genValue());
+        this.onPickerChange(val, this.timePickerValue);
       },
     },
     timePickerValue: {
@@ -430,7 +433,7 @@ const controlRenderer = defineComponent({
           : undefined;
       },
       set(val: string) {
-        this.onPickerChange((this.$refs.datePicker as any).inputDate, val);
+        this.onPickerChange(this.datePickerValue, val);
       },
     },
     pickerValue: {
@@ -445,7 +448,9 @@ const controlRenderer = defineComponent({
       },
       set(val: string) {
         const dateTime = parseDateTime(val, 'YYYY-MM-DDTHH:mm:ss.SSSZ');
-        this.onChange(dateTime!.format(this.dateTimeSaveFormat));
+        if (dateTime && this.showActions) {
+          this.onChange(dateTime.format(this.dateTimeSaveFormat));
+        }
       },
     },
     clearLabel(): string {
@@ -484,7 +489,7 @@ const controlRenderer = defineComponent({
         this.onChange(newdata);
       }
     },
-    onPickerChange(dateValue: string, timeValue: string): void {
+    onPickerChange(dateValue?: string, timeValue?: string): void {
       const date = parseDateTime(dateValue, 'YYYY-MM-DD');
       const time = parseDateTime(
         timeValue ?? (this.useSeconds ? '00:00:00' : '00:00'),
