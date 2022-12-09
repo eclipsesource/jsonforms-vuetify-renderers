@@ -66,7 +66,7 @@ const controlRenderer = defineComponent({
 
     // preserve the value as it was typed by the user - for example when the user type very long number if we rely on the control.data to return back the actual data then the string could appear with exponent form and etc.
     // otherwise while typing the string in the input can suddenly change
-    const inputValue = ref(unref(input.control).data);
+    const inputValue = ref((unref(input.control).data as string) || '');
     return { ...input, adaptValue, inputValue };
   },
   computed: {
@@ -78,7 +78,27 @@ const controlRenderer = defineComponent({
   methods: {
     onInputChange(value: string): void {
       this.inputValue = value;
-      this.onChange(this.toNumberOrString(value));
+      const result = this.toNumberOrString(value);
+      if (typeof result === 'number') {
+        // if user entered 5675.4444444444444444444444444444444 but the actual data is 5675.444444444444 then sync the input with what the data represents and try to preserve the format
+        const inputStringIsInExponentForm =
+          this.inputValue.includes('E') || this.inputValue.includes('e');
+
+        const numberAsString = inputStringIsInExponentForm
+          ? result.toExponential()
+          : result.toPrecision();
+
+        const numberIsInExponentForm =
+          numberAsString.includes('E') || numberAsString.includes('e');
+
+        if (
+          this.inputValue !== numberAsString &&
+          inputStringIsInExponentForm === numberIsInExponentForm // only change the input if both the user input and the string representation of the number are in the same form
+        ) {
+          this.$nextTick(() => (this.inputValue = numberAsString));
+        }
+      }
+      this.onChange(result);
     },
     toNumberOrString(value: string): number | string {
       // have a regex test before parseFloat to make sure that invalid input won't be ignored and will lead to errors, parseFloat will parse invalid input such 7.22m6 as 7.22
