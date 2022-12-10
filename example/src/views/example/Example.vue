@@ -6,7 +6,12 @@
           <v-card-title>{{ example.title }}</v-card-title>
           <v-card-text>
             <v-tabs v-model="activeTab">
-              <v-tab :key="0">Demo</v-tab>
+              <v-tab :key="0"
+                >Demo<validation-icon
+                  v-if="errors"
+                  :errors="errors"
+                ></validation-icon
+              ></v-tab>
               <v-spacer expand />
               <v-tab :key="1">Schema</v-tab>
               <v-tab :key="2">UI Schema</v-tab>
@@ -302,7 +307,12 @@ import {
 import { Example, JsonExample } from '@/core/types';
 import type { JsonFormsRendererRegistryEntry } from '@jsonforms/core';
 import { JsonFormsChangeEvent } from '@jsonforms/vue2';
-import { defaultStyles, mergeStyles } from '@jsonforms/vue2-vuetify';
+import {
+  defaultStyles,
+  mergeStyles,
+  ValidationIcon,
+} from '@jsonforms/vue2-vuetify';
+import { ErrorObject } from 'ajv';
 import cloneDeep from 'lodash/cloneDeep';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import { VImg } from 'vuetify/lib';
@@ -316,12 +326,16 @@ export default {
   components: {
     MonacoEditor,
     DemoForm,
+    ValidationIcon,
   },
   data() {
     return {
       activeTab: 0,
       examples,
       example: undefined as JsonExample | undefined,
+      errors: undefined as
+        | ErrorObject<string, Record<string, any>, unknown>[]
+        | undefined,
       snackbar: false,
       snackbarText: '',
       snackbarTimeout: 3000,
@@ -353,27 +367,28 @@ export default {
     );
   },
   watch: {
-    '$route.params.id'(id) {
+    '$route.params.id'(id: string): void {
       this.setExample(find(this.examples, (example) => example.id === id));
     },
   },
   methods: {
-    onChange(event: JsonFormsChangeEvent) {
+    onChange(event: JsonFormsChangeEvent): void {
       this.$store.set(
         'app/monaco@dataModel',
         getMonacoModelForUri(
-          monaco.Uri.parse(this.toDataUri(this.example.id)),
+          monaco.Uri.parse(this.toDataUri(this.example!.id)),
           event.data ? JSON.stringify(event.data, null, 2) : ''
         )
       );
+      this.errors = event.errors;
     },
-    setExample(example: Example): void {
+    setExample(example: JsonExample | undefined): void {
       if (example) {
         this.example = cloneDeep(example);
         this.updateMonacoModels(this.example);
       }
     },
-    reloadMonacoSchema() {
+    reloadMonacoSchema(): void {
       const example = find(
         this.examples,
         (example) => example.id === this.$route.params.id
@@ -392,7 +407,7 @@ export default {
         this.toast('Original example schema loaded. Apply it to take effect.');
       }
     },
-    saveMonacoSchema() {
+    saveMonacoSchema(): void {
       const model = this.monacoSchemaModel as monaco.editor.ITextModel;
       const example = this.example;
 
@@ -416,7 +431,7 @@ export default {
         }
       }
     },
-    reloadMonacoUiSchema() {
+    reloadMonacoUiSchema(): void {
       const example = find(
         this.examples,
         (example) => example.id === this.$route.params.id
@@ -437,7 +452,7 @@ export default {
         );
       }
     },
-    saveMonacoUiSchema() {
+    saveMonacoUiSchema(): void {
       const model = this.monacoUiSchemaModel as monaco.editor.ITextModel;
       const example = this.example;
 
@@ -462,7 +477,7 @@ export default {
         }
       }
     },
-    reloadMonacoUiSchemas() {
+    reloadMonacoUiSchemas(): void {
       const example = find(
         this.examples,
         (example) => example.id === this.$route.params.id
@@ -483,7 +498,7 @@ export default {
         );
       }
     },
-    saveMonacoUiSchemas() {
+    saveMonacoUiSchemas(): void {
       const model = this.monacoUiSchemasModel as monaco.editor.ITextModel;
       const example = this.example;
 
@@ -508,7 +523,7 @@ export default {
         }
       }
     },
-    reloadMonacoData() {
+    reloadMonacoData(): void {
       const example = find(
         this.examples,
         (example) => example.id === this.$route.params.id
@@ -527,7 +542,7 @@ export default {
         this.toast('Original example data loaded. Apply it to take effect.');
       }
     },
-    saveMonacoData() {
+    saveMonacoData(): void {
       const model = this.monacoDataModel as monaco.editor.ITextModel;
       const example = this.example;
 
@@ -551,7 +566,7 @@ export default {
         }
       }
     },
-    reloadMonacoI18N() {
+    reloadMonacoI18N(): void {
       const example = find(
         this.examples,
         (example) => example.id === this.$route.params.id
@@ -570,7 +585,7 @@ export default {
         this.toast('Original example i18n loaded. Apply it to take effect.');
       }
     },
-    saveMonacoI18N() {
+    saveMonacoI18N(): void {
       const model = this.monacoI18NModel as monaco.editor.ITextModel;
       const example = this.example;
 
@@ -595,7 +610,7 @@ export default {
         }
       }
     },
-    registerValidations(editor: EditorApi) {
+    registerValidations(editor: EditorApi): void {
       configureJsonSchemaValidation(editor, ['*.schema.json']);
       configureUISchemaValidation(editor, ['*.uischema.json']);
       configureUISchemasValidation(editor, ['*.uischemas.json']);
@@ -615,7 +630,7 @@ export default {
         }
       }
     },
-    updateMonacoModels(example) {
+    updateMonacoModels(example: JsonExample): void {
       this.$store.set(
         'app/monaco@schemaModel',
         getMonacoModelForUri(

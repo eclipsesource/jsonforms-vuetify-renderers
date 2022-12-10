@@ -13,7 +13,7 @@ export type Example = {
     schema?: JsonSchema;
     uischema?: UISchemaElement;
     uischemas?: JsonFormsUISchemaRegistryEntry[];
-    data: Record<string, any>;
+    data: string | number | boolean | any[] | Record<string, any>;
     i18n?: Record<string, any>;
     renderers?: JsonFormsRendererRegistryEntry[];
   };
