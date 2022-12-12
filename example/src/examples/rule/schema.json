@@ -1,4 +1,5 @@
 {
+  "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
   "properties": {
     "name": {
@@ -9,22 +10,14 @@
     },
     "kindOfDead": {
       "type": "string",
-      "enum": [
-        "Zombie",
-        "Vampire",
-        "Ghoul"
-      ]
+      "enum": ["Zombie", "Vampire", "Ghoul"]
     },
     "vegetables": {
       "type": "boolean"
     },
     "kindOfVegetables": {
       "type": "string",
-      "enum": [
-        "All",
-        "Some",
-        "Only potatoes"
-      ]
+      "enum": ["All", "Some", "Only potatoes"]
     }
   }
 }

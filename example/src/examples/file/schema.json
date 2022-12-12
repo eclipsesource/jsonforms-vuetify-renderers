@@ -1,0 +1,24 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "imageDataUri": {
+      "type": "string",
+      "format": "uri",
+      "contentEncoding": "base64",
+      "contentMediaType": "image/*",
+      "description": "Image with maximum size of 1MB encoded as data URI"
+    },
+    "fileDataUriWithFileName": {
+      "type": "string",
+      "format": "binary",
+      "formatMaximum": "1048576",
+      "description": "File with maximum size of 1MB encoded as data URI and including the file name"
+    },
+    "base64String": {
+      "type": "string",
+      "contentEncoding": "base64",
+      "description": "File with maximum size of 1MB encoded as base64"
+    }
+  }
+}

@@ -46,6 +46,7 @@ import { input as rule } from './rule';
 import { input as verticalLayout } from './vertical-layout';
 import { input as huge } from './huge';
 import { input as ifThenElse } from './if-then-else';
+import { input as file } from './file';
 
 export const examples = [
   {
@@ -67,6 +68,11 @@ export const examples = [
     id: 'control-options',
     title: 'Control Options',
     input: controlOptions,
+  },
+  {
+    id: 'file',
+    title: 'File',
+    input: file,
   },
   {
     id: 'datetime',

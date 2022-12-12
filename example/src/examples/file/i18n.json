@@ -1,0 +1,16 @@
+{
+  "en": {
+    "imageDataUri": {
+      "label": "Image File",
+      "error": {
+        "formatMaximum": "size should be less than ${limitText}"
+      }
+    },
+    "fileDataUriWithFileName": {
+      "label": "Image File"
+    },
+    "base64String": {
+      "label": "Image File"
+    }
+  }
+}

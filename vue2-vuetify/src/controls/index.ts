@@ -19,6 +19,7 @@ export { default as SliderControlRenderer } from './SliderControlRenderer.vue';
 export { default as StringControlRenderer } from './StringControlRenderer.vue';
 export { default as StringMaskControlRenderer } from './StringMaskControlRenderer.vue';
 export { default as TimeControlRenderer } from './TimeControlRenderer.vue';
+export { default as FileRenderer } from './FileRenderer.vue';
 
 import { entry as anyOfStringOrEnumControlRendererEntry } from './AnyOfStringOrEnumControlRenderer.vue';
 import { entry as booleanControlRendererEntry } from './BooleanControlRenderer.vue';
@@ -37,6 +38,7 @@ import { entry as sliderControlRendererEntry } from './SliderControlRenderer.vue
 import { entry as stringControlRendererEntry } from './StringControlRenderer.vue';
 import { entry as stringMaskControlRendererEntry } from './StringMaskControlRenderer.vue';
 import { entry as timeControlRendererEntry } from './TimeControlRenderer.vue';
+import { entry as fileRendererEntry } from './FileRenderer.vue';
 
 export const controlRenderers = [
   anyOfStringOrEnumControlRendererEntry,
@@ -56,4 +58,5 @@ export const controlRenderers = [
   stringControlRendererEntry,
   stringMaskControlRendererEntry,
   timeControlRendererEntry,
+  fileRendererEntry,
 ];

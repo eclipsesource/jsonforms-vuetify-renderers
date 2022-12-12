@@ -1,4 +1,5 @@
 {
+  "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
   "properties": {
     "users": {
@@ -22,9 +23,7 @@
             "minimum": 0
           }
         },
-        "required": [
-          "firstname"
-        ]
+        "required": ["firstname"]
       },
       "minItems": 1,
       "maxItems": 5

@@ -1,14 +1,12 @@
 {
+  "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "array",
   "items": {
     "type": "object",
     "properties": {
       "plainEnum": {
         "type": "string",
-        "enum": [
-          "foo",
-          "bar"
-        ]
+        "enum": ["foo", "bar"]
       },
       "oneOfEnum": {
         "type": "string",
