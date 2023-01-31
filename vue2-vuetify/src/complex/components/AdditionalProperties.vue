@@ -165,9 +165,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const control = props.input.control as any as Ref<
-      typeof props.input.control
-    >;
+    const control = props.input.control;
     const reservedPropertyNames = Object.keys(
       control.value.schema.properties || {}
     );
