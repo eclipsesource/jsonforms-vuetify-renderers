@@ -120,6 +120,7 @@
     }
   ],
   "options": {
-    "variant": "stepper"
+    "variant": "stepper",
+    "vertical": false
   }
 }

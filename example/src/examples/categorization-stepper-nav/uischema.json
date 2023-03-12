@@ -121,6 +121,7 @@
   ],
   "options": {
     "variant": "stepper",
-    "showNavButtons": true
+    "showNavButtons": true,
+    "vertical": false
   }
 }
