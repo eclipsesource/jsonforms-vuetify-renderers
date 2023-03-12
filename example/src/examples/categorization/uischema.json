@@ -120,6 +120,6 @@
     }
   ],
   "options": {
-    "vertical": true
+    "vertical": false
   }
 }
