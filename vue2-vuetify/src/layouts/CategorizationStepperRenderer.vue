@@ -5,6 +5,7 @@
       non-linear
       v-model="activeCategory"
       v-bind="vuetifyProps('v-stepper')"
+      vertical
     >
       <template v-for="(element, index) in visibleCategories">
         <v-stepper-step
