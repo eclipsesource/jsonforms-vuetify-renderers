@@ -169,12 +169,15 @@ export default defineComponent({
       typeof props.input.control
     >;
     const reservedPropertyNames = Object.keys(
-      control.value.schema.properties || {}
+      (control.value.schema && control.value.schema.properties) || {}
     );
 
-    const additionalKeys = Object.keys(control.value.data).filter(
-      (k) => !reservedPropertyNames.includes(k)
-    );
+    const additionalKeys =
+      control.value.data && isPlainObject(control.value.data)
+        ? Object.keys(control.value.data).filter(
+            (k) => !reservedPropertyNames.includes(k)
+          )
+        : [];
 
     const toAdditionalPropertyType = (
       propName: string,
@@ -183,7 +186,11 @@ export default defineComponent({
       let propSchema: JsonSchema | undefined = undefined;
       let propUiSchema: UISchemaElement | undefined = undefined;
 
-      if (control.value.schema.patternProperties) {
+      if (
+        control.value.schema &&
+        control.value.schema.patternProperties &&
+        typeof control.value.schema.patternProperties === 'object'
+      ) {
         const matchedPattern = Object.keys(
           control.value.schema.patternProperties
         ).find((pattern) => new RegExp(pattern).test(propName));
@@ -194,6 +201,8 @@ export default defineComponent({
 
       if (
         !propSchema &&
+        control.value.schema &&
+        control.value.schema.additionalProperties &&
         typeof control.value.schema.additionalProperties === 'object'
       ) {
         propSchema = control.value.schema.additionalProperties;
@@ -237,7 +246,7 @@ export default defineComponent({
     additionalKeys.forEach((propName) => {
       const additionalProperty = toAdditionalPropertyType(
         propName,
-        control.value.data[propName]
+        control.value.data?.[propName]
       );
       additionalPropertyItems.value.push(additionalProperty);
     });
@@ -252,11 +261,17 @@ export default defineComponent({
 
     // TODO: create issue against jsonforms to add propertyNames into the JsonSchema interface
     // propertyNames exist in draft-6 but not defined in the JsonSchema
-    if (typeof (control.value.schema as any).propertyNames === 'object') {
+    if (
+      control.value.schema &&
+      (control.value.schema as any).propertyNames &&
+      typeof (control.value.schema as any).propertyNames === 'object'
+    ) {
       propertyNameSchema = (control.value.schema as any).propertyNames;
     }
 
     if (
+      control.value.schema &&
+      control.value.schema.patternProperties &&
       typeof control.value.schema.additionalProperties !== 'object' &&
       typeof control.value.schema.patternProperties === 'object'
     ) {
@@ -311,6 +326,7 @@ export default defineComponent({
     },
     maxPropertiesReached(): boolean {
       return (
+        this.control.schema &&
         this.control.schema.maxProperties !== undefined && // we have maxProperties constraint
         this.control.data && // we have data to check
         // the current number of properties in the object is greater or equals to the maxProperties
@@ -328,6 +344,7 @@ export default defineComponent({
     },
     minPropertiesReached(): boolean {
       return (
+        this.control.schema &&
         this.control.schema.minProperties !== undefined && // we have minProperties constraint
         this.control.data && // we have data to check
         // the current number of properties in the object is less or equals to the minProperties
@@ -380,9 +397,10 @@ export default defineComponent({
       const additionalProperties = this.control.schema.additionalProperties;
 
       const label =
+        additionalProperties &&
         typeof additionalProperties === 'object' &&
-        Object.prototype.hasOwnProperty.call(additionalProperties, 'title')
-          ? additionalProperties.title ?? 'Additional Properties'
+        additionalProperties.title
+          ? additionalProperties.title
           : 'Additional Properties';
 
       return this.t(this.i18nKey('title'), label);
@@ -415,7 +433,7 @@ export default defineComponent({
       handler(newData) {
         // revert back any undefined values back to the default value when the key is part of the addtional properties since we want to preserved the key
         // for example when we have a string additonal property then when we clear the text component the componet by default sets the value to undefined to remove the property from the object - for additional properties we do not want that behaviour
-        if (typeof this.control.data === 'object') {
+        if (this.control.data && typeof this.control.data === 'object') {
           const keys = Object.keys(newData);
           let hasChanges = false;
           this.additionalPropertyItems.forEach((ap) => {
@@ -463,6 +481,7 @@ export default defineComponent({
         }
 
         if (
+          this.control.data &&
           typeof this.control.data === 'object' &&
           additionalProperty.schema
         ) {
@@ -479,7 +498,7 @@ export default defineComponent({
       this.additionalPropertyItems = this.additionalPropertyItems.filter(
         (d) => d.propertyName !== propName
       );
-      if (typeof this.control.data === 'object') {
+      if (this.control.data && typeof this.control.data === 'object') {
         delete this.control.data[propName];
         this.input.handleChange(this.control.path, this.control.data);
       }
