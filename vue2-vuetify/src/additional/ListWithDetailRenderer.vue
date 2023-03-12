@@ -1,9 +1,5 @@
 <template>
-  <v-container
-    v-if="control.visible"
-    fill-height
-    :class="styles.listWithDetail.root"
-  >
+  <v-container v-if="control.visible" :class="styles.listWithDetail.root">
     <v-row>
       <v-col class="pa-0">
         <v-toolbar flat :class="styles.listWithDetail.toolbar">
