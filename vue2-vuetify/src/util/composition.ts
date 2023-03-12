@@ -160,10 +160,15 @@ export const useVuetifyLayout = <I extends { layout: any }>(input: I) => {
     );
   });
 
-  const vuetifyProps = (path: string) => {
+  const vuetifyProps = (path: string, defaultProps?: Record<string, any>) => {
     const props = get(appliedOptions.value?.vuetify, path);
-
-    return props && isPlainObject(props) ? props : {};
+    if (props && isPlainObject(props)) {
+      return defaultProps
+        ? merge({}, cloneDeep(defaultProps), cloneDeep(props))
+        : props;
+    } else {
+      return defaultProps ?? {};
+    }
   };
 
   return {
