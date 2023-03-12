@@ -247,7 +247,7 @@
 
 <script lang="ts">
 import { examples } from '@/examples';
-import { find } from 'lodash';
+import find from 'lodash/find';
 import { sync } from 'vuex-pathify';
 
 import DemoForm from '@/components/DemoForm.vue';
