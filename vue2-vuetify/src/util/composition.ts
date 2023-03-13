@@ -40,6 +40,20 @@ export const useComputedLabel = <I extends { control: any }>(
   });
 };
 
+export const useVuetifyProps = (
+  appliedOptions: ComputedRef<Record<string, any>>
+) => {
+  return (path: string, defaultProps?: Record<string, any>) => {
+    const props = get(appliedOptions.value?.vuetify, path);
+
+    if (props && isPlainObject(props)) {
+      return defaultProps ? merge({}, defaultProps, props) : props;
+    } else {
+      return defaultProps ?? {};
+    }
+  };
+};
+
 /**
  * Adds styles, appliedOptions and vuetifyProps
  */
@@ -52,11 +66,8 @@ export const useVuetifyLabel = <I extends { label: any }>(input: I) => {
       cloneDeep(input.label.value.uischema.options)
     )
   );
-  const vuetifyProps = (path: string) => {
-    const props = get(appliedOptions.value?.vuetify, path);
+  const vuetifyProps = useVuetifyProps(appliedOptions);
 
-    return props && isPlainObject(props) ? props : {};
-  };
   return {
     ...input,
     appliedOptions,
@@ -106,17 +117,7 @@ export const useVuetifyControl = <
 
   const styles = useStyles(input.control.value.uischema);
 
-  const vuetifyProps = (path: string, defaultProps?: Record<string, any>) => {
-    const props = get(appliedOptions.value?.vuetify, path);
-
-    if (props && isPlainObject(props)) {
-      return defaultProps
-        ? merge({}, cloneDeep(defaultProps), cloneDeep(props))
-        : props;
-    } else {
-      return defaultProps ?? {};
-    }
-  };
+  const vuetifyProps = useVuetifyProps(appliedOptions);
 
   return {
     ...input,
@@ -166,16 +167,7 @@ export const useVuetifyLayout = <I extends { layout: any }>(input: I) => {
     );
   });
 
-  const vuetifyProps = (path: string, defaultProps?: Record<string, any>) => {
-    const props = get(appliedOptions.value?.vuetify, path);
-    if (props && isPlainObject(props)) {
-      return defaultProps
-        ? merge({}, cloneDeep(defaultProps), cloneDeep(props))
-        : props;
-    } else {
-      return defaultProps ?? {};
-    }
-  };
+  const vuetifyProps = useVuetifyProps(appliedOptions);
 
   return {
     ...input,
@@ -195,11 +187,7 @@ export const useVuetifyArrayControl = <I extends { control: any }>(
 
   const computedLabel = useComputedLabel(input, appliedOptions);
 
-  const vuetifyProps = (path: string) => {
-    const props = get(appliedOptions.value?.vuetify, path);
-
-    return props && isPlainObject(props) ? props : {};
-  };
+  const vuetifyProps = useVuetifyProps(appliedOptions);
 
   const childLabelForIndex = (index: number | null) => {
     if (index === null) {
@@ -242,11 +230,7 @@ export const useVuetifyBasicControl = <I extends { control: any }>(
 ) => {
   const appliedOptions = useControlAppliedOptions(input);
 
-  const vuetifyProps = (path: string) => {
-    const props = get(appliedOptions.value?.vuetify, path);
-
-    return props && isPlainObject(props) ? props : {};
-  };
+  const vuetifyProps = useVuetifyProps(appliedOptions);
 
   return {
     ...input,

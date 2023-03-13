@@ -99,9 +99,6 @@ import {
   useJsonFormsControlWithDetail,
 } from '@jsonforms/vue2';
 import Ajv, { ValidateFunction } from 'ajv';
-import cloneDeep from 'lodash/cloneDeep';
-import merge from 'lodash/merge';
-import get from 'lodash/get';
 import isPlainObject from 'lodash/isPlainObject';
 import startCase from 'lodash/startCase';
 import { defineComponent, PropType, Ref, ref } from 'vue';
@@ -122,7 +119,12 @@ import {
 } from 'vuetify/lib';
 import { DisabledIconFocus } from '../../controls/directives';
 import { useStyles } from '../../styles';
-import { useAjv, useControlAppliedOptions, useTranslator } from '../../util';
+import {
+  useAjv,
+  useControlAppliedOptions,
+  useTranslator,
+  useVuetifyProps,
+} from '../../util';
 
 type Input = ReturnType<typeof useJsonFormsControlWithDetail>;
 interface AdditionalPropertyType {
@@ -297,17 +299,7 @@ export default defineComponent({
       ).compile(propertyNameSchema);
     }
 
-    const vuetifyProps = (path: string, defaultProps?: Record<string, any>) => {
-      const props = get(appliedOptions.value?.vuetify, path);
-
-      if (props && isPlainObject(props)) {
-        return defaultProps
-          ? merge({}, cloneDeep(defaultProps), cloneDeep(props))
-          : props;
-      } else {
-        return defaultProps ?? {};
-      }
-    };
+    const vuetifyProps = useVuetifyProps(appliedOptions);
 
     const t = useTranslator();
     return {
