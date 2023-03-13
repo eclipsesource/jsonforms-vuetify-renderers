@@ -1,7 +1,11 @@
 <template>
-  <v-container v-if="layout.visible" :class="styles.categorization.root">
+  <v-container
+    v-if="layout.visible"
+    :class="styles.categorization.root"
+    v-bind="vuetifyProps('v-container')"
+  >
     <v-row
-      v-if="appliedOptions.vertical == true"
+      v-if="appliedOptions.vertical === true"
       v-bind="vuetifyProps('v-row')"
     >
       <v-col v-bind="vuetifyProps('v-col.v-tabs')">
