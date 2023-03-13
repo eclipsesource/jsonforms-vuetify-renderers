@@ -17,7 +17,7 @@
         </v-badge>
       </template>
 
-      <p>Validation Errors</p>
+      <p>{{ header }}</p>
       <p
         v-for="(message, index) in tooltipMessages"
         :key="`${index}`"
@@ -75,6 +75,10 @@ export default defineComponent({
     overlap: {
       type: Boolean,
       default: false,
+    },
+    header: {
+      type: String,
+      default: 'Validation Errors',
     },
   },
   computed: {

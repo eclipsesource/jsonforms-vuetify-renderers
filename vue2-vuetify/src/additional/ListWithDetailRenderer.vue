@@ -34,13 +34,17 @@
                 <v-icon>mdi-plus</v-icon>
               </v-btn>
             </template>
-            {{ `Add to ${control.label}` }}
+            {{
+              t('array.btn.add.tooltip', 'Add to ${label}', {
+                label: `${control.label}`,
+              })
+            }}
           </v-tooltip>
         </v-toolbar>
       </v-col>
     </v-row>
     <v-row v-if="dataLength === 0" :class="styles.listWithDetail.noData">
-      <v-col>No data</v-col>
+      <v-col> {{ t('Array.noData', 'No data') }} </v-col>
     </v-row>
     <v-row v-else>
       <v-col class="shrink pa-0">
@@ -112,7 +116,7 @@
                         <v-icon class="notranslate">mdi-arrow-up</v-icon>
                       </v-btn>
                     </template>
-                    Move Up
+                    {{ t('array.btn.moveUp.tooltip', 'Move Up') }}
                   </v-tooltip>
                 </v-list-item-action>
                 <v-list-item-action v-if="appliedOptions.showSortButtons">
@@ -133,7 +137,7 @@
                         <v-icon class="notranslate">mdi-arrow-down</v-icon>
                       </v-btn>
                     </template>
-                    Move Down
+                    {{ t('array.btn.moveDown.tooltip', 'Move Down') }}
                   </v-tooltip>
                 </v-list-item-action>
                 <v-list-item-action>
@@ -160,7 +164,7 @@
                         <v-icon class="notranslate">mdi-delete</v-icon>
                       </v-btn>
                     </template>
-                    Delete
+                    {{ t('array.btn.delete.tooltip', 'Delete') }}
                   </v-tooltip>
                 </v-list-item-action>
               </v-list-item>
@@ -169,7 +173,9 @@
         </v-list-item-group>
       </v-col>
       <v-col v-if="selectedIndex === undefined" class="grow">
-        <span class="text-h6">No Selection</span>
+        <span class="text-h6">{{
+          t('Array.noSelection', 'No Selection')
+        }}</span>
       </v-col>
       <v-col v-else :class="`grow ${styles.listWithDetail.itemContent}`">
         <dispatch-renderer
@@ -207,7 +213,7 @@ import {
   RendererProps,
   useJsonFormsArrayControl,
 } from '@jsonforms/vue2';
-import { useVuetifyArrayControl } from '../util';
+import { useTranslator, useVuetifyArrayControl } from '../util';
 import {
   VList,
   VListItemGroup,
@@ -269,10 +275,12 @@ const controlRenderer = defineComponent({
   },
   setup(props: RendererProps<ControlElement>) {
     const selectedIndex = ref<number | undefined>(undefined);
+    const t = useTranslator();
 
     return {
       ...useVuetifyArrayControl(useJsonFormsArrayControl(props)),
       selectedIndex,
+      t,
     };
   },
   computed: {

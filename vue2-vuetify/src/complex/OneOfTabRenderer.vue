@@ -35,18 +35,28 @@
 
     <v-dialog v-model="dialog" persistent max-width="600" @keydown.esc="cancel">
       <v-card>
-        <v-card-title class="text-h5"> Clear form? </v-card-title>
+        <v-card-title class="text-h5">
+          {{ t('form.clear.title', 'Clear form?') }}
+        </v-card-title>
 
         <v-card-text>
-          Your data will be cleared if you navigate away from this tab. Do you
-          want to proceed?
+          {{
+            t(
+              'form.clear.text',
+              'Your data will be cleared. Do you want to proceed?'
+            )
+          }}
         </v-card-text>
 
         <v-card-actions>
           <v-spacer></v-spacer>
 
-          <v-btn text @click="cancel"> No </v-btn>
-          <v-btn text ref="confirm" @click="confirm"> Yes </v-btn>
+          <v-btn text @click="cancel">
+            {{ t('form.clear.cancel', 'No') }}
+          </v-btn>
+          <v-btn text ref="confirm" @click="confirm">
+            {{ t('form.clear.confirm', 'Yes') }}
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -86,7 +96,7 @@ import {
   VTabs,
   VTabsItems,
 } from 'vuetify/lib';
-import { useVuetifyControl } from '../util';
+import { useTranslator, useVuetifyControl } from '../util';
 import { CombinatorProperties } from './components';
 
 const controlRenderer = defineComponent({
@@ -117,6 +127,7 @@ const controlRenderer = defineComponent({
     const tabIndex = ref(selectedIndex.value);
     const newSelectedIndex = ref(0);
     const dialog = ref(false);
+    const t = useTranslator();
 
     return {
       ...useVuetifyControl(input),
@@ -124,6 +135,7 @@ const controlRenderer = defineComponent({
       tabIndex,
       dialog,
       newSelectedIndex,
+      t,
     };
   },
   computed: {

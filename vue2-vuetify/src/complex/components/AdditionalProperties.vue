@@ -1,6 +1,9 @@
 <template>
-  <v-card v-if="control.visible" elevation="0">
-    <v-card-title>
+  <v-card
+    v-if="control.visible"
+    v-bind="vuetifyProps('v-card', { elevation: '0' })"
+  >
+    <v-card-title v-bind="vuetifyProps('v-card-title')">
       <v-toolbar flat>
         <v-toolbar-title>{{ additionalPropertiesTitle }}</v-toolbar-title>
         <v-spacer></v-spacer>
@@ -38,7 +41,7 @@
         </v-tooltip>
       </v-toolbar>
     </v-card-title>
-    <v-container>
+    <v-container v-bind="vuetifyProps('v-container')">
       <v-row
         v-for="(element, index) in additionalPropertyItems"
         :key="`${index}`"
@@ -96,6 +99,8 @@ import {
   useJsonFormsControlWithDetail,
 } from '@jsonforms/vue2';
 import Ajv, { ValidateFunction } from 'ajv';
+import cloneDeep from 'lodash/cloneDeep';
+import merge from 'lodash/merge';
 import get from 'lodash/get';
 import isPlainObject from 'lodash/isPlainObject';
 import startCase from 'lodash/startCase';
@@ -292,10 +297,16 @@ export default defineComponent({
       ).compile(propertyNameSchema);
     }
 
-    const vuetifyProps = (path: string) => {
+    const vuetifyProps = (path: string, defaultProps?: Record<string, any>) => {
       const props = get(appliedOptions.value?.vuetify, path);
 
-      return props && isPlainObject(props) ? props : {};
+      if (props && isPlainObject(props)) {
+        return defaultProps
+          ? merge({}, cloneDeep(defaultProps), cloneDeep(props))
+          : props;
+      } else {
+        return defaultProps ?? {};
+      }
     };
 
     const t = useTranslator();
