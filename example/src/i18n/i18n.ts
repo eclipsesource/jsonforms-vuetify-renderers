@@ -38,7 +38,6 @@ function templateToMessage(
   templateMessage: string,
   params: Record<string, string | number> = {}
 ): string {
-  console.log('HERE');
   const compiled = template(templateMessage, {
     interpolate: /\${([\s\S]+?)}/g, // ${myVar}
   });
