@@ -1,7 +1,7 @@
 <template>
   <div v-if="layout.visible" :class="styles.categorization.root">
     <v-stepper
-      v-if="appliedOptions.vertical == true"
+      v-if="appliedOptions.vertical === true"
       v-model="activeCategory"
       vertical
       v-bind="vuetifyProps('v-stepper')"
