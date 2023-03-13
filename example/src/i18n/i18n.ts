@@ -20,9 +20,9 @@ export const createTranslator = (
     defaultMessage: string | undefined,
     values?: any
   ): string | undefined => {
-    if (!localeTranslations) return defaultMessage;
-
-    const message = get(localeTranslations, id);
+    const message = localeTranslations
+      ? get(localeTranslations, id)
+      : defaultMessage;
     if (message && values) {
       return translateWithParams(message, values) ?? defaultMessage;
     }
@@ -38,6 +38,7 @@ function templateToMessage(
   templateMessage: string,
   params: Record<string, string | number> = {}
 ): string {
+  console.log('HERE');
   const compiled = template(templateMessage, {
     interpolate: /\${([\s\S]+?)}/g, // ${myVar}
   });
