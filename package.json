@@ -11,6 +11,6 @@
     "example:build": "cd example && npm run build"
   },
   "devDependencies": {
-    "lerna": "^4.0.0"
+    "lerna": "^6.6.1"
   }
 }
