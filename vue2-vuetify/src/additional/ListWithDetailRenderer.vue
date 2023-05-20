@@ -19,7 +19,7 @@
                 text
                 elevation="0"
                 small
-                :aria-label="`Add to ${control.label}`"
+                :aria-label="control.translations.addAriaLabel"
                 v-on="onTooltip"
                 :class="styles.listWithDetail.addButton"
                 @click="addButtonClick"
@@ -34,17 +34,13 @@
                 <v-icon>mdi-plus</v-icon>
               </v-btn>
             </template>
-            {{
-              t('array.btn.add.tooltip', 'Add to ${label}', {
-                label: `${control.label}`,
-              })
-            }}
+            {{ control.translations.addTooltip }}
           </v-tooltip>
         </v-toolbar>
       </v-col>
     </v-row>
     <v-row v-if="dataLength === 0" :class="styles.listWithDetail.noData">
-      <v-col> {{ t('Array.noData', 'No data') }} </v-col>
+      <v-col> {{ control.translations.noDataMessage }} </v-col>
     </v-row>
     <v-row v-else>
       <v-col class="shrink pa-0">
@@ -108,7 +104,7 @@
                         elevation="0"
                         small
                         class="ma-0"
-                        aria-label="Move up"
+                        :aria-label="control.translations.upAriaLabel"
                         :disabled="index <= 0 || !control.enabled"
                         :class="styles.listWithDetail.itemMoveUp"
                         @click.native="moveUpClick($event, index)"
@@ -129,7 +125,7 @@
                         elevation="0"
                         small
                         class="ma-0"
-                        aria-label="Move down"
+                        :aria-label="control.translations.downAriaLabel"
                         :disabled="index >= dataLength - 1 || !control.enabled"
                         :class="styles.listWithDetail.itemMoveDown"
                         @click.native="moveDownClick($event, index)"
@@ -150,7 +146,7 @@
                         elevation="0"
                         small
                         class="ma-0"
-                        aria-label="Delete"
+                        :aria-label="control.translations.removeAriaLabel"
                         :class="styles.listWithDetail.itemDelete"
                         @click.native="removeItemsClick($event, [index])"
                         :disabled="
@@ -164,7 +160,7 @@
                         <v-icon class="notranslate">mdi-delete</v-icon>
                       </v-btn>
                     </template>
-                    {{ t('array.btn.delete.tooltip', 'Delete') }}
+                    {{ control.translations.removeTooltip }}
                   </v-tooltip>
                 </v-list-item-action>
               </v-list-item>
@@ -173,9 +169,7 @@
         </v-list-item-group>
       </v-col>
       <v-col v-if="selectedIndex === undefined" class="grow">
-        <span class="text-h6">{{
-          t('Array.noSelection', 'No Selection')
-        }}</span>
+        <span class="text-h6">{{ control.translations.noSelection }}</span>
       </v-col>
       <v-col v-else :class="`grow ${styles.listWithDetail.itemContent}`">
         <dispatch-renderer

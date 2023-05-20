@@ -18,7 +18,7 @@
               text
               elevation="0"
               small
-              :aria-label="`Add to ${control.label}`"
+              :aria-label="control.translations.addAriaLabel"
               v-on="onTooltip"
               :class="styles.arrayList.addButton"
               :disabled="
@@ -33,11 +33,7 @@
               <v-icon>mdi-plus</v-icon>
             </v-btn>
           </template>
-          {{
-            t('array.btn.add.tooltip', 'Add to ${label}', {
-              label: `${control.label}`,
-            })
-          }}
+          {{ control.translations.addTooltip }}
         </v-tooltip>
       </v-toolbar>
     </v-card-title>
@@ -106,7 +102,7 @@
                         text
                         elevation="0"
                         small
-                        aria-label="Move up"
+                        :aria-label="control.translations.upAriaLabel"
                         :disabled="index <= 0 || !control.enabled"
                         :class="styles.arrayList.itemMoveUp"
                         @click.native="moveUpClick($event, index)"
@@ -125,7 +121,7 @@
                         text
                         elevation="0"
                         small
-                        aria-label="Move down"
+                        :aria-label="control.translations.downAriaLabel"
                         :disabled="index >= dataLength - 1 || !control.enabled"
                         :class="styles.arrayList.itemMoveDown"
                         @click.native="moveDownClick($event, index)"
@@ -143,7 +139,7 @@
                         text
                         elevation="0"
                         small
-                        aria-label="Delete"
+                        :aria-label="control.translations.removeAriaLabel"
                         :class="styles.arrayList.itemDelete"
                         :disabled="
                           !control.enabled ||
@@ -157,7 +153,7 @@
                         <v-icon class="notranslate">mdi-delete</v-icon>
                       </v-btn>
                     </template>
-                    {{ t('array.btn.delete.tooltip', 'Delete') }}
+                    {{ control.translations.removeTooltip }}
                   </v-tooltip>
                 </td>
               </tr>
@@ -166,7 +162,7 @@
         </v-row>
       </v-container>
       <v-container v-if="dataLength === 0" :class="styles.arrayList.noData">
-        {{ t('array.btn.noData.tooltip', 'No data') }}
+        {{ control.translations.noDataMessage }}
       </v-container>
     </v-card-text>
   </v-card>
