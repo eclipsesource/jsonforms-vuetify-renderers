@@ -1,9 +1,9 @@
 <template>
   <div v-if="layout.visible" :class="styles.categorization.root">
     <v-stepper
-      v-if="appliedOptions.vertical == true"
-      non-linear
+      v-if="appliedOptions.vertical === true"
       v-model="activeCategory"
+      vertical
       v-bind="vuetifyProps('v-stepper')"
     >
       <template v-for="(element, index) in visibleCategories">
@@ -11,12 +11,17 @@
           :key="`${layout.path}-${index}`"
           :step="index + 1"
           editable
+          v-bind="vuetifyProps('v-stepper-step')"
         >
           {{ visibleCategoryLabels[index] }}
         </v-stepper-step>
 
-        <v-stepper-content :key="`${layout.path}-${index}`" :step="index + 1">
-          <v-card elevation="0">
+        <v-stepper-content
+          :key="`${layout.path}-${index}`"
+          :step="index + 1"
+          v-bind="vuetifyProps('v-stepper-content')"
+        >
+          <v-card v-bind="vuetifyProps('v-card')">
             <dispatch-renderer
               :schema="layout.schema"
               :uischema="element"
@@ -29,24 +34,33 @@
             <div v-if="!!appliedOptions.showNavButtons">
               <v-divider></v-divider>
 
-              <v-card-actions>
+              <v-card-actions v-bind="vuetifyProps('v-card-actions')">
                 <v-btn
                   text
                   left
                   :disabled="activeCategory - 1 <= 0"
                   @click="activeCategory--"
+                  v-bind="vuetifyProps('v-btn.back')"
                 >
-                  Back
+                  {{
+                    translateByText(
+                      vuetifyProps('v-btn.back', { label: 'Back' }).label
+                    )
+                  }}
                 </v-btn>
                 <v-spacer></v-spacer>
                 <v-btn
                   text
                   right
-                  color="primary"
                   :disabled="activeCategory - 1 >= visibleCategories.length - 1"
                   @click="activeCategory++"
+                  v-bind="vuetifyProps('v-btn.next', { color: 'primary' })"
                 >
-                  Next
+                  {{
+                    translateByText(
+                      vuetifyProps('v-btn.next', { label: 'Next' }).label
+                    )
+                  }}
                 </v-btn>
               </v-card-actions>
             </div>
@@ -56,16 +70,16 @@
     </v-stepper>
     <v-stepper
       v-else
-      non-linear
       v-model="activeCategory"
       v-bind="vuetifyProps('v-stepper')"
     >
-      <v-stepper-header>
+      <v-stepper-header v-bind="vuetifyProps('v-stepper-header')">
         <template v-for="(_, index) in visibleCategories">
           <v-stepper-step
             :key="`${layout.path}-${index}`"
             :step="index + 1"
             editable
+            v-bind="vuetifyProps('v-stepper-step')"
           >
             {{ visibleCategoryLabels[index] }}
           </v-stepper-step>
@@ -76,13 +90,14 @@
         </template>
       </v-stepper-header>
 
-      <v-stepper-items>
+      <v-stepper-items v-bind="vuetifyProps('v-stepper-items')">
         <v-stepper-content
           v-for="(element, index) in visibleCategories"
           :key="`${layout.path}-${index}`"
           :step="index + 1"
+          v-bind="vuetifyProps('v-stepper-content')"
         >
-          <v-card elevation="0">
+          <v-card v-bind="vuetifyProps('v-card')">
             <dispatch-renderer
               :schema="layout.schema"
               :uischema="element"
@@ -95,24 +110,34 @@
             <div v-if="!!appliedOptions.showNavButtons">
               <v-divider></v-divider>
 
-              <v-card-actions>
+              <v-card-actions v-bind="vuetifyProps('v-card-actions')">
                 <v-btn
                   text
                   left
                   :disabled="activeCategory - 1 <= 0"
                   @click="activeCategory--"
+                  v-bind="vuetifyProps('v-btn.back')"
                 >
-                  Back
+                  {{
+                    translateByText(
+                      vuetifyProps('v-btn.back', { label: 'Back' }).label
+                    )
+                  }}
                 </v-btn>
                 <v-spacer></v-spacer>
                 <v-btn
-                  text
                   right
-                  color="primary"
                   :disabled="activeCategory - 1 >= visibleCategories.length - 1"
                   @click="activeCategory++"
+                  v-bind="
+                    vuetifyProps('v-btn.next', { color: 'primary', text: true })
+                  "
                 >
-                  Next
+                  {{
+                    translateByText(
+                      vuetifyProps('v-btn.next', { label: 'Next' }).label
+                    )
+                  }}
                 </v-btn>
               </v-card-actions>
             </div>
@@ -200,6 +225,11 @@ const layoutRenderer = defineComponent({
       return this.visibleCategories.map((element) => {
         return deriveLabelForUISchemaElement(element, this.t) ?? '';
       });
+    },
+  },
+  methods: {
+    translateByText(text: string): string {
+      return this.t(text, text);
     },
   },
 });

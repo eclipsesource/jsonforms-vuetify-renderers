@@ -51,8 +51,8 @@
 
 <script lang="ts">
 import { PropType } from 'vue';
-import { Example, ResolvedSchema } from '@/core/types';
-import { Ajv } from 'ajv';
+import { JsonExample, ResolvedSchema } from '@/core/types';
+import type Ajv from 'ajv';
 import {
   ValidationMode,
   JsonFormsUISchemaRegistryEntry,
@@ -71,7 +71,7 @@ export default {
     JsonForms,
   },
   props: {
-    example: { type: Object as PropType<Example>, required: true },
+    example: { type: Object as PropType<JsonExample>, required: true },
     renderers: {
       required: true,
       type: Array as PropType<JsonFormsRendererRegistryEntry[]>,
@@ -128,7 +128,7 @@ export default {
   watch: {
     example: {
       deep: true,
-      handler(newExample: Example, oldExample: Example): void {
+      handler(newExample: JsonExample, oldExample: JsonExample): void {
         this.resolveSchema(newExample.input.schema);
         this.i18n.translate = createTranslator(
           this.locale,

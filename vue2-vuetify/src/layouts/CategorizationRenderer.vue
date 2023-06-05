@@ -1,7 +1,11 @@
 <template>
-  <v-container v-if="layout.visible" :class="styles.categorization.root">
+  <v-container
+    v-if="layout.visible"
+    :class="styles.categorization.root"
+    v-bind="vuetifyProps('v-container')"
+  >
     <v-row
-      v-if="appliedOptions.vertical == true"
+      v-if="appliedOptions.vertical === true"
       v-bind="vuetifyProps('v-row')"
     >
       <v-col v-bind="vuetifyProps('v-col.v-tabs')">
@@ -13,6 +17,7 @@
           <v-tab
             v-for="(_, index) in visibleCategories"
             :key="`${layout.path}-${index}`"
+            v-bind="vuetifyProps('v-tab')"
           >
             {{ visibleCategoryLabels[index] }}
           </v-tab>
@@ -27,6 +32,7 @@
           <v-tab-item
             v-for="(element, index) in visibleCategories"
             :key="`${layout.path}-${index}`"
+            v-bind="vuetifyProps('v-tab-item')"
           >
             <dispatch-renderer
               :schema="layout.schema"
@@ -41,33 +47,37 @@
       </v-col>
     </v-row>
     <v-row v-else v-bind="vuetifyProps('v-row')">
-      <v-tabs v-model="activeCategory" v-bind="vuetifyProps('v-tabs')">
-        <v-tab
-          v-for="(_, index) in visibleCategories"
-          :key="`${layout.path}-${index}`"
-        >
-          {{ visibleCategoryLabels[index] }}
-        </v-tab>
-      </v-tabs>
+      <v-col v-bind="vuetifyProps('v-col.v-tabs')">
+        <v-tabs v-model="activeCategory" v-bind="vuetifyProps('v-tabs')">
+          <v-tab
+            v-for="(_, index) in visibleCategories"
+            :key="`${layout.path}-${index}`"
+            v-bind="vuetifyProps('v-tab')"
+          >
+            {{ visibleCategoryLabels[index] }}
+          </v-tab>
+        </v-tabs>
 
-      <v-tabs-items
-        v-model="activeCategory"
-        v-bind="vuetifyProps('v-tabs-items')"
-      >
-        <v-tab-item
-          v-for="(element, index) in visibleCategories"
-          :key="`${layout.path}-${index}`"
+        <v-tabs-items
+          v-model="activeCategory"
+          v-bind="vuetifyProps('v-tabs-items')"
         >
-          <dispatch-renderer
-            :schema="layout.schema"
-            :uischema="element"
-            :path="layout.path"
-            :enabled="layout.enabled"
-            :renderers="layout.renderers"
-            :cells="layout.cells"
-          />
-        </v-tab-item>
-      </v-tabs-items>
+          <v-tab-item
+            v-for="(element, index) in visibleCategories"
+            :key="`${layout.path}-${index}`"
+            v-bind="vuetifyProps('v-tab-item')"
+          >
+            <dispatch-renderer
+              :schema="layout.schema"
+              :uischema="element"
+              :path="layout.path"
+              :enabled="layout.enabled"
+              :renderers="layout.renderers"
+              :cells="layout.cells"
+            />
+          </v-tab-item>
+        </v-tabs-items>
+      </v-col>
     </v-row>
   </v-container>
 </template>

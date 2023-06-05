@@ -1,9 +1,5 @@
 <template>
-  <v-container
-    v-if="control.visible"
-    fill-height
-    :class="styles.listWithDetail.root"
-  >
+  <v-container v-if="control.visible" :class="styles.listWithDetail.root">
     <v-row>
       <v-col class="pa-0">
         <v-toolbar flat :class="styles.listWithDetail.toolbar">
@@ -23,7 +19,7 @@
                 text
                 elevation="0"
                 small
-                :aria-label="`Add to ${control.label}`"
+                :aria-label="control.translations.addAriaLabel"
                 v-on="onTooltip"
                 :class="styles.listWithDetail.addButton"
                 @click="addButtonClick"
@@ -38,13 +34,13 @@
                 <v-icon>mdi-plus</v-icon>
               </v-btn>
             </template>
-            {{ `Add to ${control.label}` }}
+            {{ control.translations.addTooltip }}
           </v-tooltip>
         </v-toolbar>
       </v-col>
     </v-row>
     <v-row v-if="dataLength === 0" :class="styles.listWithDetail.noData">
-      <v-col>No data</v-col>
+      <v-col> {{ control.translations.noDataMessage }} </v-col>
     </v-row>
     <v-row v-else>
       <v-col class="shrink pa-0">
@@ -108,7 +104,7 @@
                         elevation="0"
                         small
                         class="ma-0"
-                        aria-label="Move up"
+                        :aria-label="control.translations.upAriaLabel"
                         :disabled="index <= 0 || !control.enabled"
                         :class="styles.listWithDetail.itemMoveUp"
                         @click.native="moveUpClick($event, index)"
@@ -116,7 +112,7 @@
                         <v-icon class="notranslate">mdi-arrow-up</v-icon>
                       </v-btn>
                     </template>
-                    Move Up
+                    {{ t('array.btn.moveUp.tooltip', 'Move Up') }}
                   </v-tooltip>
                 </v-list-item-action>
                 <v-list-item-action v-if="appliedOptions.showSortButtons">
@@ -129,7 +125,7 @@
                         elevation="0"
                         small
                         class="ma-0"
-                        aria-label="Move down"
+                        :aria-label="control.translations.downAriaLabel"
                         :disabled="index >= dataLength - 1 || !control.enabled"
                         :class="styles.listWithDetail.itemMoveDown"
                         @click.native="moveDownClick($event, index)"
@@ -137,7 +133,7 @@
                         <v-icon class="notranslate">mdi-arrow-down</v-icon>
                       </v-btn>
                     </template>
-                    Move Down
+                    {{ t('array.btn.moveDown.tooltip', 'Move Down') }}
                   </v-tooltip>
                 </v-list-item-action>
                 <v-list-item-action>
@@ -150,7 +146,7 @@
                         elevation="0"
                         small
                         class="ma-0"
-                        aria-label="Delete"
+                        :aria-label="control.translations.removeAriaLabel"
                         :class="styles.listWithDetail.itemDelete"
                         @click.native="removeItemsClick($event, [index])"
                         :disabled="
@@ -164,7 +160,7 @@
                         <v-icon class="notranslate">mdi-delete</v-icon>
                       </v-btn>
                     </template>
-                    Delete
+                    {{ control.translations.removeTooltip }}
                   </v-tooltip>
                 </v-list-item-action>
               </v-list-item>
@@ -173,7 +169,7 @@
         </v-list-item-group>
       </v-col>
       <v-col v-if="selectedIndex === undefined" class="grow">
-        <span class="text-h6">No Selection</span>
+        <span class="text-h6">{{ control.translations.noSelection }}</span>
       </v-col>
       <v-col v-else :class="`grow ${styles.listWithDetail.itemContent}`">
         <dispatch-renderer
@@ -211,7 +207,7 @@ import {
   RendererProps,
   useJsonFormsArrayControl,
 } from '@jsonforms/vue2';
-import { useVuetifyArrayControl } from '../util';
+import { useTranslator, useVuetifyArrayControl } from '../util';
 import {
   VList,
   VListItemGroup,
@@ -273,10 +269,12 @@ const controlRenderer = defineComponent({
   },
   setup(props: RendererProps<ControlElement>) {
     const selectedIndex = ref<number | undefined>(undefined);
+    const t = useTranslator();
 
     return {
       ...useVuetifyArrayControl(useJsonFormsArrayControl(props)),
       selectedIndex,
+      t,
     };
   },
   computed: {

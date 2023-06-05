@@ -118,5 +118,8 @@
         }
       }
     }
-  ]
+  ],
+  "options": {
+    "vertical": false
+  }
 }

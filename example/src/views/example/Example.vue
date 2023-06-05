@@ -247,7 +247,7 @@
 
 <script lang="ts">
 import { examples } from '@/examples';
-import { find } from 'lodash';
+import find from 'lodash/find';
 import { sync } from 'vuex-pathify';
 
 import DemoForm from '@/components/DemoForm.vue';
@@ -259,7 +259,7 @@ import {
   EditorApi,
   getMonacoModelForUri,
 } from '@/core/jsonSchemaValidation';
-import { Example } from '@/core/types';
+import { JsonExample } from '@/core/types';
 import type { JsonFormsRendererRegistryEntry } from '@jsonforms/core';
 import { JsonFormsChangeEvent } from '@jsonforms/vue2';
 import {
@@ -286,7 +286,7 @@ export default {
     return {
       activeTab: 0,
       examples,
-      example: undefined,
+      example: undefined as JsonExample | undefined,
       errors: undefined as
         | ErrorObject<string, Record<string, any>, unknown>[]
         | undefined,
@@ -314,34 +314,34 @@ export default {
       return this.$route.query?.view === 'form-only';
     },
   },
-  mounted() {
+  mounted(): void {
     this.setExample(
       find(this.examples, (example) => example.id === this.$route.params.id)
     );
   },
   watch: {
-    '$route.params.id'(id) {
+    '$route.params.id'(id: string): void {
       this.setExample(find(this.examples, (example) => example.id === id));
     },
   },
   methods: {
-    onChange(event: JsonFormsChangeEvent) {
+    onChange(event: JsonFormsChangeEvent): void {
       this.$store.set(
         'app/monaco@dataModel',
         getMonacoModelForUri(
-          monaco.Uri.parse(this.toDataUri(this.example.id)),
+          monaco.Uri.parse(this.toDataUri(this.example!.id)),
           event.data ? JSON.stringify(event.data, null, 2) : ''
         )
       );
       this.errors = event.errors;
     },
-    setExample(example: Example): void {
+    setExample(example?: JsonExample): void {
       if (example) {
         this.example = cloneDeep(example);
         this.updateMonacoModels(this.example);
       }
     },
-    reloadMonacoSchema() {
+    reloadMonacoSchema(): void {
       const example = find(
         this.examples,
         (example) => example.id === this.$route.params.id
@@ -360,7 +360,7 @@ export default {
         this.toast('Original example schema loaded. Apply it to take effect.');
       }
     },
-    saveMonacoSchema() {
+    saveMonacoSchema(): void {
       const model = this.monacoSchemaModel as monaco.editor.ITextModel;
       const example = this.example;
 
@@ -384,7 +384,7 @@ export default {
         }
       }
     },
-    reloadMonacoUiSchema() {
+    reloadMonacoUiSchema(): void {
       const example = find(
         this.examples,
         (example) => example.id === this.$route.params.id
@@ -405,7 +405,7 @@ export default {
         );
       }
     },
-    saveMonacoUiSchema() {
+    saveMonacoUiSchema(): void {
       const model = this.monacoUiSchemaModel as monaco.editor.ITextModel;
       const example = this.example;
 
@@ -430,7 +430,7 @@ export default {
         }
       }
     },
-    reloadMonacoData() {
+    reloadMonacoData(): void {
       const example = find(
         this.examples,
         (example) => example.id === this.$route.params.id
@@ -449,7 +449,7 @@ export default {
         this.toast('Original example data loaded. Apply it to take effect.');
       }
     },
-    saveMonacoData() {
+    saveMonacoData(): void {
       const model = this.monacoDataModel as monaco.editor.ITextModel;
       const example = this.example;
 
@@ -473,7 +473,7 @@ export default {
         }
       }
     },
-    reloadMonacoI18N() {
+    reloadMonacoI18N(): void {
       const example = find(
         this.examples,
         (example) => example.id === this.$route.params.id
@@ -492,7 +492,7 @@ export default {
         this.toast('Original example i18n loaded. Apply it to take effect.');
       }
     },
-    saveMonacoI18N() {
+    saveMonacoI18N(): void {
       const model = this.monacoI18NModel as monaco.editor.ITextModel;
       const example = this.example;
 
@@ -517,7 +517,7 @@ export default {
         }
       }
     },
-    registerValidations(editor: EditorApi) {
+    registerValidations(editor: EditorApi): void {
       configureJsonSchemaValidation(editor, ['*.schema.json']);
       configureUISchemaValidation(editor, ['*.uischema.json']);
       for (let example of examples) {
@@ -536,7 +536,7 @@ export default {
         }
       }
     },
-    updateMonacoModels(example) {
+    updateMonacoModels(example: JsonExample): void {
       this.$store.set(
         'app/monaco@schemaModel',
         getMonacoModelForUri(

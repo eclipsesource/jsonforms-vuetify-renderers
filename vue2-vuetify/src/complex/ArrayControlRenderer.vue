@@ -18,7 +18,7 @@
               text
               elevation="0"
               small
-              :aria-label="`Add to ${control.label}`"
+              :aria-label="control.translations.addAriaLabel"
               v-on="onTooltip"
               :class="styles.arrayList.addButton"
               :disabled="
@@ -33,7 +33,7 @@
               <v-icon>mdi-plus</v-icon>
             </v-btn>
           </template>
-          {{ `Add to ${control.label}` }}
+          {{ control.translations.addTooltip }}
         </v-tooltip>
       </v-toolbar>
     </v-card-title>
@@ -102,7 +102,7 @@
                         text
                         elevation="0"
                         small
-                        aria-label="Move up"
+                        :aria-label="control.translations.upAriaLabel"
                         :disabled="index <= 0 || !control.enabled"
                         :class="styles.arrayList.itemMoveUp"
                         @click.native="moveUpClick($event, index)"
@@ -110,7 +110,7 @@
                         <v-icon class="notranslate">mdi-arrow-up</v-icon>
                       </v-btn>
                     </template>
-                    Move Up
+                    {{ t('array.btn.moveUp.tooltip', 'Move Up') }}
                   </v-tooltip>
                   <v-tooltip bottom>
                     <template v-slot:activator="{ on: onTooltip }">
@@ -121,7 +121,7 @@
                         text
                         elevation="0"
                         small
-                        aria-label="Move down"
+                        :aria-label="control.translations.downAriaLabel"
                         :disabled="index >= dataLength - 1 || !control.enabled"
                         :class="styles.arrayList.itemMoveDown"
                         @click.native="moveDownClick($event, index)"
@@ -129,7 +129,7 @@
                         <v-icon class="notranslate">mdi-arrow-down</v-icon>
                       </v-btn>
                     </template>
-                    Move Down
+                    {{ t('array.btn.moveDown.tooltip', 'Move Down') }}
                   </v-tooltip>
                   <v-tooltip bottom>
                     <template v-slot:activator="{ on: onTooltip }">
@@ -139,7 +139,7 @@
                         text
                         elevation="0"
                         small
-                        aria-label="Delete"
+                        :aria-label="control.translations.removeAriaLabel"
                         :class="styles.arrayList.itemDelete"
                         :disabled="
                           !control.enabled ||
@@ -153,7 +153,7 @@
                         <v-icon class="notranslate">mdi-delete</v-icon>
                       </v-btn>
                     </template>
-                    Delete
+                    {{ control.translations.removeTooltip }}
                   </v-tooltip>
                 </td>
               </tr>
@@ -162,7 +162,7 @@
         </v-row>
       </v-container>
       <v-container v-if="dataLength === 0" :class="styles.arrayList.noData">
-        No data
+        {{ control.translations.noDataMessage }}
       </v-container>
     </v-card-text>
   </v-card>
@@ -190,7 +190,7 @@ import {
   useJsonFormsArrayControl,
   RendererProps,
 } from '@jsonforms/vue2';
-import { useVuetifyArrayControl } from '../util';
+import { useTranslator, useVuetifyArrayControl } from '../util';
 import {
   VCard,
   VCardTitle,
@@ -235,7 +235,9 @@ const controlRenderer = defineComponent({
     ...rendererProps<ControlElement>(),
   },
   setup(props: RendererProps<ControlElement>) {
-    return useVuetifyArrayControl(useJsonFormsArrayControl(props));
+    const t = useTranslator();
+
+    return { ...useVuetifyArrayControl(useJsonFormsArrayControl(props)), t };
   },
   computed: {
     arraySchema(): JsonSchema | undefined {

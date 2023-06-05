@@ -1,7 +1,6 @@
 <template>
   <v-container
     v-if="layout.visible"
-    fill-height
     :class="`${styles.verticalLayout.root}`"
     v-bind="vuetifyProps('v-container')"
   >

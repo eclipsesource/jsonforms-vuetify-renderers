@@ -21,7 +21,7 @@
         :error-messages="control.errors"
         :value="inputValue"
         :clearable="hover"
-        v-bind="vuetifyProps('v-text-field')"
+        v-bind="vuetifyProps('v-text-field', { type: 'number' })"
         @input="onInputChange"
         @focus="isFocused = true"
         @blur="isFocused = false"
