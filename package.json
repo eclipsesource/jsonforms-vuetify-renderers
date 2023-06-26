@@ -4,7 +4,7 @@
   "scripts": {
     "init": "lerna bootstrap --hoist",
     "build": "lerna run --scope \"**/*vuetify\" build",
-    "watch": "cd vue2-vuetify && npm run watch",
+    "watch": "cd vue-vuetify && npm run watch",
     "test": "lerna run --scope \"**/*vuetify\" test",
     "clean": "lerna run clean",
     "example:serve": "cd example && npm run serve",
