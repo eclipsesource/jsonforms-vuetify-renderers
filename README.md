@@ -34,3 +34,11 @@ Recommendations:
 - For development use `npm run watch` combined with `npm run example:serve`.
 - To test production use `npm run build` combined with `npm run example:build`.
   Then serve the built application from `example/dist` with a web server of your choice, e.g. `npx http-server example/dist`.
+
+### Use with Vite
+
+When building for production with Vite, custom renderers will not work correctly if their entries are defined within the Single File Component - ie within the custom renderer itself.
+
+To use custom renderers with Vite in production mode, define the entry for any custom renderer outside of the SFC that defines the renderer itself. For example, within the file that imports and registers the renderer. Example repo: https://github.com/yaffol/json-forms-vuetify-vite-seed
+
+See also https://github.com/eclipsesource/jsonforms/issues/2077 and https://jsonforms.discourse.group/t/custom-renderers-not-rendering/1250
