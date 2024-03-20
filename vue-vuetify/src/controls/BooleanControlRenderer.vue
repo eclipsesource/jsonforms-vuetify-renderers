@@ -21,7 +21,7 @@
       v-bind="vuetifyProps('v-checkbox')"
       @change="onChange"
       @focus="isFocused = true"
-      @blur="isFocused = false"
+      @blur="handleBlur"
     />
   </control-wrapper>
 </template>
@@ -40,7 +40,7 @@ import {
   RendererProps,
 } from '@jsonforms/vue';
 import { default as ControlWrapper } from './ControlWrapper.vue';
-import { useVuetifyControl } from '../util';
+import {useBlurHandler, useVuetifyControl} from '../util';
 import { VCheckbox } from 'vuetify/components';
 
 const controlRenderer = defineComponent({
@@ -53,9 +53,14 @@ const controlRenderer = defineComponent({
     ...rendererProps<ControlElement>(),
   },
   setup(props: RendererProps<ControlElement>) {
-    return useVuetifyControl(useJsonFormsControl(props), (event) => {
+    const control = useVuetifyControl(useJsonFormsControl(props), (event) => {
       return event.target.checked || false;
     });
+    const { handleBlur } = useBlurHandler(control);
+    return {
+      ...control,
+      handleBlur,
+    }
   },
 });
 

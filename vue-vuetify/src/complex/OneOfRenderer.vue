@@ -27,7 +27,7 @@
         v-model="selectIndex"
         v-bind="vuetifyProps('v-select')"
         @focus="isFocused = true"
-        @blur="isFocused = false"
+        @blur="handleBlur"
       ></v-select>
     </v-hover>
     <dispatch-renderer
@@ -90,7 +90,7 @@ import {
   VSpacer,
 } from 'vuetify/components';
 import { DisabledIconFocus } from '../controls/directives';
-import { useTranslator, useVuetifyControl } from '../util';
+import {useBlurHandler, useTranslator, useVuetifyControl} from '../util';
 import { CombinatorProperties } from './components';
 
 const controlRenderer = defineComponent({
@@ -123,7 +123,7 @@ const controlRenderer = defineComponent({
     const newSelectedIndex = ref(0);
     const dialog = ref(false);
     const t = useTranslator();
-
+    const { handleBlur } = useBlurHandler(control);
     return {
       ...useVuetifyControl(input),
       selectedIndex,
@@ -131,6 +131,7 @@ const controlRenderer = defineComponent({
       dialog,
       newSelectedIndex,
       t,
+      handleBlur,
     };
   },
   computed: {

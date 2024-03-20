@@ -31,7 +31,7 @@
       v-bind="vuetifyProps('v-text-field')"
       @update:model-value="onChange"
       @focus="isFocused = true"
-      @blur="isFocused = false"
+      @blur="handleBlur"
     />
   </control-wrapper>
 </template>
@@ -52,7 +52,7 @@ import {
   RendererProps,
 } from '@jsonforms/vue';
 import { default as ControlWrapper } from './ControlWrapper.vue';
-import { useVuetifyControl } from '../util';
+import {useBlurHandler, useVuetifyControl} from '../util';
 import { VTextField } from 'vuetify/components';
 
 const controlRenderer = defineComponent({
@@ -66,14 +66,16 @@ const controlRenderer = defineComponent({
   },
   setup(props: RendererProps<ControlElement>) {
     const passwordVisible = ref(false);
-
+    const input = useVuetifyControl(
+            useJsonFormsControl(props),
+            (value) => value || undefined,
+            300
+        );
+    const { handleBlur } = useBlurHandler(input);
     return {
-      ...useVuetifyControl(
-        useJsonFormsControl(props),
-        (value) => value || undefined,
-        300
-      ),
+      ...input,
       passwordVisible,
+      handleBlur
     };
   },
 });

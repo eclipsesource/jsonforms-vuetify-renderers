@@ -32,7 +32,7 @@
         v-bind="vuetifyProps('v-combobox')"
         @change="onChange"
         @focus="isFocused = true"
-        @blur="isFocused = false"
+        @blur="handleBlur"
       />
     </v-hover>
   </control-wrapper>
@@ -55,7 +55,7 @@ import {
   RendererProps,
 } from '@jsonforms/vue';
 import { default as ControlWrapper } from './ControlWrapper.vue';
-import { useVuetifyControl } from '../util';
+import {useBlurHandler, useVuetifyControl} from '../util';
 import { VHover, VCombobox } from 'vuetify/components';
 import { DisabledIconFocus } from './directives';
 
@@ -73,10 +73,15 @@ const controlRenderer = defineComponent({
     ...rendererProps<ControlElement>(),
   },
   setup(props: RendererProps<ControlElement>) {
-    return useVuetifyControl(
+    const control = useVuetifyControl(
       useJsonFormsControl(props),
       (value) => value || undefined
     );
+    const { handleBlur } = useBlurHandler(control);
+    return {
+      ...control,
+      handleBlur,
+    }
   },
   computed: {
     items(): string[] {

@@ -27,7 +27,7 @@
         v-bind="vuetifyProps('v-select')"
         @change="onChange"
         @focus="isFocused = true"
-        @blur="isFocused = false"
+        @blur="handleBlur"
       />
       <v-autocomplete
         v-else
@@ -50,7 +50,7 @@
         v-bind="vuetifyProps('v-autocomplete')"
         @update:model-value="onChange"
         @focus="isFocused = true"
-        @blur="isFocused = false"
+        @blur="handleBlur"
       />
     </v-hover>
   </control-wrapper>
@@ -72,7 +72,7 @@ import { defineComponent } from 'vue';
 import { VAutocomplete, VHover, VSelect } from 'vuetify/components';
 import { default as ControlWrapper } from '../controls/ControlWrapper.vue';
 import { DisabledIconFocus } from '../controls/directives';
-import { useTranslator, useVuetifyControl } from '../util';
+import {useBlurHandler, useTranslator, useVuetifyControl} from '../util';
 
 const controlRenderer = defineComponent({
   name: 'autocomplete-oneof-enum-control-renderer',
@@ -96,7 +96,8 @@ const controlRenderer = defineComponent({
       (value) => (value !== null ? value : undefined),
       300
     );
-    return { ...control, t };
+    const { handleBlur } = useBlurHandler(control);
+    return { ...control, t, handleBlur };
   },
 });
 

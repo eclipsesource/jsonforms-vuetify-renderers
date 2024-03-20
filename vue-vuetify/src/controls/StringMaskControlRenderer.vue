@@ -29,7 +29,7 @@
         :clearable="isHovering"
         v-bind="vuetifyProps('v-text-field')"
         @focus="isFocused = true"
-        @blur="isFocused = false"
+        @blur="handleBlur"
         v-model="maskModel"
         v-mask="mask"
       />
@@ -56,7 +56,7 @@ import isEmpty from 'lodash/isEmpty';
 import { VueMaskPlugin } from 'v-mask';
 import { defineComponent, DirectiveOptions, VNode, VNodeDirective } from 'vue';
 import { VHover, VTextField } from 'vuetify/components';
-import { useVuetifyControl } from '../util';
+import {useBlurHandler, useVuetifyControl} from '../util';
 import { default as ControlWrapper } from './ControlWrapper.vue';
 import { DisabledIconFocus } from './directives';
 
@@ -173,8 +173,9 @@ const controlRenderer = defineComponent({
   setup(props: RendererProps<ControlElement>) {
     const adaptValue = (value: any) => value || undefined;
     const control = useVuetifyControl(useJsonFormsControl(props), adaptValue);
+    const { handleBlur } = useBlurHandler(control);
 
-    return { ...control, adaptValue };
+    return { ...control, adaptValue, handleBlur };
   },
   methods: {
     maskedValue(value: string | undefined): string | undefined {

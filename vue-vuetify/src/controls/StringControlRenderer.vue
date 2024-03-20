@@ -1,5 +1,7 @@
 <template>
-  <p class="text-red">live</p>
+  <p class="text-blue">live3</p>
+  <p>{{touched}}</p>
+  <p>{{filteredErrors}}</p>
   <control-wrapper
     v-bind="controlWrapper"
     :styles="styles"
@@ -35,7 +37,7 @@
         v-bind="vuetifyProps('v-combobox')"
         @update:model-value="onChange"
         @focus="isFocused = true"
-        @blur="isFocused = false"
+        @blur="handleBlur"
       />
       <v-text-field
         v-else
@@ -62,7 +64,7 @@
         v-bind="vuetifyProps('v-text-field')"
         @update:model-value="onChange"
         @focus="isFocused = true"
-        @blur="isFocused = false"
+        @blur="handleBlur"
       />
     </v-hover>
   </control-wrapper>
@@ -75,7 +77,7 @@ import {
   rankWith,
   isStringControl,
 } from '@jsonforms/core';
-import { defineComponent } from 'vue';
+import {defineComponent} from 'vue';
 import {
   rendererProps,
   useJsonFormsControl,
@@ -88,6 +90,7 @@ import { DisabledIconFocus } from './directives';
 import isArray from 'lodash/isArray';
 import every from 'lodash/every';
 import isString from 'lodash/isString';
+import { useBlurHandler } from "../util";
 
 const controlRenderer = defineComponent({
   name: 'string-control-renderer',
@@ -104,11 +107,18 @@ const controlRenderer = defineComponent({
     ...rendererProps<ControlElement>(),
   },
   setup(props: RendererProps<ControlElement>) {
-    return useVuetifyControl(
+    const vControl = useVuetifyControl(
       useJsonFormsControl(props),
       (value) => value || undefined,
       300
     );
+
+    const { handleBlur } = useBlurHandler(vControl);
+
+    return {
+      ...vControl,
+      handleBlur
+    }
   },
   computed: {
     suggestions(): string[] | undefined {

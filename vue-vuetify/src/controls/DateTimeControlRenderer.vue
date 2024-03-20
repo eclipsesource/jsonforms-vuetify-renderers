@@ -20,7 +20,7 @@
       :model-value="dataTime"
       @update:model-value="onChange"
       @focus="isFocused = true"
-      @blur="isFocused = false"
+      @blur="handleBlur"
       type="datetime-local"
     >
     </v-text-field>
@@ -41,7 +41,7 @@ import {
   useJsonFormsControl,
 } from '@jsonforms/vue';
 import { VTextField } from 'vuetify/components';
-import { useVuetifyControl } from '../util';
+import {useBlurHandler, useVuetifyControl} from '../util';
 import { default as ControlWrapper } from './ControlWrapper.vue';
 
 const toISOString = (inputDateTime: string) => {
@@ -61,7 +61,8 @@ const controlRenderer = defineComponent({
     const adaptValue = (value: any) => toISOString(value) || undefined;
 
     const control = useVuetifyControl(useJsonFormsControl(props), adaptValue);
-    return { ...control, adaptValue };
+    const { handleBlur } = useBlurHandler(control);
+    return { ...control, adaptValue, handleBlur };
   },
   computed: {
     dataTime(): string {

@@ -75,6 +75,7 @@ export const useVuetifyControl = <
   adaptValue: (target: any) => any = (v) => v,
   debounceWait?: number
 ) => {
+  const touched = ref(false);
   const changeEmitter =
     typeof debounceWait === 'number'
       ? debounce(input.handleChange, debounceWait)
@@ -86,6 +87,10 @@ export const useVuetifyControl = <
 
   const appliedOptions = useControlAppliedOptions(input);
   const isFocused = ref(false);
+
+  const filteredErrors = computed(() => {
+    return (touched.value || !input.control.value.config.enableFilterErrorsBeforeTouch)? input.control.value.errors : '';
+  });
 
   const persistentHint = (): boolean => {
     return !isDescriptionHidden(
@@ -112,8 +117,23 @@ export const useVuetifyControl = <
     return props && isPlainObject(props) ? props : {};
   };
 
+  const overwrittenControl = computed(() => {
+  return {...input.control.value,
+    filteredErrors: filteredErrors.value,
+        errors: filteredErrors.value,
+        rawErrors: input.control.value.errors
+  }
+  });
+
+  const rawErrors = computed(() => input.control.value.errors);
+
+
+
   return {
     ...input,
+    control: overwrittenControl,
+    filteredErrors,
+    rawErrors,
     styles,
     isFocused,
     appliedOptions,
@@ -122,6 +142,7 @@ export const useVuetifyControl = <
     vuetifyProps,
     persistentHint,
     computedLabel,
+    touched,
   };
 };
 
@@ -274,4 +295,14 @@ export const useNested = (element: false | 'array' | 'object'): NestedInfo => {
     });
   }
   return nestedInfo;
+};
+
+
+export const useBlurHandler = (control: any) => {
+  const handleBlur = () => {
+    control.touched.value = true;
+    control.isFocused.value = false;
+  };
+
+  return { handleBlur };
 };

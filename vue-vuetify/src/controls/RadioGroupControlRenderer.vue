@@ -22,7 +22,7 @@
       v-bind="vuetifyProps('v-radio-group')"
       @change="onChange"
       @focus="isFocused = true"
-      @blur="isFocused = false"
+      @blur="handleBlur"
     >
       <v-radio
         v-for="o in control.options"
@@ -51,7 +51,7 @@ import {
   RendererProps,
 } from '@jsonforms/vue';
 import { default as ControlWrapper } from './ControlWrapper.vue';
-import { useVuetifyControl } from '../util';
+import {useBlurHandler, useVuetifyControl} from '../util';
 import { VRadioGroup, VRadio, VLabel } from 'vuetify/components';
 
 const controlRenderer = defineComponent({
@@ -66,7 +66,9 @@ const controlRenderer = defineComponent({
     ...rendererProps<ControlElement>(),
   },
   setup(props: RendererProps<ControlElement>) {
-    return useVuetifyControl(useJsonFormsEnumControl(props));
+    const input = useVuetifyControl(useJsonFormsEnumControl(props));
+    const { handleBlur } = useBlurHandler(input);
+    return { ...input, handleBlur }
   },
 });
 

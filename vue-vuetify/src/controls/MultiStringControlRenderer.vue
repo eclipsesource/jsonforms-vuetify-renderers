@@ -32,7 +32,7 @@
         v-bind="vuetifyProps('v-textarea')"
         @update:model-value="onChange"
         @focus="isFocused = true"
-        @blur="isFocused = false"
+        @blur="handleBlur"
       />
     </v-hover>
   </control-wrapper>
@@ -54,7 +54,7 @@ import {
   RendererProps,
 } from '@jsonforms/vue';
 import { default as ControlWrapper } from './ControlWrapper.vue';
-import { useVuetifyControl } from '../util';
+import {useBlurHandler, useVuetifyControl} from '../util';
 import { VHover, VTextarea } from 'vuetify/components';
 import { DisabledIconFocus } from './directives';
 
@@ -72,11 +72,13 @@ const controlRenderer = defineComponent({
     ...rendererProps<ControlElement>(),
   },
   setup(props: RendererProps<ControlElement>) {
-    return useVuetifyControl(
+    const control = useVuetifyControl(
       useJsonFormsControl(props),
       (value) => value || undefined,
       300
     );
+    const { handleBlur } = useBlurHandler(control);
+    return { ...control, handleBlur }
   },
 });
 

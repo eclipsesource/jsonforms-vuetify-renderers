@@ -24,7 +24,7 @@
         v-bind="vuetifyProps('v-text-field')"
         @update:model-value="onInputChange"
         @focus="isFocused = true"
-        @blur="isFocused = false"
+        @blur="handleBlur"
       ></v-text-field>
     </v-hover>
   </control-wrapper>
@@ -44,7 +44,7 @@ import {
   RendererProps,
 } from '@jsonforms/vue';
 import { default as ControlWrapper } from './ControlWrapper.vue';
-import { useVuetifyControl } from '../util';
+import {useBlurHandler, useVuetifyControl} from '../util';
 import { VHover, VTextField } from 'vuetify/components';
 
 const NUMBER_REGEX_TEST = /^[+-]?\d+([.]\d+)?([eE][+-]?\d+)?$/;
@@ -67,7 +67,8 @@ const controlRenderer = defineComponent({
     // preserve the value as it was typed by the user - for example when the user type very long number if we rely on the control.data to return back the actual data then the string could appear with exponent form and etc.
     // otherwise while typing the string in the input can suddenly change
     const inputValue = ref((unref(input.control).data as string) || '');
-    return { ...input, adaptValue, inputValue };
+    const { handleBlur } = useBlurHandler(input);
+    return { ...input, adaptValue, inputValue, handleBlur };
   },
   computed: {
     step(): number {

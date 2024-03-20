@@ -26,7 +26,7 @@
         v-bind="vuetifyProps('v-select')"
         @update:modelValue="onChange"
         @focus="isFocused = true"
-        @blur="isFocused = false"
+        @blur="handleBlur"
       />
     </v-hover>
   </control-wrapper>
@@ -46,7 +46,7 @@ import {
 } from '@jsonforms/vue';
 import { defineComponent } from 'vue';
 import { VHover, VSelect } from 'vuetify/components';
-import { useTranslator, useVuetifyControl } from '../util';
+import {useBlurHandler, useTranslator, useVuetifyControl} from '../util';
 import { default as ControlWrapper } from './ControlWrapper.vue';
 import { DisabledIconFocus } from './directives';
 
@@ -70,7 +70,8 @@ const controlRenderer = defineComponent({
       value !== null ? value : undefined
     );
 
-    return { ...control, t };
+    const { handleBlur } = useBlurHandler(control);
+    return { ...control, t, handleBlur, };
   },
 });
 
