@@ -1,7 +1,4 @@
 <template>
-  <p class="text-blue">live3</p>
-  <p>{{touched}}</p>
-  <p>{{filteredErrors}}</p>
   <control-wrapper
     v-bind="controlWrapper"
     :styles="styles"
