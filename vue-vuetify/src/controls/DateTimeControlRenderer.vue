@@ -20,7 +20,7 @@
       :model-value="dataTime"
       @update:model-value="onChange"
       @focus="isFocused = true"
-      @blur="isFocused = false"
+      @blur="handleBlur"
       type="datetime-local"
     >
     </v-text-field>

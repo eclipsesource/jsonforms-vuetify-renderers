@@ -26,7 +26,7 @@
         v-bind="vuetifyProps('v-select')"
         @change="onChange"
         @focus="isFocused = true"
-        @blur="isFocused = false"
+        @blur="handleBlur"
       />
     </v-hover>
   </control-wrapper>

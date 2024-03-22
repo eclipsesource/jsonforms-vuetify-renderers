@@ -20,7 +20,7 @@
       :model-value="control.data"
       @update:model-value="onChange"
       @focus="isFocused = true"
-      @blur="isFocused = false"
+      @blur="handleBlur"
       type="date"
     />
   </control-wrapper>

@@ -24,7 +24,7 @@
         v-bind="vuetifyProps('v-text-field')"
         @update:model-value="onInputChange"
         @focus="isFocused = true"
-        @blur="isFocused = false"
+        @blur="handleBlur"
       ></v-text-field>
     </v-hover>
   </control-wrapper>

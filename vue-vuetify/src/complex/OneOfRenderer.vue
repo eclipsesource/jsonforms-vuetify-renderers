@@ -27,7 +27,7 @@
         v-model="selectIndex"
         v-bind="vuetifyProps('v-select')"
         @focus="isFocused = true"
-        @blur="isFocused = false"
+        @blur="handleBlur"
       ></v-select>
     </v-hover>
     <dispatch-renderer
@@ -185,7 +185,8 @@ const controlRenderer = defineComponent({
         this.path,
         this.newSelectedIndex !== undefined && this.newSelectedIndex !== null
           ? createDefaultValue(
-              this.indexedOneOfRenderInfos[this.newSelectedIndex].schema
+              this.indexedOneOfRenderInfos[this.newSelectedIndex].schema,
+              this.control.rootSchema
             )
           : {}
       );

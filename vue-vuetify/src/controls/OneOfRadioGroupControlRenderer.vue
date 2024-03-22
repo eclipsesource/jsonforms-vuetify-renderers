@@ -22,7 +22,7 @@
       :model-value="control.data"
       @change="onChange"
       @focus="isFocused = true"
-      @blur="isFocused = false"
+      @blur="handleBlur"
     >
       <v-radio
         v-for="o in control.options"

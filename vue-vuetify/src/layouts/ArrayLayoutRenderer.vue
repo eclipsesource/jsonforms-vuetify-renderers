@@ -411,7 +411,10 @@ const controlRenderer = defineComponent({
     addButtonClick() {
       this.addItem(
         this.control.path,
-        createDefaultValue(this.control.schema)
+        createDefaultValue(
+            this.control.schema,
+            this.control.rootSchema
+        )
       )();
       if (!this.appliedOptions.collapseNewItems && this.control.data?.length) {
         this.currentlyExpanded = this.dataLength - 1;
@@ -431,7 +434,7 @@ const controlRenderer = defineComponent({
       }
     },
     childErrors(index: number): ErrorObject[] {
-      return this.control.childErrors.filter((e) => {
+      return this.control.childErrors.filter((e: ErrorObject) => {
         const errorDataPath = getControlPath(e);
         return errorDataPath.startsWith(
           this.composePaths(this.control.path, `${index}`)

@@ -13,7 +13,7 @@ import get from 'lodash/get';
 import isPlainObject from 'lodash/isPlainObject';
 import { useStyles } from '../styles';
 import { computed, ComputedRef, inject, ref, provide } from 'vue';
-import Ajv from 'ajv';
+import Ajv, {ErrorObject} from 'ajv';
 
 export const useControlAppliedOptions = <I extends { control: any }>(
   input: I
@@ -75,6 +75,7 @@ export const useVuetifyControl = <
   adaptValue: (target: any) => any = (v) => v,
   debounceWait?: number
 ) => {
+  const touched = ref(false);
   const changeEmitter =
     typeof debounceWait === 'number'
       ? debounce(input.handleChange, debounceWait)
@@ -86,6 +87,15 @@ export const useVuetifyControl = <
 
   const appliedOptions = useControlAppliedOptions(input);
   const isFocused = ref(false);
+
+  const handleBlur = () => {
+    touched.value = true;
+    isFocused.value = false;
+  };
+
+  const filteredErrors = computed(() => {
+    return (touched.value || !input.control.value.config.enableFilterErrorsBeforeTouch)? input.control.value.errors : '';
+  });
 
   const persistentHint = (): boolean => {
     return !isDescriptionHidden(
@@ -112,8 +122,24 @@ export const useVuetifyControl = <
     return props && isPlainObject(props) ? props : {};
   };
 
+  const overwrittenControl = computed(() => {
+  return {...input.control.value,
+    filteredErrors: filteredErrors.value,
+        errors: filteredErrors.value,
+        rawErrors: input.control.value.errors,
+    rawChildErrors: input.control.value.childErrors,
+  }
+  });
+
+  const rawErrors = computed(() => input.control.value.errors);
+
+
+
   return {
     ...input,
+    control: overwrittenControl,
+    filteredErrors,
+    rawErrors,
     styles,
     isFocused,
     appliedOptions,
@@ -122,6 +148,8 @@ export const useVuetifyControl = <
     vuetifyProps,
     persistentHint,
     computedLabel,
+    touched,
+    handleBlur,
   };
 };
 
@@ -213,8 +241,21 @@ export const useVuetifyArrayControl = <I extends { control: any }>(
     }
     return `${labelValue}`;
   };
+  const filteredChildErrors = computed(() => {
+    // supress childErrors unless touch filtering is disabled
+    // otherwise all child errors will show, irrespective of their control touch state
+    const filtered: ErrorObject[] = appliedOptions.value?.enableFilterErrorsBeforeTouch ? [] : input.control.value.childErrors
+    return filtered;
+  });
+  const overwrittenControl = computed(() => {
+    return {...input.control.value,
+      childErrors: filteredChildErrors.value,
+      rawChildErrors: input.control.value.childErrors,
+    }
+  });
   return {
     ...input,
+    control: overwrittenControl,
     styles: useStyles(input.control.value.uischema),
     appliedOptions,
     childLabelForIndex,
