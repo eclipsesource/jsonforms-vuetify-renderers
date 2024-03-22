@@ -13,7 +13,7 @@ import get from 'lodash/get';
 import isPlainObject from 'lodash/isPlainObject';
 import { useStyles } from '../styles';
 import { computed, ComputedRef, inject, ref, provide } from 'vue';
-import Ajv from 'ajv';
+import Ajv, {ErrorObject} from 'ajv';
 
 export const useControlAppliedOptions = <I extends { control: any }>(
   input: I
@@ -126,7 +126,8 @@ export const useVuetifyControl = <
   return {...input.control.value,
     filteredErrors: filteredErrors.value,
         errors: filteredErrors.value,
-        rawErrors: input.control.value.errors
+        rawErrors: input.control.value.errors,
+    rawChildErrors: input.control.value.childErrors,
   }
   });
 
@@ -240,8 +241,21 @@ export const useVuetifyArrayControl = <I extends { control: any }>(
     }
     return `${labelValue}`;
   };
+  const filteredChildErrors = computed(() => {
+    // supress childErrors unless touch filtering is disabled
+    // otherwise all child errors will show, irrespective of their control touch state
+    const filtered: ErrorObject[] = appliedOptions.value?.enableFilterErrorsBeforeTouch ? [] : input.control.value.childErrors
+    return filtered;
+  });
+  const overwrittenControl = computed(() => {
+    return {...input.control.value,
+      childErrors: filteredChildErrors.value,
+      rawChildErrors: input.control.value.childErrors,
+    }
+  });
   return {
     ...input,
+    control: overwrittenControl,
     styles: useStyles(input.control.value.uischema),
     appliedOptions,
     childLabelForIndex,
