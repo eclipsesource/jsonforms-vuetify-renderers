@@ -90,7 +90,7 @@ import {
   VSpacer,
 } from 'vuetify/components';
 import { DisabledIconFocus } from '../controls/directives';
-import {useBlurHandler, useTranslator, useVuetifyControl} from '../util';
+import { useTranslator, useVuetifyControl } from '../util';
 import { CombinatorProperties } from './components';
 
 const controlRenderer = defineComponent({
@@ -123,7 +123,7 @@ const controlRenderer = defineComponent({
     const newSelectedIndex = ref(0);
     const dialog = ref(false);
     const t = useTranslator();
-    const { handleBlur } = useBlurHandler(control);
+
     return {
       ...useVuetifyControl(input),
       selectedIndex,
@@ -131,7 +131,6 @@ const controlRenderer = defineComponent({
       dialog,
       newSelectedIndex,
       t,
-      handleBlur,
     };
   },
   computed: {

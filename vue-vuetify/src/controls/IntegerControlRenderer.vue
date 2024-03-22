@@ -44,7 +44,7 @@ import {
   RendererProps,
 } from '@jsonforms/vue';
 import { default as ControlWrapper } from './ControlWrapper.vue';
-import {useBlurHandler, useVuetifyControl} from '../util';
+import { useVuetifyControl } from '../util';
 import { VHover, VTextField } from 'vuetify/components';
 
 const NUMBER_REGEX_TEST = /^[+-]?\d+([.]\d+)?([eE][+-]?\d+)?$/;
@@ -62,13 +62,12 @@ const controlRenderer = defineComponent({
   setup(props: RendererProps<ControlElement>) {
     const adaptValue = (value: any) =>
       typeof value === 'number' ? value : value || undefined;
-    const control = useVuetifyControl(useJsonFormsControl(props), adaptValue);
+    const input = useVuetifyControl(useJsonFormsControl(props), adaptValue);
 
     // preserve the value as it was typed by the user - for example when the user type very long number if we rely on the control.data to return back the actual data then the string could appear with exponent form and etc.
     // otherwise while typing the string in the input can suddenly change
-    const inputValue = ref((unref(control.control).data as string) || '');
-    const { handleBlur } = useBlurHandler(control);
-    return { ...control, adaptValue, inputValue, handleBlur };
+    const inputValue = ref((unref(input.control).data as string) || '');
+    return { ...input, adaptValue, inputValue };
   },
   computed: {
     step(): number {

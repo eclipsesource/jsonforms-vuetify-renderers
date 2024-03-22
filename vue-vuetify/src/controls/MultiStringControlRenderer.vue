@@ -54,7 +54,7 @@ import {
   RendererProps,
 } from '@jsonforms/vue';
 import { default as ControlWrapper } from './ControlWrapper.vue';
-import {useBlurHandler, useVuetifyControl} from '../util';
+import { useVuetifyControl } from '../util';
 import { VHover, VTextarea } from 'vuetify/components';
 import { DisabledIconFocus } from './directives';
 
@@ -72,13 +72,11 @@ const controlRenderer = defineComponent({
     ...rendererProps<ControlElement>(),
   },
   setup(props: RendererProps<ControlElement>) {
-    const control = useVuetifyControl(
+    return useVuetifyControl(
       useJsonFormsControl(props),
       (value) => value || undefined,
       300
     );
-    const { handleBlur } = useBlurHandler(control);
-    return { ...control, handleBlur }
   },
 });
 

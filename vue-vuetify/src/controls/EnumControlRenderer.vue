@@ -46,7 +46,7 @@ import {
 } from '@jsonforms/vue';
 import { defineComponent } from 'vue';
 import { VHover, VSelect } from 'vuetify/components';
-import {useBlurHandler, useTranslator, useVuetifyControl} from '../util';
+import { useTranslator, useVuetifyControl } from '../util';
 import { default as ControlWrapper } from './ControlWrapper.vue';
 import { DisabledIconFocus } from './directives';
 
@@ -70,8 +70,7 @@ const controlRenderer = defineComponent({
       value !== null ? value : undefined
     );
 
-    const { handleBlur } = useBlurHandler(control);
-    return { ...control, t, handleBlur, };
+    return { ...control, t };
   },
 });
 

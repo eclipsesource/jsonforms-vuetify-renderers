@@ -72,7 +72,7 @@ import { defineComponent } from 'vue';
 import { VAutocomplete, VHover, VSelect } from 'vuetify/components';
 import { default as ControlWrapper } from '../controls/ControlWrapper.vue';
 import { DisabledIconFocus } from '../controls/directives';
-import {useBlurHandler, useTranslator, useVuetifyControl} from '../util';
+import { useTranslator, useVuetifyControl } from '../util';
 
 const controlRenderer = defineComponent({
   name: 'autocomplete-enum-control-renderer',
@@ -91,14 +91,12 @@ const controlRenderer = defineComponent({
   setup(props: RendererProps<ControlElement>) {
     const t = useTranslator();
 
-    const input = useVuetifyControl(
+    const control = useVuetifyControl(
       useJsonFormsEnumControl(props),
       (value) => (value !== null ? value : undefined),
       300
     );
-    const { handleBlur } = useBlurHandler(input);
-
-    return { ...input, t, handleBlur };
+    return { ...control, t };
   },
 });
 

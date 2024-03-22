@@ -40,7 +40,7 @@ import {
   RendererProps,
 } from '@jsonforms/vue';
 import { default as ControlWrapper } from './ControlWrapper.vue';
-import {useBlurHandler, useVuetifyControl} from '../util';
+import { useVuetifyControl } from '../util';
 import { VCheckbox } from 'vuetify/components';
 
 const controlRenderer = defineComponent({
@@ -53,14 +53,9 @@ const controlRenderer = defineComponent({
     ...rendererProps<ControlElement>(),
   },
   setup(props: RendererProps<ControlElement>) {
-    const control = useVuetifyControl(useJsonFormsControl(props), (event) => {
+    return useVuetifyControl(useJsonFormsControl(props), (event) => {
       return event.target.checked || false;
     });
-    const { handleBlur } = useBlurHandler(control);
-    return {
-      ...control,
-      handleBlur,
-    }
   },
 });
 

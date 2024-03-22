@@ -41,7 +41,7 @@ import {
   useJsonFormsControl,
 } from '@jsonforms/vue';
 import { VTextField } from 'vuetify/components';
-import {useBlurHandler, useVuetifyControl} from '../util';
+import { useVuetifyControl } from '../util';
 import { default as ControlWrapper } from './ControlWrapper.vue';
 
 /**
@@ -72,8 +72,7 @@ const controlRenderer = defineComponent({
     const adaptValue = (value: any) =>
       appendSecondsIfNecessary(value) || undefined;
     const control = useVuetifyControl(useJsonFormsControl(props), adaptValue);
-    const { handleBlur } = useBlurHandler(control);
-    return { ...control, adaptValue, handleBlur };
+    return { ...control, adaptValue };
   },
 });
 

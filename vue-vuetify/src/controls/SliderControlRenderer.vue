@@ -43,7 +43,7 @@ import {
   RendererProps,
 } from '@jsonforms/vue';
 import { default as ControlWrapper } from './ControlWrapper.vue';
-import {useBlurHandler, useVuetifyControl} from '../util';
+import { useVuetifyControl } from '../util';
 import { VSlider } from 'vuetify/components';
 
 const controlRenderer = defineComponent({
@@ -56,14 +56,9 @@ const controlRenderer = defineComponent({
     ...rendererProps<ControlElement>(),
   },
   setup(props: RendererProps<ControlElement>) {
-    const input = useVuetifyControl(useJsonFormsControl(props), (value) => {
+    return useVuetifyControl(useJsonFormsControl(props), (value) => {
       return Number(value);
     });
-    const { handleBlur } = useBlurHandler(input);
-    return {
-      ...input,
-      handleBlur
-    }
   },
 });
 

@@ -87,7 +87,6 @@ import { DisabledIconFocus } from './directives';
 import isArray from 'lodash/isArray';
 import every from 'lodash/every';
 import isString from 'lodash/isString';
-import { useBlurHandler } from "../util";
 
 const controlRenderer = defineComponent({
   name: 'string-control-renderer',
@@ -104,18 +103,11 @@ const controlRenderer = defineComponent({
     ...rendererProps<ControlElement>(),
   },
   setup(props: RendererProps<ControlElement>) {
-    const vControl = useVuetifyControl(
+    return useVuetifyControl(
       useJsonFormsControl(props),
       (value) => value || undefined,
       300
     );
-
-    const { handleBlur } = useBlurHandler(vControl);
-
-    return {
-      ...vControl,
-      handleBlur
-    }
   },
   computed: {
     suggestions(): string[] | undefined {

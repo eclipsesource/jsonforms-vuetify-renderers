@@ -88,6 +88,11 @@ export const useVuetifyControl = <
   const appliedOptions = useControlAppliedOptions(input);
   const isFocused = ref(false);
 
+  const handleBlur = () => {
+    touched.value = true;
+    isFocused.value = false;
+  };
+
   const filteredErrors = computed(() => {
     return (touched.value || !input.control.value.config.enableFilterErrorsBeforeTouch)? input.control.value.errors : '';
   });
@@ -143,6 +148,7 @@ export const useVuetifyControl = <
     persistentHint,
     computedLabel,
     touched,
+    handleBlur,
   };
 };
 
@@ -295,14 +301,4 @@ export const useNested = (element: false | 'array' | 'object'): NestedInfo => {
     });
   }
   return nestedInfo;
-};
-
-
-export const useBlurHandler = (control: any) => {
-  const handleBlur = () => {
-    control.touched.value = true;
-    control.isFocused.value = false;
-  };
-
-  return { handleBlur };
 };

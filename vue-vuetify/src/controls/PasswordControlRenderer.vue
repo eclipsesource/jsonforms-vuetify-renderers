@@ -52,7 +52,7 @@ import {
   RendererProps,
 } from '@jsonforms/vue';
 import { default as ControlWrapper } from './ControlWrapper.vue';
-import {useBlurHandler, useVuetifyControl} from '../util';
+import { useVuetifyControl } from '../util';
 import { VTextField } from 'vuetify/components';
 
 const controlRenderer = defineComponent({
@@ -66,16 +66,14 @@ const controlRenderer = defineComponent({
   },
   setup(props: RendererProps<ControlElement>) {
     const passwordVisible = ref(false);
-    const input = useVuetifyControl(
-            useJsonFormsControl(props),
-            (value) => value || undefined,
-            300
-        );
-    const { handleBlur } = useBlurHandler(input);
+
     return {
-      ...input,
+      ...useVuetifyControl(
+        useJsonFormsControl(props),
+        (value) => value || undefined,
+        300
+      ),
       passwordVisible,
-      handleBlur
     };
   },
 });
