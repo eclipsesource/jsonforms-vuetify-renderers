@@ -7,7 +7,7 @@
     "watch": "cd vue-vuetify && npm run watch",
     "test": "lerna run --scope \"**/*vuetify\" test",
     "clean": "lerna run clean",
-    "example:serve": "cd example && npm run serve",
+    "example:dev": "cd example && npm run dev",
     "example:build": "cd example && npm run build"
   },
   "devDependencies": {

@@ -1,4 +1,4 @@
-import { Translator } from '@jsonforms/core';
+import type { Translator } from '@jsonforms/core';
 import get from 'lodash/get';
 import template from 'lodash/template';
 import memoize from 'lodash/memoize';

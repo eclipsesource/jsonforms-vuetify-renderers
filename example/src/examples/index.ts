@@ -46,8 +46,9 @@ import { input as rule } from './rule';
 import { input as verticalLayout } from './vertical-layout';
 import { input as huge } from './huge';
 import { input as ifThenElse } from './if-then-else';
+import type { Example } from '@/core/types';
 
-export const examples = [
+export const examples: Example[] = [
   {
     id: 'main',
     title: 'Main',

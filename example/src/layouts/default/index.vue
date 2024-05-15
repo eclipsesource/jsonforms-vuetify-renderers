@@ -1,32 +1,33 @@
-<template>
-  <v-app>
-    <default-app-bar v-if="!formonly" />
+<script setup lang="ts">
+import { defineAsyncComponent, computed } from 'vue';
+import { useRoute } from 'vue-router';
+import { useAppStore } from '@/stores/app';
 
-    <default-drawer v-if="!formonly" />
+const appStore = useAppStore();
 
-    <default-settings v-if="!formonly" />
-    <default-view />
-  </v-app>
-</template>
+// Define async components
+const DefaultAppBar = defineAsyncComponent(() => import('./AppBar.vue'));
+const DefaultDrawer = defineAsyncComponent(() => import('./Drawer.vue'));
+const DefaultSettings = defineAsyncComponent(
+  () => import('../../components/Settings.vue')
+);
+const DefaultView = defineAsyncComponent(() => import('./View.vue'));
 
-<script lang="ts">
-import { defineAsyncComponent, defineComponent } from 'vue';
+const route = useRoute();
 
-export default defineComponent({
-  name: 'DefaultLayout',
-
-  components: {
-    DefaultAppBar: defineAsyncComponent(() => import('./AppBar.vue')),
-    DefaultDrawer: defineAsyncComponent(() => import('./Drawer.vue')),
-    DefaultSettings: defineAsyncComponent(
-      () => import('../../components/Settings.vue')
-    ),
-    DefaultView: defineAsyncComponent(() => import('./View.vue')),
-  },
-  computed: {
-    formonly(): boolean {
-      return this.$route.query?.view === 'form-only';
-    },
-  },
-});
+// Computed property
+const formonly = computed(() => route.query?.view === 'form-only');
 </script>
+
+<template>
+  <v-locale-provider :rtl="appStore.rtl">
+    <v-app>
+      <default-app-bar v-if="!formonly" />
+
+      <default-drawer v-if="!formonly" />
+
+      <default-settings v-if="!formonly" />
+      <default-view />
+    </v-app>
+  </v-locale-provider>
+</template>

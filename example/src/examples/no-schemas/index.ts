@@ -1,5 +1,5 @@
 import data from './data.json';
-import { UISchemaElement, JsonSchema } from '@jsonforms/core';
+import type { UISchemaElement, JsonSchema } from '@jsonforms/core';
 
 const schema = undefined;
 const uischema = undefined;

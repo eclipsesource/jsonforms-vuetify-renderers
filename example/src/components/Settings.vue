@@ -1,7 +1,48 @@
+<script setup lang="ts">
+import { useAppStore } from '@/stores/app';
+import { useTheme } from 'vuetify';
+import { computed } from 'vue';
+
+const appStore = useAppStore();
+const theme = useTheme();
+const dark = computed({
+  get: () => {
+    return theme.current.value.dark;
+  },
+
+  set: (value) => {
+    theme.global.name.value = value ? 'dark' : 'light';
+  },
+});
+
+const validationModes = [
+  { text: 'Validate And Show', value: 'ValidateAndShow' },
+  { text: 'Validate And Hide', value: 'ValidateAndHide' },
+  { text: 'No Validation', value: 'NoValidation' },
+];
+
+const locales = [
+  { text: 'English (en)', value: 'en' },
+  { text: 'German (de)', value: 'de' },
+  { text: 'Bulgarian (bg)', value: 'bg' },
+  { text: 'Browser Language', value: navigator.language },
+];
+
+const breakHorizontals = [
+  { text: 'None', value: false },
+  { text: 'xs', value: 'xs' },
+  { text: 'sm', value: 'sm' },
+  { text: 'md', value: 'md' },
+  { text: 'lg', value: 'lg' },
+  { text: 'xl', value: 'xl' },
+];
+</script>
+
 <template>
   <v-navigation-drawer
-    v-model="settings"
-    :location="$vuetify.rtl ? 'left' : 'right'"
+    v-model="appStore.settings"
+    :right="!appStore.rtl"
+    :location="appStore.rtl ? 'left' : 'right'"
     temporary
     width="300"
   >
@@ -9,7 +50,7 @@
       <v-toolbar-title>Settings</v-toolbar-title>
       <v-spacer />
       <v-toolbar-items>
-        <v-btn icon @click="settings = false">
+        <v-btn icon @click="appStore.settings = false">
           <v-icon>$close</v-icon>
         </v-btn>
       </v-toolbar-items>
@@ -22,7 +63,7 @@
       <v-row>
         <v-col>
           <v-btn-toggle
-            v-model="$vuetify.theme.dark"
+            v-model="dark"
             borderless
             mandatory
             group
@@ -52,7 +93,7 @@
       <v-row>
         <v-col>
           <v-btn-toggle
-            v-model="$vuetify.rtl"
+            v-model="appStore.rtl"
             borderless
             mandatory
             group
@@ -86,8 +127,10 @@
             outlined
             persistent-hint
             dense
-            v-model="validationMode"
+            v-model="appStore.jsonforms.validationMode"
             :items="validationModes"
+            item-title="text"
+            item-value="value"
           ></v-select>
         </v-col>
       </v-row>
@@ -103,8 +146,10 @@
             outlined
             persistent-hint
             dense
-            v-model="locale"
+            v-model="appStore.jsonforms.locale"
             :items="locales"
+            item-title="text"
+            item-value="value"
           ></v-select>
         </v-col>
       </v-row>
@@ -119,7 +164,7 @@
           <v-tooltip bottom>
             <template v-slot:activator="{ props }">
               <v-switch
-                v-model="hideRequiredAsterisk"
+                v-model="appStore.jsonforms.config.hideRequiredAsterisk"
                 label="Hide Required Asterisk"
                 v-bind="props"
               ></v-switch>
@@ -133,7 +178,7 @@
           <v-tooltip bottom>
             <template v-slot:activator="{ props }">
               <v-switch
-                v-model="showUnfocusedDescription"
+                v-model="appStore.jsonforms.config.showUnfocusedDescription"
                 label="Show Unfocused Description"
                 v-bind="props"
               ></v-switch>
@@ -147,7 +192,7 @@
           <v-tooltip bottom>
             <template v-slot:activator="{ props }">
               <v-switch
-                v-model="restrict"
+                v-model="appStore.jsonforms.config.restrict"
                 label="Restrict"
                 v-bind="props"
               ></v-switch>
@@ -162,7 +207,7 @@
           <v-tooltip bottom>
             <template v-slot:activator="{ props }">
               <v-switch
-                v-model="readonly"
+                v-model="appStore.jsonforms.readonly"
                 label="Read-Only"
                 v-bind="props"
               ></v-switch>
@@ -176,7 +221,7 @@
           <v-tooltip bottom>
             <template v-slot:activator="{ props }">
               <v-switch
-                v-model="collapseNewItems"
+                v-model="appStore.jsonforms.config.collapseNewItems"
                 label="Collapse new array items"
                 v-bind="props"
               ></v-switch>
@@ -190,7 +235,7 @@
           <v-tooltip bottom>
             <template v-slot:activator="{ props }">
               <v-switch
-                v-model="hideArraySummaryValidation"
+                v-model="appStore.jsonforms.config.hideArraySummaryValidation"
                 label="Hide array summary validation"
                 v-bind="props"
               ></v-switch>
@@ -204,7 +249,7 @@
           <v-tooltip bottom>
             <template v-slot:activator="{ props }">
               <v-switch
-                v-model="initCollapsed"
+                v-model="appStore.jsonforms.config.initCollapsed"
                 label="Collapse arrays initially"
                 v-bind="props"
               ></v-switch>
@@ -218,7 +263,7 @@
           <v-tooltip bottom>
             <template v-slot:activator="{ props }">
               <v-switch
-                v-model="hideAvatar"
+                v-model="appStore.jsonforms.config.hideAvatar"
                 label="Hide Array Item Avatar"
                 v-bind="props"
               ></v-switch>
@@ -235,8 +280,10 @@
               outlined
               persistent-hint
               dense
-              v-model="breakHorizontal"
+              v-model="appStore.jsonforms.config.breakHorizontal"
               :items="breakHorizontals"
+              item-title="text"
+              item-value="value"
             ></v-select>
           </v-col>
         </v-row>
@@ -246,55 +293,3 @@
     <v-divider />
   </v-navigation-drawer>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue';
-import { sync } from 'vuex-pathify';
-
-export default defineComponent({
-  name: 'AppSettings',
-  setup() {
-    return {
-      settings: sync('app/settings'),
-      validationMode: sync('app/jsonforms@validationMode'),
-      hideRequiredAsterisk: sync('app/jsonforms@config.hideRequiredAsterisk'),
-      showUnfocusedDescription: sync(
-        'app/jsonforms@config.showUnfocusedDescription'
-      ),
-      restrict: sync('app/jsonforms@config.restrict'),
-      collapseNewItems: sync('app/jsonforms@config.collapseNewItems'),
-      initCollapsed: sync('app/jsonforms@config.initCollapsed'),
-      breakHorizontal: sync('app/jsonforms@config.breakHorizontal'),
-      readonly: sync('app/jsonforms@readonly'),
-      locale: sync('app/jsonforms@locale'),
-      hideAvatar: sync('app/jsonforms@config.hideAvatar'),
-      hideArraySummaryValidation: sync(
-        'app/jsonforms@config.hideArraySummaryValidation'
-      ),
-    };
-  },
-  data: function () {
-    return {
-      validationModes: [
-        { text: 'Validate And Show', value: 'ValidateAndShow' },
-        { text: 'Validate And Hide', value: 'ValidateAndHide' },
-        { text: 'No Validation', value: 'NoValidation' },
-      ],
-      locales: [
-        { text: 'English (en)', value: 'en' },
-        { text: 'German (de)', value: 'de' },
-        { text: 'Bulgarian (bg)', value: 'bg' },
-        { text: 'Browser Language', value: navigator.language },
-      ],
-      breakHorizontals: [
-        { text: 'None', value: false },
-        { text: 'xs', value: 'xs' },
-        { text: 'sm', value: 'sm' },
-        { text: 'md', value: 'md' },
-        { text: 'lg', value: 'lg' },
-        { text: 'xl', value: 'xl' },
-      ],
-    };
-  },
-});
-</script>

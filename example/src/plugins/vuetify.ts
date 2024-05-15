@@ -1,47 +1,102 @@
-// import Vue from 'vue';
-import { createVuetify } from 'vuetify';
+import { createVuetify, type ThemeDefinition } from 'vuetify';
+import { md1 } from 'vuetify/blueprints';
+import * as components from 'vuetify/components';
+import * as directives from 'vuetify/directives';
+
 import '@mdi/font/css/materialdesignicons.css';
 import 'vuetify/styles';
-// import { VuetifyPreset } from 'vuetify/types/services/presets';
 
-// Vue.use(Vuetify);
+export const customThemes: (ThemeDefinition & { name: string })[] = [
+  {
+    name: 'dark',
+    dark: true,
+    colors: {
+      primary: '#2196F3',
+      secondary: '#54B6B2',
+      error: '#CF6679',
+      info: '#2196F3',
+      success: '#4CAF50',
+      warning: '#FB8C00',
+    },
+  },
+  {
+    name: 'light',
+    dark: false,
+    colors: {
+      primary: '#1867C0',
+      secondary: '#48A9A6',
+      error: '#B00020',
+      info: '#2196F3',
+      success: '#4CAF50',
+      warning: '#FB8C00',
+    }
+  },
+  {
+    name: 'Basil',
+    dark: false,
+    colors: {
+      primary: '#356859',
+      secondary: '#FD5523',
+      accent: '#37966F',
+      info: '#356859',
+    },
+  },
+  {
+    name: 'Crane',
+    dark: false,
+    colors: {
+      primary: '#5D1049',
+      secondary: '#E30425',
+      accent: '#4E0D3A',
+      info: '#5D1049',
+    },
+  },
+  {
+    name: 'Fortnightly',
+    dark: false,
+    colors: {
+      primary: '#6B38FB',
+      secondary: '#6B38FB',
+      info: '#6B38FB',
+    },
+  },
+  {
+    name: 'Owl',
+    dark: false,
+    colors: {
+      primary: '#FFDE03',
+      secondary: '#0336FF',
+      accent: '#FF0266',
+      info: '#FFDE03',
+    },
+  },
+  {
+    name: 'Shrine',
+    dark: false,
+    colors: {
+      primary: '#FEDBD0',
+      secondary: '#FEEAE6',
+      accent: '#442C2E',
+      info: '#FEDBD0',
+    },
+  }
+]
 
-// export const preset: Partial<VuetifyPreset> = {
-//   icons: {
-//     iconfont: 'mdi',
-//     values: {},
-//   },
-//   theme: {
-//     dark: false,
-//     default: 'light',
-//     disable: false,
-//     options: {
-//       cspNonce: undefined,
-//       customProperties: undefined,
-//       minifyTheme: undefined,
-//       themeCache: undefined,
-//     },
-//     themes: {
-//       light: {
-//         primary: '#1976D2',
-//         secondary: '#424242',
-//         accent: '#82B1FF',
-//         error: '#FF5252',
-//         info: '#2196F3',
-//         success: '#4CAF50',
-//         warning: '#FB8C00',
-//       },
-//       dark: {
-//         primary: '#2196F3',
-//         secondary: '#424242',
-//         accent: '#FF4081',
-//         error: '#FF5252',
-//         info: '#2196F3',
-//         success: '#4CAF50',
-//         warning: '#FB8C00',
-//       },
-//     },
-//   },
-// };
+const vuetify = createVuetify({
+  blueprint: md1,
 
-export default createVuetify();
+  components,
+  directives,
+  icons: {
+    defaultSet: 'mdi',
+  },
+  theme: {
+    defaultTheme: 'light',
+    themes: customThemes.reduce((acc: Record<string, ThemeDefinition>, current) => {
+      acc[current.name] = current;
+      return acc;
+    }, {}),
+  },
+});
+
+export default vuetify;

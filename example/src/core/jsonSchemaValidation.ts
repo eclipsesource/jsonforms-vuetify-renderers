@@ -1,10 +1,9 @@
-import editorApi from 'monaco-editor/esm/vs/editor/editor.api';
-import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
-import { JsonSchema } from '@jsonforms/core';
+import monaco, { type MonacoApi } from '@/core/monaco';
+import type { JsonSchema } from '@jsonforms/core';
 
 import { jsonSchemaDraft7, ruleSchema, uiSchema } from '../core/jsonschema';
 
-export type EditorApi = typeof editorApi;
+//export type EditorApi = typeof monaco;
 
 /**
  * Register a new schema for the Json language, if it isn't already registered.
@@ -16,7 +15,7 @@ export type EditorApi = typeof editorApi;
  *  Schemas to register
  */
 export const addSchema = (
-  editor: EditorApi,
+  editor: MonacoApi,
   schemas: {
     uri: string;
     fileMatch?: string[];
@@ -54,7 +53,7 @@ export const addSchema = (
  * Configures the Monaco Editor to validate the input against JSON Schema Draft 7.
  */
 export const configureJsonSchemaValidation = (
-  editor: EditorApi,
+  editor: MonacoApi,
   fileMatch: string[]
 ): void => {
   /** Note that the Monaco Editor only supports JSON Schema Draft 7 itself,
@@ -67,7 +66,7 @@ export const configureJsonSchemaValidation = (
  * Configures the Monaco Editor to validate the input against the UI Schema meta-schema.
  */
 export const configureUISchemaValidation = (
-  editor: EditorApi,
+  editor: MonacoApi,
   fileMatch: string[]
 ): void => {
   /** Note that the Monaco Editor only supports JSON Schema Draft 7 itself,
@@ -84,7 +83,7 @@ export const configureUISchemaValidation = (
  * Configures the Monaco Editor to validate the input against JSON Schema model schema.
  */
 export const configureDataValidation = (
-  editor: EditorApi,
+  editor: MonacoApi,
   uri: string,
   fileMatch: string,
   schema: JsonSchema
@@ -98,7 +97,7 @@ export const configureDataValidation = (
 export const getMonacoModelForUri = (
   modelUri: monaco.Uri,
   initialValue: string | undefined
-): editorApi.editor.ITextModel => {
+): monaco.editor.ITextModel => {
   const value = initialValue ?? '';
   let model = monaco.editor.getModel(modelUri);
   if (model) {

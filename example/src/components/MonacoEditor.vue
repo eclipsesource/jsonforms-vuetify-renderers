@@ -1,179 +1,135 @@
-<template>
-  <div
-    ref="containerElement"
-    :style="style"
-    className="vue-monaco-editor-container"
-  />
-</template>
+<script setup lang="ts">
+import monaco, { type MonacoApi } from '@/core/monaco';
 
-<script lang="ts">
-import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
-import { PropType, toRaw } from 'vue';
+import {
+  nextTick,
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  watch,
+  computed,
+} from 'vue';
+import { useResizeObserver } from '@vueuse/core';
+import { useTheme } from 'vuetify';
 
-export type MonacoApi = typeof monaco;
+const container = ref<null | HTMLElement>(null);
+let editor: monaco.editor.IStandaloneCodeEditor | null = null;
+let changeListener: monaco.IDisposable | null = null;
+const theme = useTheme();
 
-export { monaco };
+type DimensionValue =
+  | `${number}px`
+  | `${number}%`
+  | `${number}vw`
+  | `${number}vh`
+  | `${number}vmin`
+  | `${number}vmax`
+  | 'auto'
+  | 'fit-content'
+  | 'inherit'
+  | 'initial'
+  | 'unset';
 
-function processSize(size: number | string) {
-  return !/^\d+$/.test(size as string) ? size : `${size}px`;
-}
+const props = withDefaults(
+  defineProps<{
+    modelValue?: monaco.editor.ITextModel | string;
+    language?: string;
+    height?: DimensionValue;
+    width?: DimensionValue;
+    editorBeforeMount?: (api: MonacoApi) => void;
+  }>(),
+  {
+    height: '100%',
+    width: '100%',
+  }
+);
+const emits = defineEmits(['update:modelValue']);
+const style = computed(() => ({
+  height: props.height,
+  width: props.width,
+}));
+watch(style, () => {
+  if (editor) {
+    nextTick(() => editor?.layout());
+  }
+});
 
-interface BaseComponentData {
-  prevent_trigger_change_event?: boolean;
-}
+watch(
+  () => theme.current.value.dark,
+  () => {
+    if (editor) {
+      editor.updateOptions({
+        theme: theme.current.value.dark ? 'vs-dark' : 'vs',
+      });
+    }
+  }
+);
 
-export default {
-  props: {
-    width: { type: [String, Number], default: '100%' },
-    height: { type: [String, Number], default: '100%' },
-    modelValue: { type: Object as PropType<monaco.editor.ITextModel> },
-    language: { type: String, default: 'javascript' },
-    theme: { type: String, default: 'vs' },
-    options: {
-      type: Object,
-      default() {
-        return {};
-      },
-    },
-    overrideServices: {
-      type: Object,
-      default() {
-        return {};
-      },
-    },
-    editorMounted: {
-      type: Function as PropType<
-        (editor: monaco.editor.IStandaloneCodeEditor, api: MonacoApi) => void
-      >,
-      default: (
-        _editor: monaco.editor.IStandaloneCodeEditor,
-        _api: MonacoApi
-      ) => undefined,
-    },
-    editorBeforeMount: {
-      type: Function as PropType<(api: MonacoApi) => Record<string, any>>,
-      default: (_api: MonacoApi) => undefined,
-    },
-    className: { type: String, required: false },
-  },
-  data(): BaseComponentData {
-    this.editor = null;
-    this.subscription = null;
-    this.foo = null;
-    return {
-      prevent_trigger_change_event: true,
-    };
-  },
-  mounted() {
-    this.initMonaco();
-  },
-  watch: {
-    options: {
-      deep: true,
-      handler(options: any, prevOptions: any) {
-        if (this.editor && options !== prevOptions) {
-          // Don't pass in the model on update because monaco crashes if we pass the model
-          // a second time. See https://github.com/microsoft/monaco-editor/issues/2027
-          const { model: _model, ...optionsWithoutModel } = options;
-          this.editor.updateOptions({
-            ...(this.className ? { extraEditorClassName: this.className } : {}),
-            ...optionsWithoutModel,
-          });
+onMounted(() => {
+  props.editorBeforeMount?.(monaco);
+  editor = monaco.editor.create(container.value!, {
+    value: typeof props.modelValue === 'string' ? props.modelValue : undefined,
+    model: typeof props.modelValue !== 'string' ? props.modelValue : undefined,
+    theme: theme.current.value.dark ? 'vs-dark' : 'vs',
+    language: props.language,
+  });
+  changeListener = editor.onDidChangeModelContent(() => {
+    if (typeof props.modelValue === 'string') {
+      emits('update:modelValue', editor!.getValue());
+    } else {
+      emits('update:modelValue', editor!.getModel());
+    }
+  });
+
+  watch(
+    () => props.modelValue,
+    (newValue) => {
+      if (typeof newValue === 'string') {
+        if (editor && newValue !== editor.getValue()) {
+          editor.setValue(newValue || '');
         }
-      },
-    },
-    modelValue(newModel: monaco.editor.ITextModel) {
-      if (this.editor) {
-        const { editor } = this;
-
-        if (!newModel.isDisposed()) {
-          console.log('Update Monaco with', toRaw(newModel));
-          editor.setModel(toRaw(newModel));
+      } else {
+        if (editor && newValue !== editor.getModel()) {
+          editor.setModel(newValue ?? null);
         }
       }
-    },
-    language(language: string, prev: string) {
-      const { editor } = this;
-      if (editor && prev !== language) {
+    }
+  );
+  watch(
+    () => props.language,
+    (language, prev) => {
+      if (editor && language !== prev && language) {
         const model = editor.getModel();
         if (model) {
           monaco.editor.setModelLanguage(model, language);
         }
       }
-    },
-    theme(theme: string, prev: string) {
-      if (prev !== theme) {
-        monaco.editor.setTheme(theme);
-      }
-    },
-    style() {
-      const { editor } = this;
-      editor &&
-        this.$nextTick(() => {
-          editor.layout();
-        });
-    },
-  },
-  beforeDestroy() {
-    this.destroyMonaco();
-  },
-  computed: {
-    style() {
-      const { width, height } = this;
-      const fixedWidth = processSize(width);
-      const fixedHeight = processSize(height);
-      return {
-        width: fixedWidth,
-        height: fixedHeight,
-      };
-    },
-  },
-  methods: {
-    destroyMonaco() {
-      if (this.editor) {
-        this.editor.dispose();
-        const model = this.editor.getModel();
-        if (model) {
-          model.dispose();
-        }
-      }
-      if (this.subscription) {
-        this.subscription.dispose();
-      }
-    },
-    initMonaco() {
-      const { language, theme, overrideServices, className } = this;
-      // Before initializing monaco editor
-      const options = { ...this.options, ...this.editorWillMount() };
+    }
+  );
 
-      console.log('initialize monaco with', toRaw(this.modelValue));
-      this.editor = monaco.editor.create(
-        this.$refs.containerElement as HTMLElement,
-        {
-          model: toRaw(this.modelValue),
-          language,
-          ...(className ? { extraEditorClassName: className } : {}),
-          ...options,
-          ...(theme ? { theme } : {}),
-        },
-        overrideServices
-      );
-      // After initializing monaco editor
-      this.editorDidMount(this.editor);
-    },
-    editorWillMount(): Record<string, any> {
-      const options = this.editorBeforeMount(monaco);
-      return options || {};
-    },
-    editorDidMount(editor: monaco.editor.IStandaloneCodeEditor): void {
-      this.editorMounted(editor, monaco);
+  nextTick(() => {
+    editor?.layout();
+    editor?.getAction('editor.action.formatDocument')?.run();
+  });
+});
 
-      this.subscription = editor.onDidChangeModelContent((event) => {
-        if (!this.prevent_trigger_change_event) {
-          this.$emit('change', editor.getValue(), event);
-        }
-      });
-    },
-  },
-};
+useResizeObserver(container, () => {
+  nextTick(() => {
+    editor?.layout();
+  });
+});
+
+onBeforeUnmount(() => {
+  if (changeListener) {
+    changeListener.dispose();
+  }
+  if (editor) {
+    editor.getModel()?.dispose();
+    editor.dispose();
+  }
+});
 </script>
+
+<template>
+  <div ref="container" :style="style"></div>
+</template>

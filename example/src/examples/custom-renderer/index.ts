@@ -2,7 +2,7 @@ import schema from './schema.json';
 import uischema from './uischema.json';
 import data from './data.json';
 import { entry as customArrayRendererEntry } from './CustomArrayRenderer.vue';
-import {
+import type {
   UISchemaElement,
   JsonSchema,
   JsonFormsRendererRegistryEntry,

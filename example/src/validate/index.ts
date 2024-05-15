@@ -1,4 +1,4 @@
-import { Options } from 'ajv';
+import type { Options } from 'ajv';
 import { createAjv as createDefaultAjv } from '@jsonforms/vue-vuetify';
 import { ajvKeywords } from './keywords';
 

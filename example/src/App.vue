@@ -1,11 +1,11 @@
+<script setup lang="ts">
+import { RouterView } from 'vue-router';
+</script>
+
 <template>
   <router-view />
 </template>
 
-<script lang="ts">
-export default { name: 'App' };
-</script>
-
 <style scoped>
-@import '~@jsonforms/vue-vuetify/lib/jsonforms-vue-vuetify.esm.css';
+@import '@jsonforms/vue-vuetify/lib/jsonforms-vue-vuetify.esm.css';
 </style>

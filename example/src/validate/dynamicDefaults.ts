@@ -1,4 +1,4 @@
-import dayjs, { UnitType } from 'dayjs';
+import dayjs, { type UnitType } from 'dayjs';
 import customParsingPlugin from 'dayjs/plugin/customParseFormat';
 import durationPlugin from 'dayjs/plugin/duration';
 import timezonePlugin from 'dayjs/plugin/timezone'; // dependent on utc plugin

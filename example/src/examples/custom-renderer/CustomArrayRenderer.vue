@@ -24,8 +24,8 @@
 
 <script lang="ts">
 import {
-  ControlElement,
-  JsonFormsRendererRegistryEntry,
+  type ControlElement,
+  type JsonFormsRendererRegistryEntry,
   withIncreasedRank,
 } from '@jsonforms/core';
 import { rendererProps } from '@jsonforms/vue';
