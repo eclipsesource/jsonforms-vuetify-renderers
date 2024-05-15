@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import ThemeChanger from '@/components/ThemeChanger.vue';
 import { useAppStore } from '@/stores/app';
-import jsonformsLogo from '@/assets/jsonforms.svg';
+import JsonLogo from '@/assets/jsonforms.vue';
 
 const appStore = useAppStore();
 </script>
@@ -16,13 +16,7 @@ const appStore = useAppStore();
     <v-toolbar-title>
       <v-container fill-height fluid
         ><v-row align="center" justify="center" dense>
-          <v-img
-            :src="jsonformsLogo"
-            max-height="64"
-            max-width="64"
-            min-height="64"
-            min-width="64"
-          />
+          <JsonLogo></JsonLogo>
           <v-col>JSON Forms </v-col>
         </v-row>
       </v-container>
