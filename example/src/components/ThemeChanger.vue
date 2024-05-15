@@ -14,19 +14,32 @@ const setTheme = (theme: string) => {
 </script>
 
 <template>
-  <v-menu v-model="menu" :close-on-content-click="false" :nudge-width="200" offset-y>
+  <v-menu
+    v-model="menu"
+    :close-on-content-click="false"
+    :nudge-width="200"
+    offset-y
+  >
     <template v-slot:activator="{ props: propsMenu }">
       <v-tooltip bottom>
         <template v-slot:activator="{ props: propsTooltip }">
           <v-btn large icon dark>
-            <v-icon size="30" color="primary" v-bind="mergeProps(propsMenu, propsTooltip)">mdi-palette</v-icon>
+            <v-icon
+              size="30"
+              color="primary"
+              v-bind="mergeProps(propsMenu, propsTooltip)"
+              >mdi-palette</v-icon
+            >
           </v-btn>
         </template>
         Theme Colors
       </v-tooltip>
     </template>
     <v-toolbar flat>
-      <v-toolbar-title>{{ currentTheme.current.value.dark ? 'Dark' : 'Light' }} Theme Colors</v-toolbar-title>
+      <v-toolbar-title
+        >{{ currentTheme.current.value.dark ? 'Dark' : 'Light' }} Theme
+        Colors</v-toolbar-title
+      >
       <v-spacer />
       <v-toolbar-items>
         <v-btn icon @click="menu = false">
@@ -38,23 +51,41 @@ const setTheme = (theme: string) => {
     <v-divider />
     <v-card min-width="450px">
       <v-card-text>
-        <v-card class="my-2" :disabled="currentTheme.name.value === theme.name" @click="setTheme(theme.name)" hover
+        <v-card
+          class="my-2"
+          :disabled="currentTheme.name.value === theme.name"
+          @click="setTheme(theme.name)"
+          hover
           outlined
-          v-for="(theme, index) in customThemes.filter(theme => theme.dark === currentTheme.current.value.dark)"
-          :key="index">
+          v-for="(theme, index) in customThemes.filter(
+            (theme) => theme.dark === currentTheme.current.value.dark
+          )"
+          :key="index"
+        >
           <v-list-item>
             <v-list-item-title class="font-weight-bold">
-              {{ theme.name }}</v-list-item-title>
+              {{ theme.name }}</v-list-item-title
+            >
             <v-list-item-action>
-              <v-avatar color="success" size="30" v-if="currentTheme.name.value === theme.name">
+              <v-avatar
+                color="success"
+                size="30"
+                v-if="currentTheme.name.value === theme.name"
+              >
                 <v-icon>mdi-check</v-icon>
               </v-avatar>
             </v-list-item-action>
           </v-list-item>
           <div class="my-2">
-            <v-chip class="mx-1" label :color="theme.colors![key]" v-for="(key, index) in Object.keys(theme.colors!)"
-              :key="index">
-              {{ key }}</v-chip>
+            <v-chip
+              class="mx-1"
+              label
+              :color="theme.colors![key]"
+              v-for="(key, index) in Object.keys(theme.colors!)"
+              :key="index"
+            >
+              {{ key }}</v-chip
+            >
           </div>
         </v-card>
       </v-card-text>

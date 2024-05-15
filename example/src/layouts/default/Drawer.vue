@@ -16,7 +16,13 @@ const router = useRouter();
   >
     <v-list-item>
       <template v-slot:prepend>
-        <v-img :src="vuetifyLogo" max-height="64" max-width="64" min-height="64" min-width="64" />
+        <v-img
+          :src="vuetifyLogo"
+          max-height="64"
+          max-width="64"
+          min-height="64"
+          min-width="64"
+        />
       </template>
       <v-list-item-title class="text-h6"> Examples </v-list-item-title>
       <v-list-item-subtitle> Vuetify Renderers </v-list-item-subtitle>

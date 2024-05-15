@@ -297,7 +297,12 @@ onMounted(() => {
         <v-card-title>{{ example.title }}</v-card-title>
         <v-card-text>
           <v-tabs v-model="activeTab">
-            <v-tab :key="0">Demo<validation-icon v-if="errors" :errors="errors"></validation-icon></v-tab>
+            <v-tab :key="0"
+              >Demo<validation-icon
+                v-if="errors"
+                :errors="errors"
+              ></validation-icon
+            ></v-tab>
             <v-spacer expand />
             <v-tab :key="1">Schema</v-tab>
             <v-tab :key="2">UI Schema</v-tab>
@@ -314,11 +319,15 @@ onMounted(() => {
                   <v-spacer></v-spacer>
                   <v-tooltip bottom>
                     <template v-slot:activator="{ props }">
-                      <v-btn icon v-bind="props" :to="{
+                      <v-btn
+                        icon
+                        v-bind="props"
+                        :to="{
                           name: 'example',
                           params: { id: route.params.id },
                           query: { view: 'form-only' },
-                        }">
+                        }"
+                      >
                         <v-icon>mdi-dock-window</v-icon>
                       </v-btn>
                     </template>
@@ -328,9 +337,16 @@ onMounted(() => {
               </v-card-title>
               <v-divider class="mx-4"></v-divider>
               <div class="json-forms">
-                <demo-form :example="example" :renderers="allRenderers" :config="appStore.jsonforms.config"
-                  :validationMode="appStore.jsonforms.validationMode" :ajv="ajv" :readonly="appStore.jsonforms.readonly"
-                  :locale="appStore.jsonforms.locale" @jsfchange="onChange" />
+                <demo-form
+                  :example="example"
+                  :renderers="allRenderers"
+                  :config="appStore.jsonforms.config"
+                  :validationMode="appStore.jsonforms.validationMode"
+                  :ajv="ajv"
+                  :readonly="appStore.jsonforms.readonly"
+                  :locale="appStore.jsonforms.locale"
+                  @jsfchange="onChange"
+                />
               </div>
             </v-card>
           </v-window-item>
@@ -359,8 +375,11 @@ onMounted(() => {
                 </v-toolbar>
               </v-card-title>
               <v-divider class="mx-4"></v-divider>
-              <monaco-editor :language="`json`" v-model="appStore.monaco.schemaModel"
-                :editorBeforeMount="registerValidations"></monaco-editor>
+              <monaco-editor
+                :language="`json`"
+                v-model="appStore.monaco.schemaModel"
+                :editorBeforeMount="registerValidations"
+              ></monaco-editor>
             </v-card>
           </v-window-item>
           <v-window-item :key="2">
@@ -388,8 +407,11 @@ onMounted(() => {
                 </v-toolbar>
               </v-card-title>
               <v-divider class="mx-4"></v-divider>
-              <monaco-editor language="json" v-model="appStore.monaco.uischemaModel"
-                :editorBeforeMount="registerValidations"></monaco-editor>
+              <monaco-editor
+                language="json"
+                v-model="appStore.monaco.uischemaModel"
+                :editorBeforeMount="registerValidations"
+              ></monaco-editor>
             </v-card>
           </v-window-item>
           <v-window-item :key="3">
@@ -417,8 +439,11 @@ onMounted(() => {
                 </v-toolbar>
               </v-card-title>
               <v-divider class="mx-4"></v-divider>
-              <monaco-editor language="json" v-model="appStore.monaco.dataModel"
-                :editorBeforeMount="registerValidations"></monaco-editor>
+              <monaco-editor
+                language="json"
+                v-model="appStore.monaco.dataModel"
+                :editorBeforeMount="registerValidations"
+              ></monaco-editor>
             </v-card>
           </v-window-item>
           <v-window-item :key="4">
@@ -446,8 +471,11 @@ onMounted(() => {
                 </v-toolbar>
               </v-card-title>
               <v-divider class="mx-4"></v-divider>
-              <monaco-editor language="json" v-model="appStore.monaco.i18nModel"
-                :editorBeforeMount="registerValidations"></monaco-editor>
+              <monaco-editor
+                language="json"
+                v-model="appStore.monaco.i18nModel"
+                :editorBeforeMount="registerValidations"
+              ></monaco-editor>
             </v-card>
           </v-window-item>
         </v-window>
@@ -460,9 +488,17 @@ onMounted(() => {
       </v-snackbar>
     </v-container>
     <div class="json-forms">
-      <demo-form v-if="example != null && formonly" :example="example" :renderers="allRenderers"
-        :config="appStore.jsonforms.config" :validationMode="appStore.jsonforms.validationMode" :ajv="ajv"
-        :readonly="appStore.jsonforms.readonly" :locale="appStore.jsonforms.locale" @jsfchange="onChange" />
+      <demo-form
+        v-if="example != null && formonly"
+        :example="example"
+        :renderers="allRenderers"
+        :config="appStore.jsonforms.config"
+        :validationMode="appStore.jsonforms.validationMode"
+        :ajv="ajv"
+        :readonly="appStore.jsonforms.readonly"
+        :locale="appStore.jsonforms.locale"
+        @jsfchange="onChange"
+      />
     </div>
   </div>
 </template>

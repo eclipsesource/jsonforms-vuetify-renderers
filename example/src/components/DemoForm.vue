@@ -101,20 +101,44 @@ onMounted(() => {
 </script>
 <template>
   <div>
-    <json-forms v-if="resolvedSchema.resolved && resolvedSchema.error === undefined" :data="example.input.data"
-      :schema="resolvedSchema.schema" :uischema="example.input.uischema" :renderers="renderers" :config="config"
-      :uischemas="uischemas" :validationMode="validationMode" :ajv="ajv" :readonly="readonly" :i18n="i18n"
-      @change="onChange" />
+    <json-forms
+      v-if="resolvedSchema.resolved && resolvedSchema.error === undefined"
+      :data="example.input.data"
+      :schema="resolvedSchema.schema"
+      :uischema="example.input.uischema"
+      :renderers="renderers"
+      :config="config"
+      :uischemas="uischemas"
+      :validationMode="validationMode"
+      :ajv="ajv"
+      :readonly="readonly"
+      :i18n="i18n"
+      @change="onChange"
+    />
     <v-container v-else>
-      <v-row v-if="!resolvedSchema.resolved" class="fill-height" align-content="center" justify="center">
+      <v-row
+        v-if="!resolvedSchema.resolved"
+        class="fill-height"
+        align-content="center"
+        justify="center"
+      >
         <v-col class="text-subtitle-1 text-center" cols="12">
           Resolving Schema Refs
         </v-col>
         <v-col cols="6">
-          <v-progress-linear indeterminate rounded height="6"></v-progress-linear>
+          <v-progress-linear
+            indeterminate
+            rounded
+            height="6"
+          ></v-progress-linear>
         </v-col>
       </v-row>
-      <v-row v-else-if="resolvedSchema.error !== undefined" class="fill-height" align-content="center" justify="center">
+      <v-row
+        v-else-if="resolvedSchema.error !== undefined"
+        class="fill-height"
+        align-content="center"
+        justify="center"
+      >
         <v-col class="text-subtitle-1 text-center" cols="12">
           <v-alert color="red" dark>
             {{ resolvedSchema.error }}

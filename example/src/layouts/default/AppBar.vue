@@ -8,11 +8,21 @@ const appStore = useAppStore();
 
 <template>
   <v-app-bar app>
-    <v-app-bar-nav-icon aria-label="Toggle Navigation Drawer" @click="appStore.drawer = !appStore.drawer" />
+    <v-app-bar-nav-icon
+      aria-label="Toggle Navigation Drawer"
+      @click="appStore.drawer = !appStore.drawer"
+    />
 
     <v-toolbar-title>
-      <v-container fill-height fluid><v-row align="center" justify="center" dense>
-          <v-img :src="jsonformsLogo" max-height="64" max-width="64"  min-height="64" min-width="64" />
+      <v-container fill-height fluid
+        ><v-row align="center" justify="center" dense>
+          <v-img
+            :src="jsonformsLogo"
+            max-height="64"
+            max-width="64"
+            min-height="64"
+            min-width="64"
+          />
           <v-col>JSON Forms </v-col>
         </v-row>
       </v-container>
@@ -21,12 +31,19 @@ const appStore = useAppStore();
     <v-spacer expand></v-spacer>
 
     <v-toolbar-items>
-      <v-container fill-height fluid justify-end><v-row dense>
+      <v-container fill-height fluid justify-end
+        ><v-row dense>
           <v-col><theme-changer /> </v-col>
           <v-col>
             <v-tooltip bottom>
               <template v-slot:activator="{ props }">
-                <v-btn large icon dark v-bind="props" @click="appStore.settings = !appStore.settings">
+                <v-btn
+                  large
+                  icon
+                  dark
+                  v-bind="props"
+                  @click="appStore.settings = !appStore.settings"
+                >
                   <v-icon size="30" color="primary">mdi-cog</v-icon>
                 </v-btn>
               </template>
