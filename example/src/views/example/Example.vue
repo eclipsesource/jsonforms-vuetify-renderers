@@ -12,7 +12,6 @@ import { type Example } from '@/core/types';
 import { examples } from '@/examples';
 import { useAppStore } from '@/stores/app';
 import { createAjv } from '@/validate';
-import type { UISchemaElement } from '@jsonforms/core';
 import type { JsonFormsChangeEvent } from '@jsonforms/vue';
 import {
   ValidationIcon,
@@ -109,6 +108,15 @@ const saveMonacoSchema = () => {
       } as Example),
     'New schema applied',
   );
+
+  if (example.value && example.value.input.schema) {
+    configureDataValidation(
+      monaco,
+      `inmemory://${toSchemaUri(example.value.id)}`,
+      toDataUri(example.value.id),
+      cloneDeep(example.value.input.schema),
+    );
+  }
 };
 
 const reloadMonacoUiSchema = () => {

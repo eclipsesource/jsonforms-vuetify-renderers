@@ -2,8 +2,7 @@ import monaco, { type MonacoApi } from '@/core/monaco';
 import type { JsonSchema } from '@jsonforms/core';
 
 import { jsonSchemaDraft7, ruleSchema, uiSchema } from '../core/jsonschema';
-
-//export type EditorApi = typeof monaco;
+import { isEqual } from 'lodash';
 
 /**
  * Register a new schema for the Json language, if it isn't already registered.
@@ -37,15 +36,27 @@ export const addSchema = (
     for (const schema of schemas) {
       const fileMatch = schema.fileMatch;
 
-      const gridSchema = registeredSchemas.find(
+      const existingSchemaIndex = registeredSchemas.findIndex(
         (registeredSchema) =>
-          registeredSchema.fileMatch === fileMatch &&
-          registeredSchema.uri === schema.uri,
+          isEqual(registeredSchema.fileMatch, fileMatch) &&
+          isEqual(registeredSchema.uri, schema.uri),
       );
-      if (!gridSchema) {
+      if (existingSchemaIndex !== -1) {
+        registeredSchemas[existingSchemaIndex] = { ...schema };
+      } else {
+        console.log('add schema');
         registeredSchemas.push({ ...schema });
       }
     }
+
+    editor.languages.json.jsonDefaults.setDiagnosticsOptions({
+      validate: true,
+      allowComments: false,
+      enableSchemaRequest: false,
+      schemaRequest: 'warning',
+      schemaValidation: 'error',
+      schemas: [...registeredSchemas],
+    });
   }
 };
 
