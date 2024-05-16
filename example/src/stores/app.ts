@@ -1,4 +1,3 @@
-import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import { defineStore } from 'pinia';
 import { reactive } from 'vue';
 export interface AppState {
