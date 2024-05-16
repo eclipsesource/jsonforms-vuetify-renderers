@@ -22,12 +22,6 @@ export interface AppState {
     };
     locale: string;
   };
-  monaco: {
-    schemaModel: monaco.editor.ITextModel | undefined;
-    uischemaModel: monaco.editor.ITextModel | undefined;
-    dataModel: monaco.editor.ITextModel | undefined;
-    i18nModel: monaco.editor.ITextModel | undefined;
-  };
 }
 
 export const useAppStore = defineStore('app', () => {
@@ -50,12 +44,6 @@ export const useAppStore = defineStore('app', () => {
         hideArraySummaryValidation: false,
       },
       locale: 'en',
-    },
-    monaco: {
-      schemaModel: undefined,
-      uischemaModel: undefined,
-      dataModel: undefined,
-      i18nModel: undefined,
     },
   });
 });

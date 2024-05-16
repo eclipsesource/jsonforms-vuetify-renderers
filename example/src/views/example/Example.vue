@@ -23,7 +23,7 @@ import {
 import type { ErrorObject } from 'ajv';
 import { cloneDeep, find } from 'lodash';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
-import { computed, onMounted, provide, ref, watch } from 'vue';
+import { computed, onMounted, provide, ref, watch, shallowRef } from 'vue';
 import { useRoute } from 'vue-router';
 
 const appStore = useAppStore();
@@ -52,9 +52,14 @@ const allRenderers = computed(() =>
   )
 );
 
+const schemaModel = shallowRef<monaco.editor.ITextModel | undefined>(undefined);
+const uischemaModel = shallowRef<monaco.editor.ITextModel | undefined>(undefined);
+const dataModel = shallowRef<monaco.editor.ITextModel | undefined>(undefined);
+const i18nModel = shallowRef<monaco.editor.ITextModel | undefined>(undefined);
+
 const onChange = (event: JsonFormsChangeEvent): void => {
   if (example.value) {
-    appStore.monaco.dataModel = getMonacoModelForUri(
+    dataModel.value = getMonacoModelForUri(
       monaco.Uri.parse(toDataUri(example.value.id)),
       event.data ? JSON.stringify(event.data, null, 2) : ''
     );
@@ -73,7 +78,7 @@ const reloadMonacoSchema = () => {
   const example = find(examples, (example) => example.id === route.params.id);
 
   if (example) {
-    appStore.monaco.schemaModel = getMonacoModelForUri(
+    schemaModel.value = getMonacoModelForUri(
       monaco.Uri.parse(toSchemaUri(example.id)),
       example.input.schema ? JSON.stringify(example.input.schema, null, 2) : ''
     );
@@ -82,7 +87,7 @@ const reloadMonacoSchema = () => {
 };
 
 const saveMonacoSchema = () => {
-  const model = appStore.monaco.schemaModel;
+  const model = schemaModel.value;
 
   if (model && example.value) {
     // TODO: is there a better way how to get errors including the error message from monaco editor ?
@@ -109,7 +114,7 @@ const reloadMonacoUiSchema = () => {
   const example = find(examples, (example) => example.id === route.params.id);
 
   if (example) {
-    appStore.monaco.uischemaModel = getMonacoModelForUri(
+    uischemaModel.value = getMonacoModelForUri(
       monaco.Uri.parse(toUiSchemaUri(example.id)),
       example.input.uischema
         ? JSON.stringify(example.input.uischema, null, 2)
@@ -120,7 +125,7 @@ const reloadMonacoUiSchema = () => {
 };
 
 const saveMonacoUiSchema = () => {
-  const model = appStore.monaco.uischemaModel;
+  const model = uischemaModel.value;
 
   if (model && example.value) {
     // TODO: is there a better way how to get errors including the error message from monaco editor ?
@@ -148,7 +153,7 @@ const reloadMonacoData = () => {
   const example = find(examples, (example) => example.id === route.params.id);
 
   if (example) {
-    appStore.monaco.dataModel = getMonacoModelForUri(
+    dataModel.value = getMonacoModelForUri(
       monaco.Uri.parse(toDataUri(example.id)),
       example.input.data ? JSON.stringify(example.input.data, null, 2) : ''
     );
@@ -157,7 +162,7 @@ const reloadMonacoData = () => {
 };
 
 const saveMonacoData = () => {
-  const model = appStore.monaco.dataModel;
+  const model = dataModel.value;
 
   if (model && example.value) {
     // do not check for monaco errors just if this is valid JSON becase we want to see when we have validation errors
@@ -184,7 +189,7 @@ const reloadMonacoI18N = () => {
   const example = find(examples, (example) => example.id === route.params.id);
 
   if (example) {
-    appStore.monaco.i18nModel = getMonacoModelForUri(
+    i18nModel.value = getMonacoModelForUri(
       monaco.Uri.parse(toI18NUri(example.id)),
       example.input.i18n ? JSON.stringify(example.input.i18n, null, 2) : ''
     );
@@ -193,7 +198,7 @@ const reloadMonacoI18N = () => {
 };
 
 const saveMonacoI18N = () => {
-  const model = appStore.monaco.i18nModel;
+  const model = i18nModel.value;
 
   if (model && example.value) {
     // TODO: is there a better way how to get errors including the error message from monaco editor ?
@@ -238,24 +243,24 @@ const registerValidations = (editor: MonacoApi) => {
 };
 
 const updateMonacoModels = (example: Example) => {
-  appStore.monaco.schemaModel = getMonacoModelForUri(
+  schemaModel.value = getMonacoModelForUri(
     monaco.Uri.parse(toSchemaUri(example.id)),
     example.input.schema ? JSON.stringify(example.input.schema, null, 2) : ''
   );
 
-  appStore.monaco.uischemaModel = getMonacoModelForUri(
+  uischemaModel.value = getMonacoModelForUri(
     monaco.Uri.parse(toUiSchemaUri(example.id)),
     example.input.uischema
       ? JSON.stringify(example.input.uischema, null, 2)
       : ''
   );
 
-  appStore.monaco.dataModel = getMonacoModelForUri(
+  dataModel.value = getMonacoModelForUri(
     monaco.Uri.parse(toDataUri(example.id)),
     example.input.data ? JSON.stringify(example.input.data, null, 2) : ''
   );
 
-  appStore.monaco.i18nModel = getMonacoModelForUri(
+  i18nModel.value = getMonacoModelForUri(
     monaco.Uri.parse(toI18NUri(example.id)),
     example.input.i18n ? JSON.stringify(example.input.i18n, null, 2) : ''
   );
@@ -297,12 +302,7 @@ onMounted(() => {
         <v-card-title>{{ example.title }}</v-card-title>
         <v-card-text>
           <v-tabs v-model="activeTab">
-            <v-tab :key="0"
-              >Demo<validation-icon
-                v-if="errors"
-                :errors="errors"
-              ></validation-icon
-            ></v-tab>
+            <v-tab :key="0">Demo<validation-icon v-if="errors" :errors="errors"></validation-icon></v-tab>
             <v-spacer expand />
             <v-tab :key="1">Schema</v-tab>
             <v-tab :key="2">UI Schema</v-tab>
@@ -319,15 +319,11 @@ onMounted(() => {
                   <v-spacer></v-spacer>
                   <v-tooltip bottom>
                     <template v-slot:activator="{ props }">
-                      <v-btn
-                        icon
-                        v-bind="props"
-                        :to="{
-                          name: 'example',
-                          params: { id: route.params.id },
-                          query: { view: 'form-only' },
-                        }"
-                      >
+                      <v-btn icon v-bind="props" :to="{
+      name: 'example',
+      params: { id: route.params.id },
+      query: { view: 'form-only' },
+    }">
                         <v-icon>mdi-dock-window</v-icon>
                       </v-btn>
                     </template>
@@ -337,16 +333,9 @@ onMounted(() => {
               </v-card-title>
               <v-divider class="mx-4"></v-divider>
               <div class="json-forms">
-                <demo-form
-                  :example="example"
-                  :renderers="allRenderers"
-                  :config="appStore.jsonforms.config"
-                  :validationMode="appStore.jsonforms.validationMode"
-                  :ajv="ajv"
-                  :readonly="appStore.jsonforms.readonly"
-                  :locale="appStore.jsonforms.locale"
-                  @jsfchange="onChange"
-                />
+                <demo-form :example="example" :renderers="allRenderers" :config="appStore.jsonforms.config"
+                  :validationMode="appStore.jsonforms.validationMode" :ajv="ajv" :readonly="appStore.jsonforms.readonly"
+                  :locale="appStore.jsonforms.locale" @jsfchange="onChange" />
               </div>
             </v-card>
           </v-window-item>
@@ -375,11 +364,8 @@ onMounted(() => {
                 </v-toolbar>
               </v-card-title>
               <v-divider class="mx-4"></v-divider>
-              <monaco-editor
-                :language="`json`"
-                v-model="appStore.monaco.schemaModel"
-                :editorBeforeMount="registerValidations"
-              ></monaco-editor>
+              <monaco-editor :language="`json`" v-model="schemaModel" style="height: calc(100vh - 100px)"
+                :editorBeforeMount="registerValidations"></monaco-editor>
             </v-card>
           </v-window-item>
           <v-window-item :key="2">
@@ -407,11 +393,8 @@ onMounted(() => {
                 </v-toolbar>
               </v-card-title>
               <v-divider class="mx-4"></v-divider>
-              <monaco-editor
-                language="json"
-                v-model="appStore.monaco.uischemaModel"
-                :editorBeforeMount="registerValidations"
-              ></monaco-editor>
+              <monaco-editor language="json" v-model="uischemaModel" style="height: calc(100vh - 100px)"
+                :editorBeforeMount="registerValidations"></monaco-editor>
             </v-card>
           </v-window-item>
           <v-window-item :key="3">
@@ -439,11 +422,8 @@ onMounted(() => {
                 </v-toolbar>
               </v-card-title>
               <v-divider class="mx-4"></v-divider>
-              <monaco-editor
-                language="json"
-                v-model="appStore.monaco.dataModel"
-                :editorBeforeMount="registerValidations"
-              ></monaco-editor>
+              <monaco-editor language="json" v-model="dataModel" style="height: calc(100vh - 100px)"
+                :editorBeforeMount="registerValidations"></monaco-editor>
             </v-card>
           </v-window-item>
           <v-window-item :key="4">
@@ -471,11 +451,8 @@ onMounted(() => {
                 </v-toolbar>
               </v-card-title>
               <v-divider class="mx-4"></v-divider>
-              <monaco-editor
-                language="json"
-                v-model="appStore.monaco.i18nModel"
-                :editorBeforeMount="registerValidations"
-              ></monaco-editor>
+              <monaco-editor language="json" v-model="i18nModel" style="height: calc(100vh - 100px)"
+                :editorBeforeMount="registerValidations"></monaco-editor>
             </v-card>
           </v-window-item>
         </v-window>
@@ -488,17 +465,9 @@ onMounted(() => {
       </v-snackbar>
     </v-container>
     <div class="json-forms">
-      <demo-form
-        v-if="example != null && formonly"
-        :example="example"
-        :renderers="allRenderers"
-        :config="appStore.jsonforms.config"
-        :validationMode="appStore.jsonforms.validationMode"
-        :ajv="ajv"
-        :readonly="appStore.jsonforms.readonly"
-        :locale="appStore.jsonforms.locale"
-        @jsfchange="onChange"
-      />
+      <demo-form v-if="example != null && formonly" :example="example" :renderers="allRenderers"
+        :config="appStore.jsonforms.config" :validationMode="appStore.jsonforms.validationMode" :ajv="ajv"
+        :readonly="appStore.jsonforms.readonly" :locale="appStore.jsonforms.locale" @jsfchange="onChange" />
     </div>
   </div>
 </template>
