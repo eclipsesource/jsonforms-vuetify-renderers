@@ -28,7 +28,7 @@ const props = withDefaults(
     readonly: false,
     validationMode: 'ValidateAndShow',
     locale: 'en',
-  }
+  },
 );
 
 const resolvedSchema = reactive<ResolvedSchema>({
@@ -55,9 +55,9 @@ watch(
     resolveSchema(newExample.input.schema);
     i18n.translate = createTranslator(
       props.locale,
-      newExample?.input?.i18n as any
+      newExample?.input?.i18n as any,
     );
-  }
+  },
 );
 
 watch(
@@ -66,9 +66,9 @@ watch(
     i18n.locale = newLocale;
     i18n.translate = createTranslator(
       newLocale,
-      props.example?.input?.i18n as any
+      props.example?.input?.i18n as any,
     );
-  }
+  },
 );
 
 const resolveSchema = (schema?: JsonSchema): void => {
@@ -87,7 +87,7 @@ const resolveSchema = (schema?: JsonSchema): void => {
       function (err: Error) {
         resolvedSchema.resolved = true;
         resolvedSchema.error = err.message;
-      }
+      },
     );
   } else {
     // nothing to resolve

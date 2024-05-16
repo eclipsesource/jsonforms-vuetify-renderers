@@ -41,7 +41,7 @@ const props = withDefaults(
   {
     height: '100%',
     width: '100%',
-  }
+  },
 );
 const emits = defineEmits(['update:modelValue']);
 const style = computed(() => ({
@@ -62,7 +62,7 @@ watch(
         theme: theme.current.value.dark ? 'vs-dark' : 'vs',
       });
     }
-  }
+  },
 );
 
 onMounted(() => {
@@ -93,7 +93,7 @@ onMounted(() => {
           editor.setModel(newValue ?? null);
         }
       }
-    }
+    },
   );
   watch(
     () => props.language,
@@ -104,7 +104,7 @@ onMounted(() => {
           monaco.editor.setModelLanguage(model, language);
         }
       }
-    }
+    },
   );
 
   nextTick(() => {

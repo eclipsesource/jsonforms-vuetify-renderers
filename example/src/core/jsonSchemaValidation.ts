@@ -20,7 +20,7 @@ export const addSchema = (
     uri: string;
     fileMatch?: string[];
     schema?: JsonSchema;
-  }[]
+  }[],
 ): void => {
   const registeredSchemas =
     editor.languages.json.jsonDefaults.diagnosticsOptions.schemas;
@@ -40,7 +40,7 @@ export const addSchema = (
       const gridSchema = registeredSchemas.find(
         (registeredSchema) =>
           registeredSchema.fileMatch === fileMatch &&
-          registeredSchema.uri === schema.uri
+          registeredSchema.uri === schema.uri,
       );
       if (!gridSchema) {
         registeredSchemas.push({ ...schema });
@@ -54,7 +54,7 @@ export const addSchema = (
  */
 export const configureJsonSchemaValidation = (
   editor: MonacoApi,
-  fileMatch: string[]
+  fileMatch: string[],
 ): void => {
   /** Note that the Monaco Editor only supports JSON Schema Draft 7 itself,
    * so if we also want to support a later standard we still have to formalize
@@ -67,7 +67,7 @@ export const configureJsonSchemaValidation = (
  */
 export const configureUISchemaValidation = (
   editor: MonacoApi,
-  fileMatch: string[]
+  fileMatch: string[],
 ): void => {
   /** Note that the Monaco Editor only supports JSON Schema Draft 7 itself,
    * so if we also want to support a later standard we still have to formalize
@@ -86,7 +86,7 @@ export const configureDataValidation = (
   editor: MonacoApi,
   uri: string,
   fileMatch: string,
-  schema: JsonSchema
+  schema: JsonSchema,
 ): void => {
   /** Note that the Monaco Editor only supports JSON Schema Draft 7 itself,
    * so if we also want to support a later standard we still have to formalize
@@ -96,7 +96,7 @@ export const configureDataValidation = (
 
 export const getMonacoModelForUri = (
   modelUri: monaco.Uri,
-  initialValue: string | undefined
+  initialValue: string | undefined,
 ): monaco.editor.ITextModel => {
   const value = initialValue ?? '';
   let model = monaco.editor.getModel(modelUri);

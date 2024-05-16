@@ -9,7 +9,7 @@ const appStore = useAppStore();
 const DefaultAppBar = defineAsyncComponent(() => import('./AppBar.vue'));
 const DefaultDrawer = defineAsyncComponent(() => import('./Drawer.vue'));
 const DefaultSettings = defineAsyncComponent(
-  () => import('../../components/Settings.vue')
+  () => import('../../components/Settings.vue'),
 );
 const DefaultView = defineAsyncComponent(() => import('./View.vue'));
 

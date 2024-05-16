@@ -58,7 +58,7 @@ const setTheme = (theme: string) => {
           hover
           outlined
           v-for="(theme, index) in customThemes.filter(
-            (theme) => theme.dark === currentTheme.current.value.dark
+            (theme) => theme.dark === currentTheme.current.value.dark,
           )"
           :key="index"
         >
