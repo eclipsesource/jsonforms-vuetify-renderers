@@ -23,7 +23,15 @@ import {
 import type { ErrorObject } from 'ajv';
 import { cloneDeep, find } from 'lodash';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
-import { computed, onMounted, provide, ref, watch, shallowRef } from 'vue';
+import {
+  computed,
+  onMounted,
+  provide,
+  ref,
+  watch,
+  shallowRef,
+  type ShallowRef,
+} from 'vue';
 import { useRoute } from 'vue-router';
 
 const appStore = useAppStore();
@@ -89,27 +97,18 @@ const reloadMonacoSchema = () => {
 };
 
 const saveMonacoSchema = () => {
-  const model = schemaModel.value;
-
-  if (model && example.value) {
-    // TODO: is there a better way how to get errors including the error message from monaco editor ?
-    const hasError =
-      model
-        .getAllDecorations()
-        .filter((d) => d.options.className === 'squiggly-error')
-        .map((e) => e).length > 0;
-
-    const modelValue = model.getValue().trim();
-    if (!hasError) {
-      const newJson: Record<string, any> = modelValue
-        ? JSON.parse(modelValue)
-        : undefined;
-      example.value.input.schema = newJson;
-      toast('New schema applied');
-    } else if (hasError) {
-      toast('Error: schema is invalid');
-    }
-  }
+  saveMonacoModel(
+    schemaModel,
+    (newJson) =>
+      (example.value = {
+        ...example.value,
+        input: {
+          ...example.value!.input,
+          schema: newJson,
+        },
+      } as Example),
+    'New schema applied',
+  );
 };
 
 const reloadMonacoUiSchema = () => {
@@ -127,28 +126,18 @@ const reloadMonacoUiSchema = () => {
 };
 
 const saveMonacoUiSchema = () => {
-  const model = uischemaModel.value;
-
-  if (model && example.value) {
-    // TODO: is there a better way how to get errors including the error message from monaco editor ?
-    const hasError =
-      model
-        .getAllDecorations()
-        .filter((d) => d.options.className === 'squiggly-error')
-        .map((e) => e).length > 0;
-
-    const modelValue = model.getValue().trim();
-    if (!hasError) {
-      const newJson: Record<string, any> = modelValue
-        ? JSON.parse(modelValue)
-        : undefined;
-
-      example.value.input.uischema = newJson as UISchemaElement;
-      toast('New UI schema applied');
-    } else if (hasError) {
-      toast('Error: UI schema is invalid');
-    }
-  }
+  saveMonacoModel(
+    uischemaModel,
+    (newJson) =>
+      (example.value = {
+        ...example.value,
+        input: {
+          ...example.value!.input,
+          uischema: newJson,
+        },
+      } as Example),
+    'New UI schema applied',
+  );
 };
 
 const reloadMonacoData = () => {
@@ -164,27 +153,18 @@ const reloadMonacoData = () => {
 };
 
 const saveMonacoData = () => {
-  const model = dataModel.value;
-
-  if (model && example.value) {
-    // do not check for monaco errors just if this is valid JSON becase we want to see when we have validation errors
-
-    const modelValue = model.getValue().trim();
-    if (modelValue) {
-      let newJson: Record<string, any> | undefined = undefined;
-
-      try {
-        newJson = JSON.parse(modelValue);
-      } catch (error) {
-        toast(`Error: ${error}`);
-      }
-
-      if (newJson) {
-        example.value.input.data = newJson;
-        toast('New data applied');
-      }
-    }
-  }
+  saveMonacoModel(
+    dataModel,
+    (newJson) =>
+      (example.value = {
+        ...example.value,
+        input: {
+          ...example.value!.input,
+          data: newJson ?? {},
+        },
+      } as Example),
+    'New data applied',
+  );
 };
 
 const reloadMonacoI18N = () => {
@@ -200,26 +180,36 @@ const reloadMonacoI18N = () => {
 };
 
 const saveMonacoI18N = () => {
-  const model = i18nModel.value;
+  saveMonacoModel(
+    i18nModel,
+    (newJson) =>
+      (example.value = {
+        ...example.value,
+        input: {
+          ...example.value!.input,
+          i18n: newJson,
+        },
+      } as Example),
+    'New i18n applied',
+  );
+};
 
-  if (model && example.value) {
-    // TODO: is there a better way how to get errors including the error message from monaco editor ?
-    const hasError =
-      model
-        .getAllDecorations()
-        .filter((d) => d.options.className === 'squiggly-error')
-        .map((e) => e).length > 0;
+const saveMonacoModel = (
+  model: ShallowRef<monaco.editor.ITextModel | undefined>,
+  apply: (newJson: Record<string, any> | undefined) => void,
+  successToast: string,
+) => {
+  if (model.value && example.value) {
+    const modelValue = model.value.getValue().trim();
 
-    const modelValue = model.getValue().trim();
-    if (!hasError) {
-      const newJson: Record<string, any>[] = modelValue
-        ? JSON.parse(modelValue)
-        : undefined;
+    let newJson: Record<string, any> | undefined = undefined;
 
-      example.value.input.i18n = newJson;
-      toast('New i18n applied');
-    } else if (hasError) {
-      toast('Error: i18n is invalid');
+    try {
+      newJson = modelValue ? JSON.parse(modelValue) : undefined;
+      apply(newJson);
+      toast(successToast);
+    } catch (error) {
+      toast(`Error: ${error}`);
     }
   }
 };

@@ -77,8 +77,6 @@ const resolveSchema = (schema?: JsonSchema): void => {
   resolvedSchema.error = undefined;
 
   if (schema) {
-    resolvedSchema.schema = schema;
-    resolvedSchema.resolved = true;
     JsonRefs.resolveRefs(schema).then(
       function (res) {
         resolvedSchema.schema = res.resolved;
