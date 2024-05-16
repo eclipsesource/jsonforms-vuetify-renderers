@@ -48,12 +48,14 @@ const route = useRoute();
 const formonly = computed(() => route.query?.view === 'form-only');
 const allRenderers = computed(() =>
   Object.freeze(
-    (example.value?.input.renderers ?? []).concat(extendedVuetifyRenderers)
-  )
+    (example.value?.input.renderers ?? []).concat(extendedVuetifyRenderers),
+  ),
 );
 
 const schemaModel = shallowRef<monaco.editor.ITextModel | undefined>(undefined);
-const uischemaModel = shallowRef<monaco.editor.ITextModel | undefined>(undefined);
+const uischemaModel = shallowRef<monaco.editor.ITextModel | undefined>(
+  undefined,
+);
 const dataModel = shallowRef<monaco.editor.ITextModel | undefined>(undefined);
 const i18nModel = shallowRef<monaco.editor.ITextModel | undefined>(undefined);
 
@@ -61,7 +63,7 @@ const onChange = (event: JsonFormsChangeEvent): void => {
   if (example.value) {
     dataModel.value = getMonacoModelForUri(
       monaco.Uri.parse(toDataUri(example.value.id)),
-      event.data ? JSON.stringify(event.data, null, 2) : ''
+      event.data ? JSON.stringify(event.data, null, 2) : '',
     );
   }
   errors.value = event.errors;
@@ -80,7 +82,7 @@ const reloadMonacoSchema = () => {
   if (example) {
     schemaModel.value = getMonacoModelForUri(
       monaco.Uri.parse(toSchemaUri(example.id)),
-      example.input.schema ? JSON.stringify(example.input.schema, null, 2) : ''
+      example.input.schema ? JSON.stringify(example.input.schema, null, 2) : '',
     );
     toast('Original example schema loaded. Apply it to take effect.');
   }
@@ -118,7 +120,7 @@ const reloadMonacoUiSchema = () => {
       monaco.Uri.parse(toUiSchemaUri(example.id)),
       example.input.uischema
         ? JSON.stringify(example.input.uischema, null, 2)
-        : ''
+        : '',
     );
     toast('Original example UI schema loaded. Apply it to take effect.');
   }
@@ -155,7 +157,7 @@ const reloadMonacoData = () => {
   if (example) {
     dataModel.value = getMonacoModelForUri(
       monaco.Uri.parse(toDataUri(example.id)),
-      example.input.data ? JSON.stringify(example.input.data, null, 2) : ''
+      example.input.data ? JSON.stringify(example.input.data, null, 2) : '',
     );
     toast('Original example data loaded. Apply it to take effect.');
   }
@@ -191,7 +193,7 @@ const reloadMonacoI18N = () => {
   if (example) {
     i18nModel.value = getMonacoModelForUri(
       monaco.Uri.parse(toI18NUri(example.id)),
-      example.input.i18n ? JSON.stringify(example.input.i18n, null, 2) : ''
+      example.input.i18n ? JSON.stringify(example.input.i18n, null, 2) : '',
     );
     toast('Original example i18n loaded. Apply it to take effect.');
   }
@@ -236,7 +238,7 @@ const registerValidations = (editor: MonacoApi) => {
         editor,
         `inmemory://${toSchemaUri(example.id)}`,
         toDataUri(example.id),
-        schema
+        schema,
       );
     }
   }
@@ -245,24 +247,24 @@ const registerValidations = (editor: MonacoApi) => {
 const updateMonacoModels = (example: Example) => {
   schemaModel.value = getMonacoModelForUri(
     monaco.Uri.parse(toSchemaUri(example.id)),
-    example.input.schema ? JSON.stringify(example.input.schema, null, 2) : ''
+    example.input.schema ? JSON.stringify(example.input.schema, null, 2) : '',
   );
 
   uischemaModel.value = getMonacoModelForUri(
     monaco.Uri.parse(toUiSchemaUri(example.id)),
     example.input.uischema
       ? JSON.stringify(example.input.uischema, null, 2)
-      : ''
+      : '',
   );
 
   dataModel.value = getMonacoModelForUri(
     monaco.Uri.parse(toDataUri(example.id)),
-    example.input.data ? JSON.stringify(example.input.data, null, 2) : ''
+    example.input.data ? JSON.stringify(example.input.data, null, 2) : '',
   );
 
   i18nModel.value = getMonacoModelForUri(
     monaco.Uri.parse(toI18NUri(example.id)),
-    example.input.i18n ? JSON.stringify(example.input.i18n, null, 2) : ''
+    example.input.i18n ? JSON.stringify(example.input.i18n, null, 2) : '',
   );
 };
 
@@ -287,7 +289,7 @@ watch(
   () => route.params.id,
   (id) => {
     setExample(find(examples, (example) => example.id === id));
-  }
+  },
 );
 
 onMounted(() => {
@@ -302,7 +304,12 @@ onMounted(() => {
         <v-card-title>{{ example.title }}</v-card-title>
         <v-card-text>
           <v-tabs v-model="activeTab">
-            <v-tab :key="0">Demo<validation-icon v-if="errors" :errors="errors"></validation-icon></v-tab>
+            <v-tab :key="0"
+              >Demo<validation-icon
+                v-if="errors"
+                :errors="errors"
+              ></validation-icon
+            ></v-tab>
             <v-spacer expand />
             <v-tab :key="1">Schema</v-tab>
             <v-tab :key="2">UI Schema</v-tab>
@@ -319,11 +326,15 @@ onMounted(() => {
                   <v-spacer></v-spacer>
                   <v-tooltip bottom>
                     <template v-slot:activator="{ props }">
-                      <v-btn icon v-bind="props" :to="{
-      name: 'example',
-      params: { id: route.params.id },
-      query: { view: 'form-only' },
-    }">
+                      <v-btn
+                        icon
+                        v-bind="props"
+                        :to="{
+                          name: 'example',
+                          params: { id: route.params.id },
+                          query: { view: 'form-only' },
+                        }"
+                      >
                         <v-icon>mdi-dock-window</v-icon>
                       </v-btn>
                     </template>
@@ -333,9 +344,16 @@ onMounted(() => {
               </v-card-title>
               <v-divider class="mx-4"></v-divider>
               <div class="json-forms">
-                <demo-form :example="example" :renderers="allRenderers" :config="appStore.jsonforms.config"
-                  :validationMode="appStore.jsonforms.validationMode" :ajv="ajv" :readonly="appStore.jsonforms.readonly"
-                  :locale="appStore.jsonforms.locale" @jsfchange="onChange" />
+                <demo-form
+                  :example="example"
+                  :renderers="allRenderers"
+                  :config="appStore.jsonforms.config"
+                  :validationMode="appStore.jsonforms.validationMode"
+                  :ajv="ajv"
+                  :readonly="appStore.jsonforms.readonly"
+                  :locale="appStore.jsonforms.locale"
+                  @jsfchange="onChange"
+                />
               </div>
             </v-card>
           </v-window-item>
@@ -364,8 +382,12 @@ onMounted(() => {
                 </v-toolbar>
               </v-card-title>
               <v-divider class="mx-4"></v-divider>
-              <monaco-editor :language="`json`" v-model="schemaModel" style="height: calc(100vh - 100px)"
-                :editorBeforeMount="registerValidations"></monaco-editor>
+              <monaco-editor
+                :language="`json`"
+                v-model="schemaModel"
+                style="height: calc(100vh - 100px)"
+                :editorBeforeMount="registerValidations"
+              ></monaco-editor>
             </v-card>
           </v-window-item>
           <v-window-item :key="2">
@@ -393,8 +415,12 @@ onMounted(() => {
                 </v-toolbar>
               </v-card-title>
               <v-divider class="mx-4"></v-divider>
-              <monaco-editor language="json" v-model="uischemaModel" style="height: calc(100vh - 100px)"
-                :editorBeforeMount="registerValidations"></monaco-editor>
+              <monaco-editor
+                language="json"
+                v-model="uischemaModel"
+                style="height: calc(100vh - 100px)"
+                :editorBeforeMount="registerValidations"
+              ></monaco-editor>
             </v-card>
           </v-window-item>
           <v-window-item :key="3">
@@ -422,8 +448,12 @@ onMounted(() => {
                 </v-toolbar>
               </v-card-title>
               <v-divider class="mx-4"></v-divider>
-              <monaco-editor language="json" v-model="dataModel" style="height: calc(100vh - 100px)"
-                :editorBeforeMount="registerValidations"></monaco-editor>
+              <monaco-editor
+                language="json"
+                v-model="dataModel"
+                style="height: calc(100vh - 100px)"
+                :editorBeforeMount="registerValidations"
+              ></monaco-editor>
             </v-card>
           </v-window-item>
           <v-window-item :key="4">
@@ -451,8 +481,12 @@ onMounted(() => {
                 </v-toolbar>
               </v-card-title>
               <v-divider class="mx-4"></v-divider>
-              <monaco-editor language="json" v-model="i18nModel" style="height: calc(100vh - 100px)"
-                :editorBeforeMount="registerValidations"></monaco-editor>
+              <monaco-editor
+                language="json"
+                v-model="i18nModel"
+                style="height: calc(100vh - 100px)"
+                :editorBeforeMount="registerValidations"
+              ></monaco-editor>
             </v-card>
           </v-window-item>
         </v-window>
@@ -465,9 +499,17 @@ onMounted(() => {
       </v-snackbar>
     </v-container>
     <div class="json-forms">
-      <demo-form v-if="example != null && formonly" :example="example" :renderers="allRenderers"
-        :config="appStore.jsonforms.config" :validationMode="appStore.jsonforms.validationMode" :ajv="ajv"
-        :readonly="appStore.jsonforms.readonly" :locale="appStore.jsonforms.locale" @jsfchange="onChange" />
+      <demo-form
+        v-if="example != null && formonly"
+        :example="example"
+        :renderers="allRenderers"
+        :config="appStore.jsonforms.config"
+        :validationMode="appStore.jsonforms.validationMode"
+        :ajv="ajv"
+        :readonly="appStore.jsonforms.readonly"
+        :locale="appStore.jsonforms.locale"
+        @jsfchange="onChange"
+      />
     </div>
   </div>
 </template>
