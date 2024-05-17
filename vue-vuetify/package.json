@@ -51,7 +51,7 @@
     "@jsonforms/vue": "3.2.0-alpha.3",
     "@mdi/font": "^7.4.47",
     "vue": "^3.4.21",
-    "vuetify": "^3.2.2"
+    "vuetify": "^3.6.6"
   },
   "devDependencies": {
     "@babel/core": "^7.14.6",
@@ -64,10 +64,12 @@
     "@rollup/plugin-node-resolve": "^15.0.1",
     "@types/jest": "^28.1.1",
     "@types/lodash": "^4.14.172",
+    "@types/node": "^18.19.4",
     "@typescript-eslint/eslint-plugin": "^5.4.0",
     "@typescript-eslint/parser": "^5.4.0",
+    "@vue/cli-plugin-babel": "~5.0.8",
     "@vue/cli-plugin-unit-jest": "^5.0.0",
-    "@vue/cli-service": "~5.0.0",
+    "@vue/cli-service": "~5.0.8",
     "@vue/eslint-config-prettier": "^9.0.0",
     "@vue/eslint-config-typescript": "^13.0.0",
     "@vue/test-utils": "^2.4.5",
@@ -75,8 +77,8 @@
     "core-js": "^3.9.1",
     "cross-env": "^7.0.2",
     "eslint": "^8.57.0",
-    "eslint-plugin-vue": "^9.23.0",
     "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-vue": "^9.23.0",
     "jest": "^28.1.1",
     "prettier": "^3.2.5",
     "rimraf": "^4.4.1",
@@ -88,6 +90,6 @@
     "rollup-plugin-vue": "^6.0.0",
     "typescript": "~5.4.0",
     "vue": "^3.4.21",
-    "vuetify": "^3.2.2"
+    "vuetify": "^3.6.6"
   }
 }
