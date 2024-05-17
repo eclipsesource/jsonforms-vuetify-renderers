@@ -227,7 +227,7 @@
             ref="confirm"
             @click="
               removeItemsClick(
-                suggestToDelete === null ? null : [suggestToDelete]
+                suggestToDelete === null ? null : [suggestToDelete],
               );
               suggestToDelete = null;
             "
@@ -327,13 +327,13 @@ const controlRenderer = defineComponent({
   setup(props: RendererProps<ControlElement>) {
     const control = useVuetifyArrayControl(useJsonFormsArrayControl(props));
     const currentlyExpanded = ref<null | number>(
-      control.appliedOptions.value.initCollapsed ? null : 0
+      control.appliedOptions.value.initCollapsed ? null : 0,
     );
     const expansionPanelsProps = computed(() =>
       merge(
         { flat: false, focusable: true },
-        control.vuetifyProps('v-expansion-panels')
-      )
+        control.vuetifyProps('v-expansion-panels'),
+      ),
     );
     const suggestToDelete = ref<null | number>(null);
     // indicate to our child renderers that we are increasing the "nested" level
@@ -368,14 +368,14 @@ const controlRenderer = defineComponent({
         this.control.path,
         undefined,
         this.control.uischema,
-        this.control.rootSchema
+        this.control.rootSchema,
       );
     },
     arraySchema(): JsonSchema | undefined {
       return Resolve.schema(
         this.control.rootSchema,
         this.control.uischema.scope,
-        this.control.rootSchema
+        this.control.rootSchema,
       );
     },
     hideAvatar(): boolean {
@@ -396,8 +396,8 @@ const controlRenderer = defineComponent({
           (message) =>
             message.replace(
               /\{\{\s?element\s?\}\}/,
-              elementToDeleteText || 'element'
-            )
+              elementToDeleteText || 'element',
+            ),
         ),
         dialogText: this.translateLabel('dialogText'),
         dialogCancel: this.translateLabel('dialogCancel'),
@@ -411,7 +411,7 @@ const controlRenderer = defineComponent({
     addButtonClick() {
       this.addItem(
         this.control.path,
-        createDefaultValue(this.control.schema, this.control.rootSchema)
+        createDefaultValue(this.control.schema, this.control.rootSchema),
       )();
       if (!this.appliedOptions.collapseNewItems && this.control.data?.length) {
         this.currentlyExpanded = this.dataLength - 1;
@@ -434,20 +434,20 @@ const controlRenderer = defineComponent({
       return this.control.childErrors.filter((e) => {
         const errorDataPath = getControlPath(e);
         return errorDataPath.startsWith(
-          this.composePaths(this.control.path, `${index}`)
+          this.composePaths(this.control.path, `${index}`),
         );
       });
     },
     translateLabel(
       labelType: I18nArrayLayoutKey,
       additionalContext: Record<string, unknown> | undefined = undefined,
-      transformMessage: (message: string) => string = (text) => text
+      transformMessage: (message: string) => string = (text) => text,
     ): string {
       const i18nKey = getI18nKey(
         this.arraySchema,
         this.control.uischema,
         this.control.path,
-        labelType
+        labelType,
       );
       const context = {
         schema: this.control.schema,
@@ -463,7 +463,7 @@ const controlRenderer = defineComponent({
       return this.t(
         `arraylayout.${labelType}`,
         transformMessage(i18nDefaultMessages.arraylayout[labelType]),
-        context
+        context,
       );
     },
   },
@@ -481,7 +481,8 @@ export const entry: JsonFormsRendererRegistryEntry = {
 .notranslate {
   transform: none !important;
 }
-/deep/ .v-toolbar__content {
+
+:deep(.v-toolbar__content) {
   padding-left: 0;
 }
 </style>
