@@ -6,6 +6,6 @@ import { RouterView } from 'vue-router';
   <router-view />
 </template>
 
-<style scoped>
+<style>
 @import '@jsonforms/vue-vuetify/lib/jsonforms-vue-vuetify.esm.css';
 </style>
