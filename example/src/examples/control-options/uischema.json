@@ -105,11 +105,12 @@
       "scope": "#/properties/amount",
       "label": "Amount",
       "options": {
-        "placeholder": "9,999.00",
-        "mask": "9,999.00",
+        "placeholder": "######.##",
+        "mask": "999999.00",
         "tokens": {
           "9": {
             "pattern": "[0-9]",
+            "optional": true,
             "repeated": true
           },
           ".": {
