@@ -5,23 +5,19 @@
   "restrictText": "abcde",
   "toggle": false,
   "phone": "1115554444888",
-  "formattedPhone": "(333)555-4444",
+  "formattedPhone": "(333)-555-4444",
   "placeholderInfo": [
     {
       "placeholder": "#",
       "format": "Number (0-9)"
     },
     {
-      "placeholder": "A",
+      "placeholder": "@",
       "format": "Letter in any case (a-z,A-Z)"
     },
     {
-      "placeholder": "N",
+      "placeholder": "*",
       "format": "Number or letter (a-z,A-Z,0-9)"
-    },
-    {
-      "placeholder": "X",
-      "format": "Any symbol"
     }
   ]
 }

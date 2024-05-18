@@ -31,7 +31,7 @@
         @focus="isFocused = true"
         @blur="isFocused = false"
         v-model="maskModel"
-        v-mask="mask"
+        v-maska:[options]="boundObject"
       />
     </v-hover>
   </control-wrapper>
@@ -53,108 +53,20 @@ import {
   useJsonFormsControl,
 } from '@jsonforms/vue';
 import isEmpty from 'lodash/isEmpty';
-import { VueMaskPlugin } from 'v-mask';
-import { defineComponent, DirectiveOptions, VNode, VNodeDirective } from 'vue';
+import { defineComponent } from 'vue';
 import { VHover, VTextField } from 'vuetify/components';
 import { useVuetifyControl } from '../util';
 import { default as ControlWrapper } from './ControlWrapper.vue';
 import { DisabledIconFocus } from './directives';
+import { MaskTokens, MaskOptions, vMaska } from 'maska';
+import { cloneDeep } from 'lodash';
+import { ref } from 'vue';
 
-export interface DirectiveBinding extends Readonly<VNodeDirective> {
-  readonly modifiers: { [key: string]: boolean };
-}
-
-class VueMaskPluginDirectiveCallback {
-  mask: DirectiveOptions | undefined;
-  directive(_id: string, definition?: DirectiveOptions) {
-    this.mask = definition;
-    return definition;
-  }
-  filter(_id: string, definition?: any) {
-    return definition;
-  }
-}
-
-class VueMaskPluginFilterCallback {
-  mask: (value: any, inputMask: any) => any = (input, _mask) => input;
-
-  directive(_id: string, definition?: DirectiveOptions) {
-    return definition;
-  }
-  filter(_id: string, definition?: any) {
-    this.mask = definition;
-    return definition;
-  }
-}
-
-class DelegateDirective implements DirectiveOptions {
-  delegate: DirectiveOptions | undefined;
-
-  bind = (
-    el: HTMLElement,
-    binding: DirectiveBinding,
-    vnode: VNode,
-    oldVnode: VNode
-  ) => {
-    const mask = (vnode.context as any)?.mask;
-    if (mask) {
-      const options = (vnode.context as any)?.maskReplacers;
-      const callback = new VueMaskPluginDirectiveCallback();
-      // use the vue mask plugin to initialize the mask directive since because createDirective with options is not exported module symbol
-      VueMaskPlugin(callback, { placeholders: options });
-      this.delegate = callback.mask;
-
-      if (this.delegate?.bind) {
-        this.delegate?.bind(el, binding, vnode, oldVnode);
-      }
-    }
-  };
-
-  inserted = (
-    el: HTMLElement,
-    binding: DirectiveBinding,
-    vnode: VNode,
-    oldVnode: VNode
-  ) => {
-    if (this.delegate?.inserted) {
-      this.delegate?.inserted(el, binding, vnode, oldVnode);
-    }
-  };
-
-  update = (
-    el: HTMLElement,
-    binding: DirectiveBinding,
-    vnode: VNode,
-    oldVnode: VNode
-  ) => {
-    if (this.delegate?.update) {
-      this.delegate?.update(el, binding, vnode, oldVnode);
-    }
-  };
-
-  componentUpdated = (
-    el: HTMLElement,
-    binding: DirectiveBinding,
-    vnode: VNode,
-    oldVnode: VNode
-  ) => {
-    if (this.delegate?.componentUpdated) {
-      this.delegate?.componentUpdated(el, binding, vnode, oldVnode);
-    }
-  };
-
-  unbind = (
-    el: HTMLElement,
-    binding: DirectiveBinding,
-    vnode: VNode,
-    oldVnode: VNode
-  ) => {
-    if (this.delegate?.unbind) {
-      this.delegate?.unbind(el, binding, vnode, oldVnode);
-    }
-    this.delegate = undefined;
-  };
-}
+const defaultTokens: MaskTokens = {
+  '#': { pattern: /[0-9]/ },
+  '@': { pattern: /[a-zA-Z]/ },
+  '*': { pattern: /[a-zA-Z0-9]/ },
+};
 
 const controlRenderer = defineComponent({
   name: 'string-mask-control-renderer',
@@ -165,7 +77,7 @@ const controlRenderer = defineComponent({
   },
   directives: {
     DisabledIconFocus,
-    Mask: new DelegateDirective(),
+    maska: vMaska,
   },
   props: {
     ...rendererProps<ControlElement>(),
@@ -173,53 +85,21 @@ const controlRenderer = defineComponent({
   setup(props: RendererProps<ControlElement>) {
     const adaptValue = (value: any) => value || undefined;
     const control = useVuetifyControl(useJsonFormsControl(props), adaptValue);
-
-    return { ...control, adaptValue };
-  },
-  methods: {
-    maskedValue(value: string | undefined): string | undefined {
-      if (!this.returnMaskedValue) {
-        return this.maskFilter(value, this.mask);
-      }
-
-      return value;
-    },
-    unmaskedValue(value: string | undefined): string | undefined {
-      if (!this.returnMaskedValue && value) {
-        value = value
-          .split('')
-          .map((char, index) => {
-            if (this.mask.length > index) {
-              const replacer = this.maskReplacers[this.mask[index]];
-              // #, A, N, X are default unless the replacer is null (override)
-              return (['#', 'A', 'N', 'X'].includes(this.mask[index]) &&
-                replacer === undefined) ||
-                replacer
-                ? char
-                : '';
-            }
-            return char;
-          })
-          .join('');
-      }
-      return value;
-    },
+    const boundObject = ref({
+      masked: '',
+      unmasked: '',
+      completed: false,
+    });
+    return { ...control, adaptValue, boundObject };
   },
   computed: {
     maskModel: {
       get(): string | undefined {
-        let value = this.control.data;
-        if (!this.returnMaskedValue && value) {
-          value = this.maskedValue(value);
-        }
-        return value;
+        return this.control.data;
       },
       set(val: string | undefined): void {
-        let value = val;
+        let value = this.returnMaskedValue ? val : this.boundObject.unmasked;
 
-        if (!this.returnMaskedValue) {
-          value = this.unmaskedValue(value);
-        }
         if (this.adaptValue(value) !== this.control.data) {
           // only invoke onChange when values are different since v-mask is also listening on input which lead to loop
 
@@ -227,36 +107,57 @@ const controlRenderer = defineComponent({
         }
       },
     },
-    mask(): string {
-      return this.appliedOptions.mask;
+    options(): MaskOptions {
+      return {
+        mask: this.appliedOptions.mask,
+        tokens: this.tokens,
+        tokensReplace: true,
+      };
+    },
+    tokens(): MaskTokens {
+      let tokens: MaskTokens | undefined = undefined;
+
+      if (this.appliedOptions.maskReplacers) {
+        tokens = this.toTokens(this.appliedOptions.maskReplacers);
+      }
+      if (this.appliedOptions.tokens) {
+        tokens = this.toTokens(this.appliedOptions.tokens);
+      }
+
+      if (!tokens) {
+        tokens = defaultTokens;
+      }
+
+      return tokens;
     },
     returnMaskedValue(): boolean {
       return this.appliedOptions.returnMaskedValue === true;
     },
-    maskReplacers(): Record<string, RegExp> {
-      const replacers =
-        typeof this.appliedOptions.maskReplacers === 'object'
-          ? this.appliedOptions.maskReplacers
-          : {};
-      Object.keys(replacers).forEach(function (key, _index) {
-        if (typeof replacers[key] === 'string') {
-          const value = replacers[key];
-          replacers[key] = new RegExp(value);
-        } else if (replacers[key] !== null) {
-          // if not null then remove it
-          delete replacers[key];
+  },
+  methods: {
+    toTokens(tokenParams: Record<string, any>): MaskTokens {
+      let tokens = cloneDeep(defaultTokens);
+      if (tokenParams) {
+        for (let key in tokenParams) {
+          let value = tokenParams[key];
+
+          if (value) {
+            if (typeof value === 'string') {
+              tokens[key] = {
+                pattern: new RegExp(value),
+              };
+            } else {
+              tokens[key] = {
+                ...value,
+                pattern: new RegExp(value.pattern),
+              };
+            }
+          } else {
+            delete tokens[key];
+          }
         }
-      });
-      if (replacers['?'] === undefined) {
-        //remove optional support because of complications when trying to unmask the input
-        replacers['?'] = null;
       }
-      return replacers;
-    },
-    maskFilter() {
-      const callback = new VueMaskPluginFilterCallback();
-      VueMaskPlugin(callback, { placeholders: this.maskReplacers });
-      return callback.mask;
+      return tokens;
     },
   },
 });

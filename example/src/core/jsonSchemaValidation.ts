@@ -44,7 +44,6 @@ export const addSchema = (
       if (existingSchemaIndex !== -1) {
         registeredSchemas[existingSchemaIndex] = { ...schema };
       } else {
-        console.log('add schema');
         registeredSchemas.push({ ...schema });
       }
     }

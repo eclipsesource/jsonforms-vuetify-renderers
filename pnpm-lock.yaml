@@ -147,6 +147,9 @@ importers:
       lodash:
         specifier: ^4.17.15
         version: 4.17.21
+      maska:
+        specifier: ^2.1.11
+        version: 2.1.11
     devDependencies:
       '@babel/core':
         specifier: ^7.14.6
@@ -4993,6 +4996,9 @@ packages:
   map-obj@4.3.0:
     resolution: {integrity: sha512-hdN1wVrZbb29eBGiGjJbeP8JbKjq1urkHJ/LIP/NY48MZ1QVXUsQBV1G1zvYFHn1XE06cwjBsOI2K3Ulnj1YXQ==}
     engines: {node: '>=8'}
+
+  maska@2.1.11:
+    resolution: {integrity: sha512-IGqWjBnKxMYcVa06pb4mPfag9sJjnR2T15CdGfQ2llR3gajiSd4AxXCvNqHMEq9W3UBhjjTazgWumsP3sWrUSg==}
 
   md5.js@1.3.5:
     resolution: {integrity: sha512-xitP+WxNPcTTOgnTJcrhM0xvdPepipPSf3I8EIpGKeFLjt3PlJLIDG3u8EX53ZIubkb+5U2+3rELYpEhHhzdkg==}
@@ -13298,6 +13304,8 @@ snapshots:
   map-obj@1.0.1: {}
 
   map-obj@4.3.0: {}
+
+  maska@2.1.11: {}
 
   md5.js@1.3.5:
     dependencies:

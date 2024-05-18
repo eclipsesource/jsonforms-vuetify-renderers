@@ -73,6 +73,7 @@
       "scope": "#/properties/phone",
       "label": "Phone (format not stored)",
       "options": {
+        "placeholder": "(###) ### - #### '#'###",
         "mask": "(SSS) SSS - SSSS #SSS",
         "maskReplacers": {
           "S": "\\d",
