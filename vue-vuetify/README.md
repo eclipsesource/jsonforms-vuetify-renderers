@@ -21,8 +21,12 @@ Also add the packages to the transpile dependencies in the `vue.config.js` file:
 
 ```js
 module.exports = {
-    transpileDependencies: ['@jsonforms/core', '@jsonforms/vue', '@jsonforms/vue-vuetify']
-}
+  transpileDependencies: [
+    '@jsonforms/core',
+    '@jsonforms/vue',
+    '@jsonforms/vue-vuetify',
+  ],
+};
 ```
 
 Use the `json-forms` component for each form you want to render and hand over the renderer set.
@@ -68,7 +72,7 @@ export default defineComponent({
   />
 </template>
 
-<style scoped>
+<style>
 @import '~@jsonforms/vue-vuetify/lib/jsonforms-vue-vuetify.esm.css';
 </style>
 ```
