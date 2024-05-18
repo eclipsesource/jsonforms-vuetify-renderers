@@ -72,7 +72,7 @@
                   :key="
                     composePaths(
                       composePaths(control.path, `${index}`),
-                      propName
+                      propName,
                     )
                   "
                 >
@@ -242,7 +242,7 @@ const controlRenderer = defineComponent({
       return Resolve.schema(
         this.control.rootSchema,
         this.control.uischema.scope,
-        this.control.rootSchema
+        this.control.rootSchema,
       );
     },
     dataLength(): number {
@@ -255,7 +255,7 @@ const controlRenderer = defineComponent({
     addButtonClick() {
       this.addItem(
         this.control.path,
-        createDefaultValue(this.control.schema, this.control.rootSchema)
+        createDefaultValue(this.control.schema, this.control.rootSchema),
       )();
     },
     moveUpClick(event: Event, toMove: number): void {
@@ -276,7 +276,7 @@ const controlRenderer = defineComponent({
         typeof scopedSchema.properties === 'object'
       ) {
         return Object.keys(scopedSchema.properties).filter(
-          (prop) => scopedSchema.properties![prop].type !== 'array'
+          (prop) => scopedSchema.properties![prop].type !== 'array',
         );
       }
       // primitives
