@@ -29,7 +29,7 @@ export const customThemes: (ThemeDefinition & { name: string })[] = [
       info: '#2196F3',
       success: '#4CAF50',
       warning: '#FB8C00',
-    }
+    },
   },
   {
     name: 'Basil',
@@ -79,8 +79,8 @@ export const customThemes: (ThemeDefinition & { name: string })[] = [
       accent: '#442C2E',
       info: '#FEDBD0',
     },
-  }
-]
+  },
+];
 
 const vuetify = createVuetify({
   blueprint: md1,
@@ -92,11 +92,15 @@ const vuetify = createVuetify({
   },
   theme: {
     defaultTheme: 'light',
-    themes: customThemes.reduce((acc: Record<string, ThemeDefinition>, current) => {
-      acc[current.name] = current;
-      return acc;
-    }, {}),
+    themes: customThemes.reduce(
+      (acc: Record<string, ThemeDefinition>, current) => {
+        acc[current.name] = current;
+        return acc;
+      },
+      {},
+    ),
   },
+  defaults: { VCheckbox: { color: 'primary' } },
 });
 
 export default vuetify;
