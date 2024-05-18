@@ -53,14 +53,13 @@ import {
   useJsonFormsControl,
 } from '@jsonforms/vue';
 import isEmpty from 'lodash/isEmpty';
-import { defineComponent } from 'vue';
+import { defineComponent, ref } from 'vue';
 import { VHover, VTextField } from 'vuetify/components';
 import { useVuetifyControl } from '../util';
 import { default as ControlWrapper } from './ControlWrapper.vue';
 import { DisabledIconFocus } from './directives';
 import { MaskTokens, MaskOptions, vMaska } from 'maska';
 import { cloneDeep } from 'lodash';
-import { ref } from 'vue';
 
 const defaultTokens: MaskTokens = {
   '#': { pattern: /[0-9]/ },
@@ -111,7 +110,9 @@ const controlRenderer = defineComponent({
       return {
         mask: this.appliedOptions.mask,
         tokens: this.tokens,
-        tokensReplace: true,
+        tokensReplace: this.tokensReplace,
+        reversed: this.reversed,
+        eager: this.eager,
       };
     },
     tokens(): MaskTokens {
@@ -132,6 +133,15 @@ const controlRenderer = defineComponent({
     },
     returnMaskedValue(): boolean {
       return this.appliedOptions.returnMaskedValue === true;
+    },
+    tokensReplace(): boolean {
+      return this.appliedOptions.tokensReplace !== false; // default is true
+    },
+    eager(): boolean {
+      return this.appliedOptions.eager === true; // default is false
+    },
+    reversed(): boolean {
+      return this.appliedOptions.reversed === false; // default is false
     },
   },
   methods: {

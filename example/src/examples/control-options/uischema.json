@@ -71,7 +71,7 @@
     {
       "type": "Control",
       "scope": "#/properties/phone",
-      "label": "Phone (format not stored)",
+      "label": "Phone (format not stored - mark with override)",
       "options": {
         "placeholder": "(###) ### - #### '#'###",
         "mask": "(SSS) SSS - SSSS #SSS",
@@ -83,12 +83,46 @@
     },
     {
       "type": "Control",
+      "scope": "#/properties/phone",
+      "label": "Phone (format not stored - mask with escape symbol)",
+      "options": {
+        "placeholder": "(###) ### - #### '#'###",
+        "mask": "(###) ### - #### !####"
+      }
+    },
+    {
+      "type": "Control",
       "scope": "#/properties/formattedPhone",
       "label": "Phone (format is stored)",
       "options": {
         "placeholder": "(###)-###-####",
         "mask": "(###)-###-####",
         "returnMaskedValue": true
+      }
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/amount",
+      "label": "Amount",
+      "options": {
+        "placeholder": "9,999.00",
+        "mask": "9,999.00",
+        "tokens": {
+          "9": {
+            "pattern": "[0-9]",
+            "repeated": true
+          },
+          ".": {
+            "pattern": "\\."
+          },
+          "0": {
+            "pattern": "[0-9]",
+            "optional": true
+          }
+        },
+        "tokensReplace": false,
+        "eager": true,
+        "reversed": true
       }
     }
   ]
