@@ -15,7 +15,7 @@
           <template v-slot:activator="{ props }">
             <v-btn
               fab
-              text
+              variant="text"
               elevation="0"
               small
               :aria-label="`Add to ${control.label}`"
@@ -99,7 +99,7 @@
                         v-bind="props"
                         v-if="appliedOptions.showSortButtons"
                         fab
-                        text
+                        variant="text"
                         elevation="0"
                         small
                         aria-label="Move up"
@@ -118,7 +118,7 @@
                         v-bind="props"
                         v-if="appliedOptions.showSortButtons"
                         fab
-                        text
+                        variant="text"
                         elevation="0"
                         small
                         aria-label="Move down"
@@ -136,7 +136,7 @@
                       <v-btn
                         v-bind="props"
                         fab
-                        text
+                        variant="text"
                         elevation="0"
                         small
                         aria-label="Delete"

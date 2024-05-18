@@ -23,7 +23,7 @@
           <template v-slot:activator="{ props }">
             <v-btn
               fab
-              text
+              variant="text"
               elevation="0"
               small
               :aria-label="addToLabel"
@@ -59,7 +59,7 @@
               <v-btn
                 v-bind="props"
                 fab
-                text
+                variant="text"
                 elevation="0"
                 small
                 :aria-label="deleteLabel"
@@ -168,23 +168,23 @@ export default defineComponent({
     // eslint-disable-next-line vue/no-setup-props-destructure
     const control = props.input.control;
     const reservedPropertyNames = Object.keys(
-      control.value.schema.properties || {}
+      control.value.schema.properties || {},
     );
 
     const additionalKeys = Object.keys(control.value.data).filter(
-      (k) => !reservedPropertyNames.includes(k)
+      (k) => !reservedPropertyNames.includes(k),
     );
 
     const toAdditionalPropertyType = (
       propName: string,
-      propValue: any
+      propValue: any,
     ): AdditionalPropertyType => {
       let propSchema: JsonSchema | undefined = undefined;
       let propUiSchema: UISchemaElement | undefined = undefined;
 
       if (control.value.schema.patternProperties) {
         const matchedPattern = Object.keys(
-          control.value.schema.patternProperties
+          control.value.schema.patternProperties,
         ).find((pattern) => new RegExp(pattern).test(propName));
         if (matchedPattern) {
           propSchema = control.value.schema.patternProperties[matchedPattern];
@@ -206,7 +206,7 @@ export default defineComponent({
           {
             additionalProperties: false,
             required: () => false,
-          }
+          },
         ).properties?.prop;
       }
 
@@ -217,7 +217,7 @@ export default defineComponent({
             propSchema.title ?? startCase(propName);
         } else {
           propUiSchema = createControlElement(
-            control.value.path + '/' + encode(propName)
+            control.value.path + '/' + encode(propName),
           );
         }
       }
@@ -236,7 +236,7 @@ export default defineComponent({
     additionalKeys.forEach((propName) => {
       const additionalProperty = toAdditionalPropertyType(
         propName,
-        control.value.data[propName]
+        control.value.data[propName],
       );
       additionalPropertyItems.value.push(additionalProperty);
     });
@@ -272,7 +272,7 @@ export default defineComponent({
     if (propertyNameSchema) {
       propertyNameValidator = reuseAjvForSchema(
         ajv,
-        propertyNameSchema
+        propertyNameSchema,
       ).compile(propertyNameSchema);
     }
 
@@ -344,12 +344,12 @@ export default defineComponent({
         if (
           this.reservedPropertyNames.includes(this.newPropertyName) ||
           this.additionalPropertyItems.find(
-            (ap) => ap.propertyName === this.newPropertyName
+            (ap) => ap.propertyName === this.newPropertyName,
           ) !== undefined
         ) {
           // already defined
           messages.push(
-            `Property '${this.newPropertyName}' is already defined`
+            `Property '${this.newPropertyName}' is already defined`,
           );
         }
 
@@ -394,7 +394,7 @@ export default defineComponent({
           additionalProperties: {
             title: this.additionalPropertiesTitle,
           },
-        }
+        },
       );
     },
     deleteLabel(): string {
@@ -405,7 +405,7 @@ export default defineComponent({
           additionalProperties: {
             title: this.additionalPropertiesTitle,
           },
-        }
+        },
       );
     },
   },
@@ -427,7 +427,7 @@ export default defineComponent({
             ) {
               const newValue = createDefaultValue(
                 ap.schema,
-                this.control.rootSchema
+                this.control.rootSchema,
               );
               hasChanges = newData[ap.propertyName] !== newValue;
               newData[ap.propertyName] = newValue;
@@ -448,14 +448,14 @@ export default defineComponent({
         this.control.schema,
         this.control.uischema,
         this.control.path,
-        `additionalProperties.${key}`
+        `additionalProperties.${key}`,
       );
     },
     addProperty() {
       if (this.newPropertyName) {
         const additionalProperty = this.toAdditionalPropertyType(
           this.newPropertyName,
-          undefined
+          undefined,
         );
         if (additionalProperty) {
           this.additionalPropertyItems = [
@@ -470,7 +470,7 @@ export default defineComponent({
         ) {
           this.control.data[this.newPropertyName] = createDefaultValue(
             additionalProperty.schema,
-            this.control.rootSchema
+            this.control.rootSchema,
           );
           // we need always to preserve the key even when the value is "empty"
           this.input.handleChange(this.control.path, this.control.data);
@@ -480,7 +480,7 @@ export default defineComponent({
     },
     removeProperty(propName: string): void {
       this.additionalPropertyItems = this.additionalPropertyItems.filter(
-        (d) => d.propertyName !== propName
+        (d) => d.propertyName !== propName,
       );
       if (typeof this.control.data === 'object') {
         delete this.control.data[propName];

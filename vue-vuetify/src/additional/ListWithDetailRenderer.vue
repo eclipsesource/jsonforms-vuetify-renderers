@@ -20,7 +20,7 @@
             <template v-slot:activator="{ props }">
               <v-btn
                 fab
-                text
+                variant="text"
                 elevation="0"
                 small
                 :aria-label="`Add to ${control.label}`"
@@ -102,7 +102,7 @@
                       <v-btn
                         v-bind="props"
                         fab
-                        text
+                        variant="text"
                         elevation="0"
                         small
                         class="ma-0"
@@ -123,7 +123,7 @@
                       <v-btn
                         v-bind="props"
                         fab
-                        text
+                        variant="text"
                         elevation="0"
                         small
                         class="ma-0"
@@ -144,7 +144,7 @@
                       <v-btn
                         v-bind="props"
                         fab
-                        text
+                        variant="text"
                         elevation="0"
                         small
                         class="ma-0"
@@ -288,14 +288,14 @@ const controlRenderer = defineComponent({
         this.control.uischema.scope,
         this.control.path,
         undefined,
-        this.control.uischema
+        this.control.uischema,
       );
     },
     arraySchema(): JsonSchema | undefined {
       return Resolve.schema(
         this.control.rootSchema,
         this.control.uischema.scope,
-        this.control.rootSchema
+        this.control.rootSchema,
       );
     },
   },
@@ -305,7 +305,7 @@ const controlRenderer = defineComponent({
     addButtonClick() {
       this.addItem(
         this.control.path,
-        createDefaultValue(this.control.schema, this.control.rootSchema)
+        createDefaultValue(this.control.schema, this.control.rootSchema),
       )();
     },
     moveUpClick(event: Event, toMove: number): void {
@@ -323,8 +323,8 @@ const controlRenderer = defineComponent({
     childErrors(index: number): ErrorObject[] {
       return this.control.childErrors.filter((e) =>
         e.instancePath.startsWith(
-          this.composePaths(this.control.path, `${index}`)
-        )
+          this.composePaths(this.control.path, `${index}`),
+        ),
       );
     },
   },

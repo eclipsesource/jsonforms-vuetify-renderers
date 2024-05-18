@@ -28,7 +28,7 @@
             <template v-slot:activator="{ props }">
               <v-btn
                 fab
-                text
+                variant="text"
                 elevation="0"
                 small
                 :aria-label="translatedLabels.add"
@@ -101,7 +101,7 @@
                           <v-btn
                             v-bind="props"
                             fab
-                            text
+                            variant="text"
                             elevation="0"
                             small
                             class="v-expansion-panel-title__icon"
@@ -125,7 +125,7 @@
                           <v-btn
                             v-bind="props"
                             fab
-                            text
+                            variant="text"
                             elevation="0"
                             small
                             class="v-expansion-panel-title__icon"
@@ -148,7 +148,7 @@
                           <v-btn
                             v-bind="props"
                             fab
-                            text
+                            variant="text"
                             elevation="0"
                             small
                             class="v-expansion-panel-title__icon"
@@ -219,11 +219,11 @@
         <v-card-actions>
           <v-spacer></v-spacer>
 
-          <v-btn text @click="suggestToDelete = null">
+          <v-btn variant="text" @click="suggestToDelete = null">
             {{ translatedLabels.dialogCancel }}</v-btn
           >
           <v-btn
-            text
+            variant="text"
             ref="confirm"
             @click="
               removeItemsClick(

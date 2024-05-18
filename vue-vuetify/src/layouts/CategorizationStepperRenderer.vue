@@ -7,10 +7,7 @@
       v-bind="vuetifyProps('v-stepper')"
     >
       <template v-for="(element, index) in visibleCategories" :key="index">
-        <v-stepper-step
-          :step="index + 1"
-          editable
-        >
+        <v-stepper-step :step="index + 1" editable>
           {{ visibleCategoryLabels[index] }}
         </v-stepper-step>
 
@@ -30,7 +27,7 @@
 
               <v-card-actions>
                 <v-btn
-                  text
+                  variant="text"
                   left
                   :disabled="activeCategory - 1 <= 0"
                   @click="activeCategory--"
@@ -39,7 +36,7 @@
                 </v-btn>
                 <v-spacer></v-spacer>
                 <v-btn
-                  text
+                  variant="text"
                   right
                   color="primary"
                   :disabled="activeCategory - 1 >= visibleCategories.length - 1"
@@ -61,10 +58,7 @@
     >
       <v-stepper-header>
         <template v-for="(_, index) in visibleCategories" :key="index">
-          <v-stepper-step
-            :step="index + 1"
-            editable
-          >
+          <v-stepper-step :step="index + 1" editable>
             {{ visibleCategoryLabels[index] }}
           </v-stepper-step>
           <v-divider
@@ -94,7 +88,7 @@
 
               <v-card-actions>
                 <v-btn
-                  text
+                  variant="text"
                   left
                   :disabled="activeCategory - 1 <= 0"
                   @click="activeCategory--"
@@ -103,7 +97,7 @@
                 </v-btn>
                 <v-spacer></v-spacer>
                 <v-btn
-                  text
+                  variant="text"
                   right
                   color="primary"
                   :disabled="activeCategory - 1 >= visibleCategories.length - 1"
@@ -190,7 +184,7 @@ const layoutRenderer = defineComponent({
     visibleCategories(): (Category | Categorization)[] {
       return (this.layout.uischema as Categorization).elements.filter(
         (category: Category | Categorization) =>
-          isVisible(category, this.layout.data, this.layout.path, this.ajv)
+          isVisible(category, this.layout.data, this.layout.path, this.ajv),
       );
     },
     visibleCategoryLabels(): string[] {
@@ -206,7 +200,7 @@ export default layoutRenderer;
 export const categorizationStepperTester: Tester = and(
   uiTypeIs('Categorization'),
   categorizationHasCategory,
-  optionIs('variant', 'stepper')
+  optionIs('variant', 'stepper'),
 );
 
 export const entry: JsonFormsRendererRegistryEntry = {
