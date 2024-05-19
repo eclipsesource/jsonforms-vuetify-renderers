@@ -105,8 +105,6 @@ import {
   VStepperActions,
   VSpacer,
   VCard,
-  VCardActions,
-  VBtn,
 } from 'vuetify/components';
 import {
   VStepperVertical,
@@ -130,8 +128,6 @@ const layoutRenderer = defineComponent({
     VStepperWindow,
     VStepperActions,
     VCard,
-    VCardActions,
-    VBtn,
   },
   props: {
     ...rendererProps<Layout>(),
