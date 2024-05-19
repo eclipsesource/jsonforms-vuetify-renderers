@@ -1,10 +1,7 @@
 <script setup lang="ts">
 import { useAppStore } from '@/stores/app';
-import { useTheme } from 'vuetify';
-import { computed } from 'vue';
 
 const appStore = useAppStore();
-const theme = useTheme();
 
 const validationModes = [
   { text: 'Validate And Show', value: 'ValidateAndShow' },
@@ -17,6 +14,38 @@ const locales = [
   { text: 'German (de)', value: 'de' },
   { text: 'Bulgarian (bg)', value: 'bg' },
   { text: 'Browser Language', value: navigator.language },
+];
+
+const blueprints = [
+  { text: 'Material Design 1', value: 'md1' },
+  { text: 'Material Design 2', value: 'md2' },
+  { text: 'Material Design 3', value: 'md3' },
+];
+const variants = [
+  {
+    text: 'Regular',
+    value: '',
+  },
+  {
+    text: 'Solo',
+    value: 'solo',
+  },
+  {
+    text: 'Filled',
+    value: 'filled',
+  },
+  {
+    text: 'Outlined',
+    value: 'outlined',
+  },
+  {
+    text: 'Plain',
+    value: 'plain',
+  },
+  {
+    text: 'Underlined',
+    value: 'underlined',
+  },
 ];
 
 const breakHorizontals = [
@@ -139,6 +168,44 @@ const breakHorizontals = [
             dense
             v-model="appStore.jsonforms.locale"
             :items="locales"
+            item-title="text"
+            item-value="value"
+          ></v-select>
+        </v-col>
+      </v-row>
+    </v-container>
+
+    <v-divider />
+
+    <v-container>
+      <v-row><v-col>Blueprints (need browser reload)</v-col></v-row>
+      <v-row>
+        <v-col>
+          <v-select
+            outlined
+            persistent-hint
+            dense
+            v-model="appStore.blueprint"
+            :items="blueprints"
+            item-title="text"
+            item-value="value"
+          ></v-select>
+        </v-col>
+      </v-row>
+    </v-container>
+
+    <v-divider />
+
+    <v-container>
+      <v-row><v-col>Variants</v-col></v-row>
+      <v-row>
+        <v-col>
+          <v-select
+            outlined
+            persistent-hint
+            dense
+            v-model="appStore.variant"
+            :items="variants"
             item-title="text"
             item-value="value"
           ></v-select>

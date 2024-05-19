@@ -1,15 +1,17 @@
 <script setup lang="ts">
 import { ref, mergeProps } from 'vue';
 import { useTheme } from 'vuetify';
-import { customThemes } from '@/plugins/vuetify';
+import { getCustomThemes } from '@/plugins/vuetify';
+import { useAppStore } from '@/stores/app';
 
 const currentTheme = useTheme();
 const menu = ref(false);
+const appStore = useAppStore();
 
 const setTheme = (theme: string) => {
   menu.value = false;
 
-  currentTheme.global.name.value = theme;
+  appStore.theme = theme;
 };
 </script>
 
@@ -57,7 +59,7 @@ const setTheme = (theme: string) => {
           @click="setTheme(theme.name)"
           hover
           outlined
-          v-for="(theme, index) in customThemes.filter(
+          v-for="(theme, index) in getCustomThemes(appStore.blueprint).filter(
             (theme) => theme.dark === currentTheme.current.value.dark,
           )"
           :key="index"

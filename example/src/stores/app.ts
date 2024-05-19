@@ -3,7 +3,10 @@ import { useLocalStorage, type RemovableRef } from '@vueuse/core';
 
 export interface AppState {
   rtl: boolean;
-  dark: RemovableRef<boolean>;
+  blueprint: RemovableRef<string>;
+  dark: boolean;
+  theme: RemovableRef<string>;
+  variant: RemovableRef<string>;
   drawer: boolean;
   settings: boolean;
   jsonforms: {
@@ -28,7 +31,10 @@ export interface AppState {
 export const useAppStore = defineStore('app', () => {
   return {
     rtl: false,
-    dark: useLocalStorage('dark-mode', false, { flush: 'sync' }),
+    dark: useLocalStorage('dark', false),
+    theme: useLocalStorage('theme', 'light'),
+    variant: useLocalStorage('variant', ''),
+    blueprint: useLocalStorage('blueprint', 'md1'),
     drawer: true,
     settings: false,
     jsonforms: {
@@ -44,6 +50,7 @@ export const useAppStore = defineStore('app', () => {
         initCollapsed: false,
         hideAvatar: false,
         hideArraySummaryValidation: false,
+        vuetify: {},
       },
       locale: 'en',
     },
