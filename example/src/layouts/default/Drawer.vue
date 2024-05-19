@@ -31,7 +31,13 @@ const router = useRouter();
     <v-divider></v-divider>
 
     <v-list dense nav>
-      <v-list-item v-for="example in examples" :key="example.title" link>
+      <v-list-item
+        v-for="example in examples"
+        :key="example.title"
+        :value="example.title"
+        link
+        color="primary"
+      >
         <v-list-item-title
           @click="
             if (route.name !== 'example' || route.params.id !== example.id)
