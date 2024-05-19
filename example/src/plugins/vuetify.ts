@@ -133,6 +133,9 @@ function createVuetifyInstance(
         VTextarea: {
           variant: variant,
         },
+        VNumberInput: {
+          variant: variant,
+        },
         VCheckbox: { color: 'primary' },
       }
     : {
@@ -200,6 +203,10 @@ export function initializeVuetify(app: App) {
             ...vuetify.defaults.value?.VTextarea,
             variant: variant,
           },
+          VNumberInput: {
+            ...vuetify.defaults.value?.VNumberInput,
+            variant: variant,
+          },
         };
       } else {
         delete vuetify.defaults.value?.VField?.variant;
@@ -208,6 +215,7 @@ export function initializeVuetify(app: App) {
         delete vuetify.defaults.value?.VSelect?.variant;
         delete vuetify.defaults.value?.VAutocomplete?.variant;
         delete vuetify.defaults.value?.VTextarea?.variant;
+        delete vuetify.defaults.value?.VNumberInput?.variant;
       }
     },
   );
