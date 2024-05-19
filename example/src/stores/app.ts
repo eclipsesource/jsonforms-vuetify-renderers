@@ -1,7 +1,9 @@
 import { defineStore } from 'pinia';
-import { reactive } from 'vue';
+import { useLocalStorage, type RemovableRef } from '@vueuse/core';
+
 export interface AppState {
   rtl: boolean;
+  dark: RemovableRef<boolean>;
   drawer: boolean;
   settings: boolean;
   jsonforms: {
@@ -24,8 +26,9 @@ export interface AppState {
 }
 
 export const useAppStore = defineStore('app', () => {
-  return reactive<AppState>({
+  return {
     rtl: false,
+    dark: useLocalStorage('dark-mode', false, { flush: 'sync' }),
     drawer: true,
     settings: false,
     jsonforms: {
@@ -44,5 +47,5 @@ export const useAppStore = defineStore('app', () => {
       },
       locale: 'en',
     },
-  });
+  };
 });

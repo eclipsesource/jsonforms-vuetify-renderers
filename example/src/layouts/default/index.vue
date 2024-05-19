@@ -21,13 +21,15 @@ const formonly = computed(() => route.query?.view === 'form-only');
 
 <template>
   <v-locale-provider :rtl="appStore.rtl">
-    <v-app>
-      <default-app-bar v-if="!formonly" />
+    <v-theme-provider :theme="appStore.dark ? 'dark' : 'light'">
+      <v-app>
+        <default-app-bar v-if="!formonly" />
 
-      <default-drawer v-if="!formonly" />
+        <default-drawer v-if="!formonly" />
 
-      <default-settings v-if="!formonly" />
-      <default-view />
-    </v-app>
+        <default-settings v-if="!formonly" />
+        <default-view />
+      </v-app>
+    </v-theme-provider>
   </v-locale-provider>
 </template>

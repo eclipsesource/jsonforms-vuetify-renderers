@@ -5,15 +5,6 @@ import { computed } from 'vue';
 
 const appStore = useAppStore();
 const theme = useTheme();
-const dark = computed({
-  get: () => {
-    return theme.current.value.dark;
-  },
-
-  set: (value) => {
-    theme.global.name.value = value ? 'dark' : 'light';
-  },
-});
 
 const validationModes = [
   { text: 'Validate And Show', value: 'ValidateAndShow' },
@@ -63,7 +54,7 @@ const breakHorizontals = [
       <v-row>
         <v-col>
           <v-btn-toggle
-            v-model="dark"
+            v-model="appStore.dark"
             borderless
             mandatory
             group
