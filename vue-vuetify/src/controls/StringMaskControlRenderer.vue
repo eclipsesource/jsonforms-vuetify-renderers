@@ -5,35 +5,34 @@
     :isFocused="isFocused"
     :appliedOptions="appliedOptions"
   >
-    <v-hover v-slot="{ isHovering }">
-      <v-text-field
-        v-disabled-icon-focus
-        :id="control.id + '-input'"
-        :class="styles.control.input"
-        :disabled="!control.enabled"
-        :autofocus="appliedOptions.focus"
-        :placeholder="appliedOptions.placeholder"
-        :label="computedLabel"
-        :hint="control.description"
-        :persistent-hint="persistentHint()"
-        :required="control.required"
-        :error-messages="control.errors"
-        :maxlength="
-          appliedOptions.restrict ? control.schema.maxLength : undefined
-        "
-        :counter="
-          control.schema.maxLength !== undefined
-            ? control.schema.maxLength
-            : undefined
-        "
-        :clearable="isHovering"
-        v-bind="vuetifyProps('v-text-field')"
-        @focus="isFocused = true"
-        @blur="isFocused = false"
-        v-model="maskModel"
-        v-maska:[options]="boundObject"
-      />
-    </v-hover>
+    <v-text-field
+      v-disabled-icon-focus
+      :id="control.id + '-input'"
+      :class="styles.control.input"
+      :disabled="!control.enabled"
+      :autofocus="appliedOptions.focus"
+      :placeholder="appliedOptions.placeholder"
+      :label="computedLabel"
+      :hint="control.description"
+      :persistent-hint="persistentHint()"
+      :required="control.required"
+      :error-messages="control.errors"
+      :maxlength="
+        appliedOptions.restrict ? control.schema.maxLength : undefined
+      "
+      :counter="
+        control.schema.maxLength !== undefined
+          ? control.schema.maxLength
+          : undefined
+      "
+      :clearable="control.enabled"
+      @click:clear="clear"
+      v-bind="vuetifyProps('v-text-field')"
+      @focus="isFocused = true"
+      @blur="isFocused = false"
+      v-model="maskModel"
+      v-maska:[options]
+    />
   </control-wrapper>
 </template>
 
@@ -53,12 +52,12 @@ import {
   useJsonFormsControl,
 } from '@jsonforms/vue';
 import isEmpty from 'lodash/isEmpty';
-import { defineComponent, ref } from 'vue';
-import { VHover, VTextField } from 'vuetify/components';
+import { defineComponent, computed } from 'vue';
+import { VTextField } from 'vuetify/components';
 import { useVuetifyControl } from '../util';
 import { default as ControlWrapper } from './ControlWrapper.vue';
 import { DisabledIconFocus } from './directives';
-import { MaskTokens, MaskOptions, vMaska } from 'maska';
+import { MaskTokens, vMaska, Mask } from 'maska';
 import { cloneDeep } from 'lodash';
 
 const defaultTokens: MaskTokens = {
@@ -71,7 +70,6 @@ const controlRenderer = defineComponent({
   name: 'string-mask-control-renderer',
   components: {
     ControlWrapper,
-    VHover,
     VTextField,
   },
   directives: {
@@ -84,68 +82,8 @@ const controlRenderer = defineComponent({
   setup(props: RendererProps<ControlElement>) {
     const adaptValue = (value: any) => value || undefined;
     const control = useVuetifyControl(useJsonFormsControl(props), adaptValue);
-    const boundObject = ref({
-      masked: '',
-      unmasked: '',
-      completed: false,
-    });
-    return { ...control, adaptValue, boundObject };
-  },
-  computed: {
-    maskModel: {
-      get(): string | undefined {
-        return this.control.data;
-      },
-      set(val: string | undefined): void {
-        let value = this.returnMaskedValue ? val : this.boundObject.unmasked;
 
-        if (this.adaptValue(value) !== this.control.data) {
-          // only invoke onChange when values are different since v-mask is also listening on input which lead to loop
-
-          this.onChange(value);
-        }
-      },
-    },
-    options(): MaskOptions {
-      return {
-        mask: this.appliedOptions.mask,
-        tokens: this.tokens,
-        tokensReplace: this.tokensReplace,
-        reversed: this.reversed,
-        eager: this.eager,
-      };
-    },
-    tokens(): MaskTokens {
-      let tokens: MaskTokens | undefined = undefined;
-
-      if (this.appliedOptions.maskReplacers) {
-        tokens = this.toTokens(this.appliedOptions.maskReplacers);
-      }
-      if (this.appliedOptions.tokens) {
-        tokens = this.toTokens(this.appliedOptions.tokens);
-      }
-
-      if (!tokens) {
-        tokens = defaultTokens;
-      }
-
-      return tokens;
-    },
-    returnMaskedValue(): boolean {
-      return this.appliedOptions.returnMaskedValue === true;
-    },
-    tokensReplace(): boolean {
-      return this.appliedOptions.tokensReplace !== false; // default is true
-    },
-    eager(): boolean {
-      return this.appliedOptions.eager === true; // default is false
-    },
-    reversed(): boolean {
-      return this.appliedOptions.reversed === false; // default is false
-    },
-  },
-  methods: {
-    toTokens(tokenParams: Record<string, any>): MaskTokens {
+    const toTokens = (tokenParams: Record<string, any>): MaskTokens => {
       let tokens = cloneDeep(defaultTokens);
       if (tokenParams) {
         for (let key in tokenParams) {
@@ -168,6 +106,85 @@ const controlRenderer = defineComponent({
         }
       }
       return tokens;
+    };
+
+    const tokens = computed(() => {
+      let tokens: MaskTokens | undefined = undefined;
+
+      if (control.appliedOptions.value.maskReplacers) {
+        tokens = toTokens(control.appliedOptions.value.maskReplacers);
+      }
+      if (control.appliedOptions.value.tokens) {
+        tokens = toTokens(control.appliedOptions.value.tokens);
+      }
+
+      if (!tokens) {
+        tokens = defaultTokens;
+      }
+
+      return tokens;
+    });
+
+    const returnMaskedValue = computed(
+      () => control.appliedOptions.value.returnMaskedValue === true,
+    );
+    const tokensReplace = computed(
+      () =>
+        control.appliedOptions.value.tokensReplace !==
+        false /* default is true*/,
+    );
+    const eager = computed(
+      () => control.appliedOptions.value.eager === false /* default is false*/,
+    );
+    const reversed = computed(
+      () =>
+        control.appliedOptions.value.reversed === false /* default is false*/,
+    );
+
+    const options = computed(() => ({
+      mask: control.appliedOptions.value.mask,
+      tokens: tokens.value,
+      tokensReplace: tokensReplace.value,
+      reversed: reversed.value,
+      eager: eager.value,
+    }));
+
+    const mask = computed(() => new Mask(options.value));
+
+    return {
+      ...control,
+      adaptValue,
+      options,
+      mask,
+      returnMaskedValue,
+      tokensReplace,
+      eager,
+      reversed,
+    };
+  },
+  computed: {
+    maskModel: {
+      get(): string | undefined {
+        return this.control.data;
+      },
+      set(val: string | undefined): void {
+        let value = val;
+
+        if (!this.returnMaskedValue && value) {
+          value = this.mask.unmasked(value);
+        }
+
+        if (this.adaptValue(value) !== this.control.data) {
+          // only invoke onChange when values are different since v-mask is also listening on input which lead to loop
+
+          this.onChange(value);
+        }
+      },
+    },
+  },
+  methods: {
+    clear(): void {
+      this.maskModel = undefined;
     },
   },
 });
