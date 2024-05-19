@@ -68,7 +68,7 @@ const controlRenderer = defineComponent({
 
     const control = useVuetifyControl(
       useJsonFormsOneOfEnumControl(props),
-      (value) => (value !== null ? value : undefined)
+      (value) => (value !== null ? value : undefined),
     );
     return { ...control, t };
   },

@@ -75,7 +75,7 @@ const controlRenderer = defineComponent({
   setup(props: RendererProps<ControlElement>) {
     return useVuetifyControl(
       useJsonFormsControl(props),
-      (value) => value || undefined
+      (value) => value || undefined,
     );
   },
   computed: {
@@ -91,7 +91,8 @@ export default controlRenderer;
 
 const findEnumSchema = (schemas: JsonSchema[]) =>
   schemas.find(
-    (s) => s.enum !== undefined && (s.type === 'string' || s.type === undefined)
+    (s) =>
+      s.enum !== undefined && (s.type === 'string' || s.type === undefined),
   );
 const findTextSchema = (schemas: JsonSchema[]) =>
   schemas.find((s) => s.type === 'string' && s.enum === undefined);
@@ -101,7 +102,7 @@ const hasEnumAndText = (schemas: JsonSchema[]): boolean => {
   const enumSchema = findEnumSchema(schemas);
   const stringSchema = findTextSchema(schemas);
   const remainingSchemas = schemas.filter(
-    (s) => s !== enumSchema || s !== stringSchema
+    (s) => s !== enumSchema || s !== stringSchema,
   );
   const wrongType = remainingSchemas.find((s) => s.type && s.type !== 'string');
   return !!enumSchema && !!stringSchema && !wrongType;
@@ -109,8 +110,8 @@ const hasEnumAndText = (schemas: JsonSchema[]): boolean => {
 const simpleAnyOf = and(
   uiTypeIs('Control'),
   schemaMatches(
-    (schema) => Array.isArray(schema.anyOf) && hasEnumAndText(schema.anyOf)
-  )
+    (schema) => Array.isArray(schema.anyOf) && hasEnumAndText(schema.anyOf),
+  ),
 );
 
 export const entry: JsonFormsRendererRegistryEntry = {
