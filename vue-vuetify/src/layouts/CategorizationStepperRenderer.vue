@@ -1,115 +1,73 @@
 <template>
   <div v-if="layout.visible" :class="styles.categorization.root">
-    <v-stepper
+    <v-stepper-vertical
       v-if="appliedOptions.vertical == true"
       non-linear
       v-model="activeCategory"
-      v-bind="vuetifyProps('v-stepper')"
+      editable
+      v-bind="vuetifyProps('v-stepper-vertical')"
+      :hide-actions="!appliedOptions.showNavButtons"
     >
-      <template v-for="(element, index) in visibleCategories" :key="index">
-        <v-stepper-step :step="index + 1" editable>
-          {{ visibleCategoryLabels[index] }}
-        </v-stepper-step>
-
-        <v-stepper-content :step="index + 1">
-          <v-card elevation="0">
-            <dispatch-renderer
-              :schema="layout.schema"
-              :uischema="element"
-              :path="layout.path"
-              :enabled="layout.enabled"
-              :renderers="layout.renderers"
-              :cells="layout.cells"
-            />
-
-            <div v-if="!!appliedOptions.showNavButtons">
-              <v-divider></v-divider>
-
-              <v-card-actions>
-                <v-btn
-                  variant="text"
-                  left
-                  :disabled="activeCategory - 1 <= 0"
-                  @click="activeCategory--"
-                >
-                  Back
-                </v-btn>
-                <v-spacer></v-spacer>
-                <v-btn
-                  variant="text"
-                  right
-                  color="primary"
-                  :disabled="activeCategory - 1 >= visibleCategories.length - 1"
-                  @click="activeCategory++"
-                >
-                  Next
-                </v-btn>
-              </v-card-actions>
-            </div>
-          </v-card>
-        </v-stepper-content>
-      </template>
-    </v-stepper>
+      <v-stepper-vertical-item
+        :title="visibleCategoryLabels[index]"
+        v-for="(element, index) in visibleCategories"
+        :value="index + 1"
+      >
+        <v-card elevation="0">
+          <dispatch-renderer
+            :schema="layout.schema"
+            :uischema="element"
+            :path="layout.path"
+            :enabled="layout.enabled"
+            :renderers="layout.renderers"
+            :cells="layout.cells"
+          />
+        </v-card>
+      </v-stepper-vertical-item>
+    </v-stepper-vertical>
     <v-stepper
       v-else
       non-linear
       v-model="activeCategory"
       v-bind="vuetifyProps('v-stepper')"
     >
-      <v-stepper-header>
-        <template v-for="(_, index) in visibleCategories" :key="index">
-          <v-stepper-step :step="index + 1" editable>
-            {{ visibleCategoryLabels[index] }}
-          </v-stepper-step>
-          <v-divider
-            v-if="index !== visibleCategories.length - 1"
-            :key="index"
-          ></v-divider>
-        </template>
-      </v-stepper-header>
+      <template v-slot:default="{ prev, next }">
+        <v-stepper-header>
+          <template v-for="(_, index) in visibleCategories" :key="index">
+            <v-stepper-item :value="index + 1" editable>
+              {{ visibleCategoryLabels[index] }}
+            </v-stepper-item>
+            <v-divider
+              v-if="index !== visibleCategories.length - 1"
+              :key="index"
+            ></v-divider>
+          </template>
+        </v-stepper-header>
 
-      <v-stepper-items>
-        <v-stepper-content
-          v-for="(element, index) in visibleCategories"
-          :step="index + 1"
-        >
-          <v-card elevation="0">
-            <dispatch-renderer
-              :schema="layout.schema"
-              :uischema="element"
-              :path="layout.path"
-              :enabled="layout.enabled"
-              :renderers="layout.renderers"
-              :cells="layout.cells"
-            />
+        <v-stepper-window>
+          <v-stepper-window-item
+            v-for="(element, index) in visibleCategories"
+            :value="index + 1"
+          >
+            <v-card elevation="0">
+              <dispatch-renderer
+                :schema="layout.schema"
+                :uischema="element"
+                :path="layout.path"
+                :enabled="layout.enabled"
+                :renderers="layout.renderers"
+                :cells="layout.cells"
+              />
+            </v-card>
+          </v-stepper-window-item>
+        </v-stepper-window>
 
-            <div v-if="!!appliedOptions.showNavButtons">
-              <v-divider></v-divider>
-
-              <v-card-actions>
-                <v-btn
-                  variant="text"
-                  left
-                  :disabled="activeCategory - 1 <= 0"
-                  @click="activeCategory--"
-                >
-                  Back
-                </v-btn>
-                <v-spacer></v-spacer>
-                <v-btn
-                  variant="text"
-                  right
-                  color="primary"
-                  :disabled="activeCategory - 1 >= visibleCategories.length - 1"
-                  @click="activeCategory++"
-                >
-                  Next
-                </v-btn>
-              </v-card-actions>
-            </div>
-          </v-card>
-        </v-stepper-content>
-      </v-stepper-items>
+        <v-stepper-actions
+          v-if="appliedOptions.showNavButtons"
+          @click:next="next"
+          @click:prev="prev"
+        ></v-stepper-actions>
+      </template>
     </v-stepper>
   </div>
 </template>
@@ -140,27 +98,37 @@ import { useAjv, useTranslator, useVuetifyLayout } from '../util';
 import {
   VStepper,
   VStepperHeader,
-  VStepperStep,
+  VStepperItem,
   VDivider,
-  VStepperItems,
-  VStepperContent,
+  VStepperWindowItem,
+  VStepperWindow,
+  VStepperActions,
   VSpacer,
   VCard,
   VCardActions,
   VBtn,
 } from 'vuetify/components';
+import {
+  VStepperVertical,
+  VStepperVerticalItem,
+  VStepperVerticalActions,
+} from 'vuetify/labs/VStepperVertical';
 
 const layoutRenderer = defineComponent({
   name: 'categorization-stepper-renderer',
   components: {
     DispatchRenderer,
+    VStepperVertical,
+    VStepperVerticalItem,
+    VStepperVerticalActions,
     VStepper,
     VStepperHeader,
-    VStepperStep,
+    VStepperItem,
     VDivider,
     VSpacer,
-    VStepperItems,
-    VStepperContent,
+    VStepperWindowItem,
+    VStepperWindow,
+    VStepperActions,
     VCard,
     VCardActions,
     VBtn,
