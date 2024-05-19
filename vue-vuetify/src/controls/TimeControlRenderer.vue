@@ -6,6 +6,7 @@
     :appliedOptions="appliedOptions"
   >
     <v-text-field
+      v-disabled-icon-focus
       :id="control.id + '-input'"
       :class="styles.control.input"
       :disabled="!control.enabled"
@@ -18,6 +19,7 @@
       :error-messages="control.errors"
       v-bind="vuetifyProps('v-text-field')"
       :model-value="control.data"
+      :clearable="control.enabled"
       @update:model-value="onChange"
       @focus="isFocused = true"
       @blur="isFocused = false"
@@ -41,6 +43,7 @@ import {
   useJsonFormsControl,
 } from '@jsonforms/vue';
 import { VTextField } from 'vuetify/components';
+import { DisabledIconFocus } from './directives';
 import { useVuetifyControl } from '../util';
 import { default as ControlWrapper } from './ControlWrapper.vue';
 
@@ -64,6 +67,9 @@ const controlRenderer = defineComponent({
   components: {
     ControlWrapper,
     VTextField,
+  },
+  directives: {
+    DisabledIconFocus,
   },
   props: {
     ...rendererProps<ControlElement>(),

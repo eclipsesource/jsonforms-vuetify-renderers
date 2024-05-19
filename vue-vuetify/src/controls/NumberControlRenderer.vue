@@ -5,28 +5,27 @@
     :isFocused="isFocused"
     :appliedOptions="appliedOptions"
   >
-    <v-hover v-slot="{ isHovering }">
-      <v-text-field
-        ref="input"
-        :step="step"
-        :id="control.id + '-input'"
-        :class="styles.control.input"
-        :disabled="!control.enabled"
-        :autofocus="appliedOptions.focus"
-        :placeholder="appliedOptions.placeholder"
-        :label="computedLabel"
-        :hint="control.description"
-        :persistent-hint="persistentHint()"
-        :required="control.required"
-        :error-messages="control.errors"
-        :model-value="inputValue"
-        :clearable="isHovering"
-        v-bind="vuetifyProps('v-text-field')"
-        @update:model-value="onInputChange"
-        @focus="isFocused = true"
-        @blur="isFocused = false"
-      ></v-text-field>
-    </v-hover>
+    <v-text-field
+      v-disabled-icon-focus
+      ref="input"
+      :step="step"
+      :id="control.id + '-input'"
+      :class="styles.control.input"
+      :disabled="!control.enabled"
+      :autofocus="appliedOptions.focus"
+      :placeholder="appliedOptions.placeholder"
+      :label="computedLabel"
+      :hint="control.description"
+      :persistent-hint="persistentHint()"
+      :required="control.required"
+      :error-messages="control.errors"
+      :model-value="inputValue"
+      :clearable="control.enabled"
+      v-bind="vuetifyProps('v-text-field')"
+      @update:model-value="onInputChange"
+      @focus="isFocused = true"
+      @blur="isFocused = false"
+    ></v-text-field>
   </control-wrapper>
 </template>
 
@@ -46,6 +45,7 @@ import {
 import { default as ControlWrapper } from './ControlWrapper.vue';
 import { useVuetifyControl } from '../util';
 import { VHover, VTextField } from 'vuetify/components';
+import { DisabledIconFocus } from './directives';
 
 const NUMBER_REGEX_TEST = /^[+-]?\d+([.]\d+)?([eE][+-]?\d+)?$/;
 
@@ -55,6 +55,9 @@ const controlRenderer = defineComponent({
     ControlWrapper,
     VHover,
     VTextField,
+  },
+  directives: {
+    DisabledIconFocus,
   },
   props: {
     ...rendererProps<ControlElement>(),

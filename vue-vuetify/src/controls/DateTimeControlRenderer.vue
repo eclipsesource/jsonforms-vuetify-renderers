@@ -6,6 +6,7 @@
     :appliedOptions="appliedOptions"
   >
     <v-text-field
+      v-disabled-icon-focus
       :id="control.id + '-input'"
       :class="styles.control.input"
       :disabled="!control.enabled"
@@ -18,6 +19,7 @@
       :error-messages="control.errors"
       v-bind="vuetifyProps('v-text-field')"
       :model-value="dataTime"
+      :clearable="control.enabled"
       @update:model-value="onChange"
       @focus="isFocused = true"
       @blur="isFocused = false"
@@ -43,6 +45,7 @@ import {
 import { VTextField } from 'vuetify/components';
 import { useVuetifyControl } from '../util';
 import { default as ControlWrapper } from './ControlWrapper.vue';
+import { DisabledIconFocus } from './directives';
 
 const toISOString = (inputDateTime: string) => {
   return inputDateTime === '' ? undefined : inputDateTime + ':00.000Z';
@@ -53,6 +56,9 @@ const controlRenderer = defineComponent({
   components: {
     ControlWrapper,
     VTextField,
+  },
+  directives: {
+    DisabledIconFocus,
   },
   props: {
     ...rendererProps<ControlElement>(),

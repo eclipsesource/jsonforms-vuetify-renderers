@@ -6,30 +6,28 @@
       :path="path"
     />
 
-    <v-hover v-slot="{ isHovering }">
-      <v-select
-        v-disabled-icon-focus
-        :id="control.id + '-input'"
-        :class="styles.control.input"
-        :disabled="!control.enabled"
-        :autofocus="appliedOptions.focus"
-        :placeholder="appliedOptions.placeholder"
-        :label="computedLabel"
-        :hint="control.description"
-        :persistent-hint="persistentHint()"
-        :required="control.required"
-        :error-messages="control.errors"
-        :clearable="isHovering"
-        :items="indexedOneOfRenderInfos"
-        @change="handleSelectChange"
-        :item-title="(item) => t(item.label, item.label)"
-        item-value="index"
-        v-model="selectIndex"
-        v-bind="vuetifyProps('v-select')"
-        @focus="isFocused = true"
-        @blur="isFocused = false"
-      ></v-select>
-    </v-hover>
+    <v-select
+      v-disabled-icon-focus
+      :id="control.id + '-input'"
+      :class="styles.control.input"
+      :disabled="!control.enabled"
+      :autofocus="appliedOptions.focus"
+      :placeholder="appliedOptions.placeholder"
+      :label="computedLabel"
+      :hint="control.description"
+      :persistent-hint="persistentHint()"
+      :required="control.required"
+      :error-messages="control.errors"
+      :clearable="control.enabled"
+      :items="indexedOneOfRenderInfos"
+      @change="handleSelectChange"
+      :item-title="(item) => t(item.label, item.label)"
+      item-value="index"
+      v-model="selectIndex"
+      v-bind="vuetifyProps('v-select')"
+      @focus="isFocused = true"
+      @blur="isFocused = false"
+    ></v-select>
     <dispatch-renderer
       v-if="selectedIndex !== undefined && selectedIndex !== null"
       :schema="indexedOneOfRenderInfos[selectedIndex].schema"
@@ -85,7 +83,6 @@ import {
   VCardText,
   VCardTitle,
   VDialog,
-  VHover,
   VSelect,
   VSpacer,
 } from 'vuetify/components';
@@ -106,7 +103,6 @@ const controlRenderer = defineComponent({
     VSpacer,
     VBtn,
     VSelect,
-    VHover,
   },
   directives: {
     DisabledIconFocus,
