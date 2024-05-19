@@ -18,6 +18,7 @@
       :error-messages="control.errors"
       :input-value="control.data"
       :model-value="control.data"
+      :indeterminate="control.data === undefined"
       :true-value="true"
       :false-value="false"
       v-bind="vuetifyProps('v-switch')"
@@ -59,7 +60,7 @@ const controlRenderer = defineComponent({
   setup(props: RendererProps<ControlElement>) {
     return useVuetifyControl(
       useJsonFormsControl(props),
-      (newValue) => newValue.target.checked || false
+      (newValue) => newValue.target.checked || false,
     );
   },
 });
