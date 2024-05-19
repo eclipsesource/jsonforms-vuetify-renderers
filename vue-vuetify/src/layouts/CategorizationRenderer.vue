@@ -131,7 +131,7 @@ const layoutRenderer = defineComponent({
     visibleCategories(): (Category | Categorization)[] {
       return (this.layout.uischema as Categorization).elements.filter(
         (category: Category | Categorization) =>
-          isVisible(category, this.layout.data, this.layout.path, this.ajv)
+          isVisible(category, this.layout.data, this.layout.path, this.ajv),
       );
     },
     visibleCategoryLabels(): string[] {
@@ -146,7 +146,7 @@ export default layoutRenderer;
 
 export const isSingleLevelCategorization: Tester = and(
   uiTypeIs('Categorization'),
-  categorizationHasCategory
+  categorizationHasCategory,
 );
 
 export const entry: JsonFormsRendererRegistryEntry = {
@@ -155,7 +155,7 @@ export const entry: JsonFormsRendererRegistryEntry = {
 };
 </script>
 
-<style>
+<style scoped>
 .v-window {
   width: 100%;
 }
