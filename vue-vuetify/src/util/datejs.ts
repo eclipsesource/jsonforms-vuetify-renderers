@@ -9,8 +9,8 @@ dayjs.extend(utc);
 dayjs.extend(timezone);
 
 export const parseDateTime = (
-  data: string | null | undefined,
-  format: string | string[] | undefined
+  data: string | number | dayjs.Dayjs | Date | null | undefined,
+  format: string | string[] | undefined,
 ): dayjs.Dayjs | null => {
   if (!data) {
     return null;
