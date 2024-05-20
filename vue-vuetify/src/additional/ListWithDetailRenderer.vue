@@ -99,7 +99,7 @@
                     {{ childLabelForIndex(index) }}
                   </v-tooltip>
                 </v-list-item-title>
-                <template v-slot:append="{ isSelected }">
+                <template v-slot:append>
                   <v-tooltip bottom v-if="appliedOptions.showSortButtons">
                     <template v-slot:activator="{ props }">
                       <v-btn
