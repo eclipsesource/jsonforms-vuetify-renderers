@@ -54,7 +54,7 @@
       </v-col>
     </v-row>
     <v-row v-else>
-      <v-col class="shrink pa-0">
+      <v-col class="flex-shrink-1 flex-grow-0 pa-0">
         <v-list v-model:selected="selectedIndex">
           <v-virtual-scroll
             :items="control.data"
@@ -71,25 +71,21 @@
                 :value="index"
                 :class="styles.listWithDetail.item"
               >
-                <v-list-item-avatar
-                  aria-label="Index"
-                  size="64"
-                  class="ma-0"
-                  tile
-                  color="rgba(0,0,0,0)"
-                >
+                <template v-slot:prepend="{ isSelected }">
                   <validation-badge
                     overlap
                     bordered
                     :errors="childErrors(index)"
+                    style="margin-right: 8px"
                   >
-                    <v-avatar size="40" aria-label="Index" color="info"
-                      ><span class="info--text text--lighten-5">{{
-                        index + 1
-                      }}</span></v-avatar
+                    <v-avatar
+                      size="40"
+                      aria-label="Index"
+                      :color="isSelected ? 'primary' : undefined"
+                      ><span>{{ index + 1 }}</span></v-avatar
                     >
                   </validation-badge>
-                </v-list-item-avatar>
+                </template>
                 <v-list-item-title>
                   <v-tooltip bottom>
                     <template v-slot:activator="{ props }">
@@ -103,8 +99,8 @@
                     {{ childLabelForIndex(index) }}
                   </v-tooltip>
                 </v-list-item-title>
-                <v-list-item-action v-if="appliedOptions.showSortButtons">
-                  <v-tooltip bottom>
+                <template v-slot:append="{ isSelected }">
+                  <v-tooltip bottom v-if="appliedOptions.showSortButtons">
                     <template v-slot:activator="{ props }">
                       <v-btn
                         v-bind="props"
@@ -123,9 +119,7 @@
                     </template>
                     {{ t('Move Up', 'Move Up') }}
                   </v-tooltip>
-                </v-list-item-action>
-                <v-list-item-action v-if="appliedOptions.showSortButtons">
-                  <v-tooltip bottom>
+                  <v-tooltip bottom v-if="appliedOptions.showSortButtons">
                     <template v-slot:activator="{ props }">
                       <v-btn
                         v-bind="props"
@@ -144,8 +138,6 @@
                     </template>
                     {{ t('Move Down', 'Move Down') }}
                   </v-tooltip>
-                </v-list-item-action>
-                <v-list-item-action>
                   <v-tooltip bottom>
                     <template v-slot:activator="{ props }">
                       <v-btn
@@ -171,16 +163,19 @@
                     </template>
                     {{ t('Delete', 'Delete') }}
                   </v-tooltip>
-                </v-list-item-action>
+                </template>
               </v-list-item>
             </template>
           </v-virtual-scroll>
         </v-list>
       </v-col>
-      <v-col v-if="selectedIndex === undefined" class="grow">
+      <v-col v-if="selectedIndex === undefined" class="flex-grow-1">
         <span class="text-h6">No Selection</span>
       </v-col>
-      <v-col v-else :class="`grow ${styles.listWithDetail.itemContent}`">
+      <v-col
+        v-else
+        :class="`flex-shrink-0 flex-grow-1 ${styles.listWithDetail.itemContent}`"
+      >
         <dispatch-renderer
           :schema="control.schema"
           :uischema="foundUISchema"
