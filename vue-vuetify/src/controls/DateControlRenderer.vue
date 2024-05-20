@@ -6,6 +6,7 @@
     :appliedOptions="appliedOptions"
   >
     <v-text-field
+      v-disabled-icon-focus
       :id="control.id + '-input'"
       :class="styles.control.input"
       :disabled="!control.enabled"
@@ -17,12 +18,62 @@
       :required="control.required"
       :error-messages="control.errors"
       v-bind="vuetifyProps('v-text-field')"
-      :model-value="control.data"
-      @update:model-value="onChange"
+      :model-value="inputValue"
+      @update:model-value="onInputChange"
+      :clearable="control.enabled"
+      @click:clear="clear"
       @focus="isFocused = true"
       @blur="isFocused = false"
-      type="date"
-    />
+    >
+      <template v-slot:prepend-inner>
+        <v-menu
+          v-model="showMenu"
+          :close-on-content-click="false"
+          transition="scale-transition"
+          min-width="290px"
+          v-bind="vuetifyProps('v-menu')"
+          activator="parent"
+          :disabled="!control.enabled"
+        >
+          <template v-slot:activator="{ props }">
+            <v-icon v-bind="props" tabindex="-1">{{ pickerIcon }}</v-icon>
+          </template>
+          <v-confirm-edit
+            v-model="pickerValue"
+            :ok-text="okLabel"
+            :cancel-text="cancelLabel"
+            @cancel="() => (showMenu = false)"
+            @save="() => (showMenu = false)"
+          >
+            <template v-slot:default="{ model: proxyModel, actions }">
+              <v-date-picker
+                v-if="showMenu"
+                :model-value="showActions ? proxyModel.value : pickerValue"
+                @update:model-value="
+                  (val) => {
+                    if (showActions) {
+                      proxyModel.value = val as Date;
+                    } else {
+                      pickerValue = val as Date;
+                      showMenu = false;
+                    }
+                  }
+                "
+                v-bind="vuetifyProps('v-date-picker')"
+                :min="minDate"
+                :max="maxDate"
+                :view-mode="viewMode"
+                @click:year="onYear"
+              >
+                <template v-slot:actions v-if="showActions">
+                  <component :is="actions"></component>
+                </template>
+              </v-date-picker>
+            </template>
+          </v-confirm-edit>
+        </v-menu>
+      </template>
+    </v-text-field>
   </control-wrapper>
 </template>
 
@@ -31,32 +82,233 @@ import {
   ControlElement,
   isDateControl,
   JsonFormsRendererRegistryEntry,
+  JsonSchema,
   rankWith,
 } from '@jsonforms/core';
-import { defineComponent } from 'vue';
+import { defineComponent, ref } from 'vue';
 
 import {
   rendererProps,
   RendererProps,
   useJsonFormsControl,
 } from '@jsonforms/vue';
-import { VTextField } from 'vuetify/components';
-import { useVuetifyControl } from '../util';
+import {
+  VBtn,
+  VDatePicker,
+  VIcon,
+  VMenu,
+  VSpacer,
+  VTextField,
+  VConfirmEdit,
+} from 'vuetify/components';
+import { parseDateTime, useTranslator, useVuetifyControl } from '../util';
 import { default as ControlWrapper } from './ControlWrapper.vue';
+import { DisabledIconFocus } from './directives';
+
+const JSON_SCHEMA_DATE_FORMATS = ['YYYY-MM-DD'];
+
+// https://ajv.js.org/packages/ajv-formats.html#keywords-to-compare-values-formatmaximum-formatminimum-and-formatexclusivemaximum-formatexclusiveminimum
+type AjvMinMaxFormat = {
+  formatMinimum?: string | { $data: any };
+  formatExclusiveMinimum?: string | { $data: any };
+  formatMaximum?: string | { $data: any };
+  formatExclusiveMaximum?: string | { $data: any };
+};
 
 const controlRenderer = defineComponent({
   name: 'date-control-renderer',
   components: {
     ControlWrapper,
     VTextField,
+    VMenu,
+    VDatePicker,
+    VIcon,
+    VSpacer,
+    VBtn,
+    VConfirmEdit,
   },
+  directives: { DisabledIconFocus },
   props: {
     ...rendererProps<ControlElement>(),
   },
   setup(props: RendererProps<ControlElement>) {
+    const t = useTranslator();
+
+    const showMenu = ref(false);
+
     const adaptValue = (value: any) => value || undefined;
     const control = useVuetifyControl(useJsonFormsControl(props), adaptValue);
-    return { ...control, adaptValue };
+    return { ...control, showMenu, t, adaptValue };
+  },
+  computed: {
+    pickerIcon(): string {
+      if (typeof this.appliedOptions.pickerIcon === 'string') {
+        return this.appliedOptions.pickerIcon;
+      }
+
+      if (this.viewMode === 'year') {
+        return 'mdi-alpha-y-box-outline';
+      }
+
+      if (this.viewMode === 'months') {
+        return 'mdi-calendar-month';
+      }
+
+      return 'mdi-calendar';
+    },
+    dateFormat(): string {
+      return typeof this.appliedOptions.dateFormat == 'string'
+        ? this.appliedOptions.dateFormat
+        : 'YYYY-MM-DD';
+    },
+    dateSaveFormat(): string {
+      return typeof this.appliedOptions.dateSaveFormat == 'string'
+        ? this.appliedOptions.dateSaveFormat
+        : 'YYYY-MM-DD';
+    },
+    formats(): string[] {
+      return [
+        this.dateSaveFormat,
+        this.dateFormat,
+        ...JSON_SCHEMA_DATE_FORMATS,
+      ];
+    },
+    viewMode(): 'month' | 'months' | 'year' {
+      if (!this.dateFormat.includes('M') && !this.dateFormat.includes('D')) {
+        return 'year';
+      }
+      if (!this.dateFormat.includes('D')) {
+        return 'months';
+      }
+      return 'month';
+    },
+    minDate(): string | undefined {
+      if (typeof this.vuetifyProps('v-date-picker').min === 'string') {
+        // prefer the vuetify option first
+        return this.vuetifyProps('v-date-picker').min;
+      }
+      // provide min so that the browser can display the native component with only selections that are allowed.
+      // Since the browser supports only min there is posibility for the user to select a date that is defined in the formatExclusiveMinimum but the ajv will catch that validation.
+      const schema = this.control.schema as JsonSchema & AjvMinMaxFormat;
+      if (typeof schema.formatMinimum === 'string') {
+        return schema.formatMinimum;
+      } else if (typeof schema.formatExclusiveMinimum === 'string') {
+        let date = parseDateTime(schema.formatExclusiveMinimum, this.formats);
+        if (date) {
+          // the format is exclusive
+          date = date.add(1, 'day');
+        }
+        return date ? date.format('YYYY-MM-DD') : schema.formatExclusiveMinimum;
+      }
+      return undefined;
+    },
+    maxDate(): string | undefined {
+      if (typeof this.vuetifyProps('v-date-picker').max === 'string') {
+        // prefer the vuetify option first
+        return this.vuetifyProps('v-date-picker').max;
+      }
+      // provide max so that the browser can display the native component with only selections that are allowed.
+      // Since the browser supports only max there is posibility for the user to select a date that is defined in the formatExclusiveMaximum but the ajv will catch that validation.
+      const schema = this.control.schema as JsonSchema & AjvMinMaxFormat;
+      if (typeof schema.formatMaximum === 'string') {
+        return schema.formatMaximum;
+      } else if (typeof schema.formatExclusiveMaximum === 'string') {
+        let date = parseDateTime(schema.formatExclusiveMaximum, this.formats);
+        if (date) {
+          // the format is exclusive
+          date = date.subtract(1, 'day');
+        }
+        return date ? date.format('YYYY-MM-DD') : schema.formatExclusiveMaximum;
+      }
+      return undefined;
+    },
+    inputValue(): string | undefined {
+      const value = this.control.data;
+      const date = parseDateTime(
+        typeof value === 'number' ? value.toString() : value,
+        this.formats,
+      );
+      return date ? date.format(this.dateFormat) : value;
+    },
+    pickerValue: {
+      get(): Date | undefined {
+        const value = this.control.data;
+        const date = parseDateTime(
+          typeof value === 'number' ? value.toString() : value,
+          this.formats,
+        );
+        // show only valid values
+        return date ? date.toDate() : undefined;
+      },
+      set(val: Date): void {
+        this.onPickerChange(val);
+        this.showMenu = false;
+      },
+    },
+    cancelLabel(): string {
+      const label =
+        typeof this.appliedOptions.cancelLabel == 'string'
+          ? this.appliedOptions.cancelLabel
+          : 'Cancel';
+
+      return this.t(label, label);
+    },
+    okLabel(): string {
+      const label =
+        typeof this.appliedOptions.okLabel == 'string'
+          ? this.appliedOptions.okLabel
+          : 'OK';
+      return this.t(label, label);
+    },
+    showActions(): boolean {
+      return this.appliedOptions.showActions === true;
+    },
+  },
+  methods: {
+    onInputChange(value: string): void {
+      const date = parseDateTime(value, this.dateFormat);
+      let newdata: string | number = date
+        ? date.format(this.dateSaveFormat)
+        : value;
+      // if only numbers and the target is number type then convert (this will support when we want year as an integer/number)
+      if (
+        (this.control.schema.type === 'integer' ||
+          this.control.schema.type === 'number') &&
+        /^[\d]*$/.test(newdata)
+      ) {
+        newdata = parseInt(value, 10) || newdata;
+      }
+      if (this.adaptValue(newdata) !== this.control.data) {
+        this.onChange(newdata);
+      }
+    },
+    onPickerChange(value: Date): void {
+      const date = parseDateTime(value, undefined);
+      let newdata: string | number | undefined = date
+        ? date.format(this.dateSaveFormat)
+        : undefined;
+      // check if is is only year and the target type is number or integer
+      if (
+        newdata &&
+        (this.control.schema.type === 'integer' ||
+          this.control.schema.type === 'number') &&
+        /^[\d]*$/.test(newdata)
+      ) {
+        newdata = parseInt(newdata, 10) || newdata;
+      }
+      this.onChange(newdata);
+    },
+    clear(): void {
+      this.onChange(null);
+    },
+    onYear(_year: number): void {
+      if (this.viewMode === 'year') {
+        //this.pickerValue = `${year}`;
+        if (!this.showActions) {
+          //this.okHandler();
+        }
+      }
+    },
   },
 });
 
