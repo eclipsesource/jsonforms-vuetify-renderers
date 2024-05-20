@@ -8,7 +8,7 @@
           :inline="inline"
           :offsetX="offsetX"
           :offsetY="offsetY"
-          :overlap="overlap"
+          :floating="floating"
         >
           <template v-slot:badge>
             {{ errors.length }}
@@ -72,7 +72,7 @@ export default defineComponent({
       type: [Number, String],
       default: undefined,
     },
-    overlap: {
+    floating: {
       type: Boolean,
       default: false,
     },
@@ -97,7 +97,7 @@ export default defineComponent({
               labels: [
                 createLabelDescriptionFrom(
                   createControlElement(errorObject.instancePath),
-                  errorObject.schema as JsonSchema
+                  errorObject.schema as JsonSchema,
                 ).text,
               ],
               message: errorObject.message,
@@ -106,8 +106,8 @@ export default defineComponent({
             error[index].labels.push(
               createLabelDescriptionFrom(
                 createControlElement(errorObject.instancePath),
-                errorObject.schema as JsonSchema
-              ).text
+                errorObject.schema as JsonSchema,
+              ).text,
             );
           }
         }

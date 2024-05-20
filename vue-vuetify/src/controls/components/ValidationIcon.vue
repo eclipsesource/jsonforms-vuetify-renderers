@@ -1,5 +1,9 @@
 <template>
-  <validation-badge v-if="errors && errors.length > 0" :errors="errors">
+  <validation-badge
+    v-if="errors && errors.length > 0"
+    :errors="errors"
+    floating
+  >
     <v-icon color="error">mdi-alert-circle-outline</v-icon>
   </validation-badge>
 </template>
