@@ -20,7 +20,7 @@
         <v-tooltip bottom>
           <template v-slot:activator="{ props }">
             <v-btn
-              fab
+              icon
               variant="text"
               elevation="0"
               small
@@ -56,7 +56,7 @@
             <template v-slot:activator="{ props }">
               <v-btn
                 v-bind="props"
-                fab
+                icon
                 variant="text"
                 elevation="0"
                 small
