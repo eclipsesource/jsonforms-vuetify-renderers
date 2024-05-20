@@ -5,12 +5,11 @@
         <v-toolbar-title :class="styles.arrayList.label">{{
           computedLabel
         }}</v-toolbar-title>
+        <v-spacer></v-spacer>
         <validation-icon
           v-if="control.childErrors.length > 0"
           :errors="control.childErrors"
         />
-        <v-spacer></v-spacer>
-
         <v-tooltip bottom>
           <template v-slot:activator="{ props }">
             <v-btn

@@ -5,6 +5,7 @@
         <v-toolbar-title :class="styles.arrayList.label">{{
           computedLabel
         }}</v-toolbar-title>
+        <v-spacer></v-spacer>
         <validation-icon
           v-if="
             control.childErrors.length > 0 &&
@@ -13,7 +14,6 @@
           :errors="control.childErrors"
           :class="styles.arrayList.validationIcon"
         />
-        <v-spacer></v-spacer>
         <slot
           name="toolbar-elements"
           :labels="translatedLabels"
