@@ -169,7 +169,7 @@
         </v-list>
       </v-col>
       <v-col v-if="selectedIndex === undefined" class="flex-grow-1">
-        <span class="text-h6">No Selection</span>
+        <span class="text-h6">{{ t('No Selection', 'No Selection') }}</span>
       </v-col>
       <v-col
         v-else

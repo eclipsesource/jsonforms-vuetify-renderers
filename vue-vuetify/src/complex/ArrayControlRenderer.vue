@@ -32,7 +32,11 @@
               <v-icon>mdi-plus</v-icon>
             </v-btn>
           </template>
-          {{ `Add to ${control.label}` }}
+          {{
+            t('Add to ${controlLabel}', 'Add to ${controlLabel}', {
+              controlLabel: control.label,
+            })
+          }}
         </v-tooltip>
       </v-toolbar>
     </v-card-title>
@@ -109,7 +113,7 @@
                         <v-icon class="notranslate">mdi-arrow-up</v-icon>
                       </v-btn>
                     </template>
-                    Move Up
+                    {{ t('Move Up', 'Move Up') }}
                   </v-tooltip>
                   <v-tooltip bottom>
                     <template v-slot:activator="{ props }">
@@ -128,7 +132,7 @@
                         <v-icon class="notranslate">mdi-arrow-down</v-icon>
                       </v-btn>
                     </template>
-                    Move Down
+                    {{ t('Move Down', 'Move Down') }}
                   </v-tooltip>
                   <v-tooltip bottom>
                     <template v-slot:activator="{ props }">
@@ -152,7 +156,7 @@
                         <v-icon class="notranslate">mdi-delete</v-icon>
                       </v-btn>
                     </template>
-                    Delete
+                    {{ t('Delete', 'Delete') }}
                   </v-tooltip>
                 </td>
               </tr>
@@ -161,7 +165,7 @@
         </v-row>
       </v-container>
       <v-container v-if="dataLength === 0" :class="styles.arrayList.noData">
-        No data
+        {{ t('No data', 'No data') }}
       </v-container>
     </v-card-text>
   </v-card>
@@ -189,7 +193,7 @@ import {
   useJsonFormsArrayControl,
   RendererProps,
 } from '@jsonforms/vue';
-import { useVuetifyArrayControl } from '../util';
+import { useTranslator, useVuetifyArrayControl } from '../util';
 import {
   VCard,
   VCardTitle,
@@ -234,7 +238,9 @@ const controlRenderer = defineComponent({
     ...rendererProps<ControlElement>(),
   },
   setup(props: RendererProps<ControlElement>) {
-    return useVuetifyArrayControl(useJsonFormsArrayControl(props));
+    const t = useTranslator();
+
+    return { ...useVuetifyArrayControl(useJsonFormsArrayControl(props)), t };
   },
   computed: {
     arraySchema(): JsonSchema | undefined {
