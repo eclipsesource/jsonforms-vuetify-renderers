@@ -51,7 +51,7 @@
             :renderers="control.renderers"
             :cells="control.cells"
         /></v-col>
-        <v-col v-if="control.enabled" class="shrink">
+        <v-col v-if="control.enabled" class="flex-shrink-1">
           <v-tooltip bottom>
             <template v-slot:activator="{ props }">
               <v-btn
