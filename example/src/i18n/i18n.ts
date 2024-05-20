@@ -5,7 +5,7 @@ import memoize from 'lodash/memoize';
 
 export const createTranslator = (
   locale: string,
-  translations?: Record<string, any>
+  translations?: Record<string, any>,
 ): Translator => {
   let localeTranslations = translations ? translations[locale] : undefined;
 
@@ -18,15 +18,13 @@ export const createTranslator = (
   const translate = (
     id: string,
     defaultMessage: string | undefined,
-    values?: any
+    values?: any,
   ): string | undefined => {
-    if (!localeTranslations) return defaultMessage;
-
-    const message = get(localeTranslations, id);
+    const message = get(localeTranslations, id, defaultMessage);
     if (message && values) {
-      return translateWithParams(message, values) ?? defaultMessage;
+      return translateWithParams(message, values);
     }
-    return message ?? defaultMessage;
+    return message;
   };
 
   return translate as Translator;
@@ -36,7 +34,7 @@ const translateWithParams = memoize(templateToMessage);
 
 function templateToMessage(
   templateMessage: string,
-  params: Record<string, string | number> = {}
+  params: Record<string, string | number> = {},
 ): string {
   const compiled = template(templateMessage, {
     interpolate: /\${([\s\S]+?)}/g, // ${myVar}

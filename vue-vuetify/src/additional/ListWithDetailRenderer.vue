@@ -38,17 +38,24 @@
                 <v-icon>mdi-plus</v-icon>
               </v-btn>
             </template>
-            {{ `Add to ${control.label}` }}
+
+            {{
+              t('Add to ${controlLabel}', 'Add to ${controlLabel}', {
+                controlLabel: control.label,
+              })
+            }}
           </v-tooltip>
         </v-toolbar>
       </v-col>
     </v-row>
     <v-row v-if="dataLength === 0" :class="styles.listWithDetail.noData">
-      <v-col>No data</v-col>
+      <v-col>
+        {{ t('No data', 'No data') }}
+      </v-col>
     </v-row>
     <v-row v-else>
       <v-col class="shrink pa-0">
-        <v-list-item-group v-model="selectedIndex">
+        <v-list v-model:selected="selectedIndex">
           <v-virtual-scroll
             :items="control.data"
             :item-height="64"
@@ -114,7 +121,7 @@
                         <v-icon class="notranslate">mdi-arrow-up</v-icon>
                       </v-btn>
                     </template>
-                    Move Up
+                    {{ t('Move Up', 'Move Up') }}
                   </v-tooltip>
                 </v-list-item-action>
                 <v-list-item-action v-if="appliedOptions.showSortButtons">
@@ -135,7 +142,7 @@
                         <v-icon class="notranslate">mdi-arrow-down</v-icon>
                       </v-btn>
                     </template>
-                    Move Down
+                    {{ t('Move Down', 'Move Down') }}
                   </v-tooltip>
                 </v-list-item-action>
                 <v-list-item-action>
@@ -162,13 +169,13 @@
                         <v-icon class="notranslate">mdi-delete</v-icon>
                       </v-btn>
                     </template>
-                    Delete
+                    {{ t('Delete', 'Delete') }}
                   </v-tooltip>
                 </v-list-item-action>
               </v-list-item>
             </template>
           </v-virtual-scroll>
-        </v-list-item-group>
+        </v-list>
       </v-col>
       <v-col v-if="selectedIndex === undefined" class="grow">
         <span class="text-h6">No Selection</span>
@@ -209,15 +216,12 @@ import {
   RendererProps,
   useJsonFormsArrayControl,
 } from '@jsonforms/vue';
-import { useVuetifyArrayControl } from '../util';
+import { useTranslator, useVuetifyArrayControl } from '../util';
 import {
   VList,
-  VListItemGroup,
   VListItem,
   VListItemTitle,
-  VListItemContent,
   VListItemAction,
-  VListItemAvatar,
   VRow,
   VCol,
   VContainer,
@@ -242,12 +246,9 @@ const controlRenderer = defineComponent({
   components: {
     DispatchRenderer,
     VList,
-    VListItemGroup,
     VListItem,
     VListItemTitle,
-    VListItemContent,
     VListItemAction,
-    VListItemAvatar,
     VAvatar,
     VRow,
     VCol,
@@ -271,10 +272,12 @@ const controlRenderer = defineComponent({
   },
   setup(props: RendererProps<ControlElement>) {
     const selectedIndex = ref<number | undefined>(undefined);
+    const t = useTranslator();
 
     return {
       ...useVuetifyArrayControl(useJsonFormsArrayControl(props)),
       selectedIndex,
+      t,
     };
   },
   computed: {
