@@ -60,6 +60,7 @@
                   }
                 "
                 v-bind="vuetifyProps('v-date-picker')"
+                :title="computedLabel"
                 :min="minDate"
                 :max="maxDate"
               >
