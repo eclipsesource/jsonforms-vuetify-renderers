@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import { useLocalStorage, type RemovableRef } from '@vueuse/core';
+import type { ValidationMode } from '@jsonforms/core';
 
 export interface AppState {
   rtl: boolean;
@@ -11,7 +12,7 @@ export interface AppState {
   settings: boolean;
   jsonforms: {
     readonly: boolean;
-    validationMode: 'ValidateAndShow' | 'ValidateAndHide' | 'NoValidation';
+    validationMode: ValidationMode;
     config: {
       restrict: boolean;
       trim: boolean;
