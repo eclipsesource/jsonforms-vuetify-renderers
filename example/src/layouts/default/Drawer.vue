@@ -2,7 +2,7 @@
 import { examples } from '@/examples';
 import { useAppStore } from '@/stores/app';
 import { useRoute, useRouter } from 'vue-router';
-import vuetifyLogo from '@/assets/vuetify.svg';
+import VuetifyLogo from '@/assets/vuetify.vue';
 
 const appStore = useAppStore();
 const route = useRoute();
@@ -16,13 +16,7 @@ const router = useRouter();
   >
     <v-list-item>
       <template v-slot:prepend>
-        <v-img
-          :src="vuetifyLogo"
-          max-height="64"
-          max-width="64"
-          min-height="64"
-          min-width="64"
-        />
+        <VuetifyLogo width="40" height="40" />
       </template>
       <v-list-item-title class="text-h6"> Examples </v-list-item-title>
       <v-list-item-subtitle> Vuetify Renderers </v-list-item-subtitle>

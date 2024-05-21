@@ -1,19 +1,15 @@
-<script setup lang="ts">
-import { ref, watch } from 'vue';
-import { useTheme } from 'vuetify';
-
-const theme = useTheme();
-const svg = (fill: string) => `<svg
+<template>
+  <svg
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 150 100"
-    width="300"
-    height="200"
+    :width="width"
+    :height="height"
     preserveAspectRatio="xMidYMid meet"
   >
     <g
       xmlns="http://www.w3.org/2000/svg"
       transform="translate(0.000000,95.000000) scale(0.100000,-0.100000)"
-      fill="${fill}"
+      :fill="primaryColor"
       stroke="none"
       id="g6"
     >
@@ -47,28 +43,17 @@ const svg = (fill: string) => `<svg
       />
     </g>
   </svg>
-`;
-
-const svgDataURL = ref(
-  `data:image/svg+xml;base64,${btoa(svg(theme.current.value.colors.primary))}`
-);
-
-watch(
-  () => theme.current.value.colors.primary,
-  () => {
-    svgDataURL.value = `data:image/svg+xml;base64,${btoa(
-      svg(theme.current.value.colors.primary)
-    )}`;
-  }
-);
-</script>
-
-<template>
-  <v-img
-    :src="svgDataURL"
-    max-height="64"
-    max-width="64"
-    min-height="64"
-    min-width="64"
-  />
 </template>
+
+<script lang="ts" setup>
+import { computed } from 'vue';
+import { useTheme } from 'vuetify';
+
+const theme = useTheme();
+const props = defineProps<{
+  width: string | number;
+  height: string | number;
+}>();
+
+const primaryColor = computed(() => theme.current.value.colors.primary);
+</script>

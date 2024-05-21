@@ -16,7 +16,7 @@ const appStore = useAppStore();
     <v-toolbar-title>
       <v-container fill-height fluid
         ><v-row align="center" justify="center" dense>
-          <JsonLogo></JsonLogo>
+          <JsonLogo width="40" height="40"></JsonLogo>
           <v-col>JSON Forms </v-col>
         </v-row>
       </v-container>

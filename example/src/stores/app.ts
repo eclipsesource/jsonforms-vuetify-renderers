@@ -40,7 +40,7 @@ export const useAppStore = defineStore('app', () => {
     settings: false,
     jsonforms: {
       readonly: false,
-      validationMode: 'ValidateAndShow',
+      validationMode: 'ValidateAndShow' as ValidationMode,
       config: {
         restrict: true,
         trim: false,
