@@ -22,7 +22,7 @@
       :true-value="true"
       :false-value="false"
       v-bind="vuetifyProps('v-switch')"
-      @change="onChange"
+      @update:modelValue="onChange"
       @focus="isFocused = true"
       @blur="isFocused = false"
     />
@@ -58,10 +58,7 @@ const controlRenderer = defineComponent({
     ...rendererProps<ControlElement>(),
   },
   setup(props: RendererProps<ControlElement>) {
-    return useVuetifyControl(
-      useJsonFormsControl(props),
-      (newValue) => newValue.target.checked || false,
-    );
+    return useVuetifyControl(useJsonFormsControl(props));
   },
 });
 

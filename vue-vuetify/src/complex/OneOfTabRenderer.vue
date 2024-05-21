@@ -6,9 +6,8 @@
       :path="path"
     />
 
-    <v-tabs v-model="tabIndex">
+    <v-tabs v-model="tabIndex" @update:modelValue="handleTabChange">
       <v-tab
-        @change="handleTabChange"
         v-for="(oneOfRenderInfo, oneOfIndex) in oneOfRenderInfos"
         :key="`${control.path}-${oneOfIndex}`"
       >

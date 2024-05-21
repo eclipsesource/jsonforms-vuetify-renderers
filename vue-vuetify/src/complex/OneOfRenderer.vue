@@ -20,7 +20,7 @@
       :error-messages="control.errors"
       :clearable="control.enabled"
       :items="indexedOneOfRenderInfos"
-      @change="handleSelectChange"
+      @update:modelValue="handleSelectChange"
       :item-title="(item) => t(item.label, item.label)"
       item-value="index"
       v-model="selectIndex"

@@ -11,7 +11,7 @@
           :disabled="!control.enabled"
           :indeterminate="control.data === undefined"
           v-bind="vuetifyProps(`v-checkbox[${o.value}]`)"
-          @change="(value) => toggle(o.value)"
+          @update:modelValue="(value) => toggle(o.value)"
         ></v-checkbox>
       </v-col>
     </v-row>
@@ -93,13 +93,13 @@ export const entry: JsonFormsRendererRegistryEntry = {
           (schema) =>
             hasType(schema, 'array') &&
             !Array.isArray(schema.items) &&
-            schema.uniqueItems === true
+            schema.uniqueItems === true,
         ),
         schemaSubPathMatches('items', (schema) => {
           return hasOneOfItems(schema) || hasEnumItems(schema);
-        })
-      )
-    )
+        }),
+      ),
+    ),
   ),
 };
 </script>

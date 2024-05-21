@@ -29,7 +29,7 @@
       :items="items"
       :clearable="control.enabled"
       v-bind="vuetifyProps('v-combobox')"
-      @change="onChange"
+      @update:modelValue="onChange"
       @focus="isFocused = true"
       @blur="isFocused = false"
     />
