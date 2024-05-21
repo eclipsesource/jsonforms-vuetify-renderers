@@ -62,8 +62,6 @@
                 v-bind="vuetifyProps('v-date-picker')"
                 :min="minDate"
                 :max="maxDate"
-                :view-mode="viewMode"
-                @click:year="onYear"
               >
                 <template v-slot:actions v-if="showActions">
                   <component :is="actions"></component>
@@ -146,14 +144,6 @@ const controlRenderer = defineComponent({
         return this.appliedOptions.pickerIcon;
       }
 
-      if (this.viewMode === 'year') {
-        return 'mdi-alpha-y-box-outline';
-      }
-
-      if (this.viewMode === 'months') {
-        return 'mdi-calendar-month';
-      }
-
       return 'mdi-calendar';
     },
     dateFormat(): string {
@@ -172,15 +162,6 @@ const controlRenderer = defineComponent({
         this.dateFormat,
         ...JSON_SCHEMA_DATE_FORMATS,
       ];
-    },
-    viewMode(): 'month' | 'months' | 'year' {
-      if (!this.dateFormat.includes('M') && !this.dateFormat.includes('D')) {
-        return 'year';
-      }
-      if (!this.dateFormat.includes('D')) {
-        return 'months';
-      }
-      return 'month';
     },
     minDate(): string | undefined {
       if (typeof this.vuetifyProps('v-date-picker').min === 'string') {
@@ -224,19 +205,13 @@ const controlRenderer = defineComponent({
     },
     inputValue(): string | undefined {
       const value = this.control.data;
-      const date = parseDateTime(
-        typeof value === 'number' ? value.toString() : value,
-        this.formats,
-      );
+      const date = parseDateTime(value, this.formats);
       return date ? date.format(this.dateFormat) : value;
     },
     pickerValue: {
       get(): Date | undefined {
         const value = this.control.data;
-        const date = parseDateTime(
-          typeof value === 'number' ? value.toString() : value,
-          this.formats,
-        );
+        const date = parseDateTime(value, this.formats);
         // show only valid values
         return date ? date.toDate() : undefined;
       },
@@ -270,14 +245,7 @@ const controlRenderer = defineComponent({
       let newdata: string | number = date
         ? date.format(this.dateSaveFormat)
         : value;
-      // if only numbers and the target is number type then convert (this will support when we want year as an integer/number)
-      if (
-        (this.control.schema.type === 'integer' ||
-          this.control.schema.type === 'number') &&
-        /^[\d]*$/.test(newdata)
-      ) {
-        newdata = parseInt(value, 10) || newdata;
-      }
+
       if (this.adaptValue(newdata) !== this.control.data) {
         this.onChange(newdata);
       }
@@ -287,27 +255,11 @@ const controlRenderer = defineComponent({
       let newdata: string | number | undefined = date
         ? date.format(this.dateSaveFormat)
         : undefined;
-      // check if is is only year and the target type is number or integer
-      if (
-        newdata &&
-        (this.control.schema.type === 'integer' ||
-          this.control.schema.type === 'number') &&
-        /^[\d]*$/.test(newdata)
-      ) {
-        newdata = parseInt(newdata, 10) || newdata;
-      }
+
       this.onChange(newdata);
     },
     clear(): void {
       this.onChange(null);
-    },
-    onYear(_year: number): void {
-      if (this.viewMode === 'year') {
-        //this.pickerValue = `${year}`;
-        if (!this.showActions) {
-          //this.okHandler();
-        }
-      }
     },
   },
 });

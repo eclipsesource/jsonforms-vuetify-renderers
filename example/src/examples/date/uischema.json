@@ -37,32 +37,12 @@
                   "elements": [
                     {
                       "type": "Control",
-                      "scope": "#/properties/stringDateFull",
+                      "scope": "#/properties/stringDate",
                       "label": "Full Date",
                       "options": {
                         "format": "date",
                         "dateFormat": "MM/DD/YYYY",
                         "dateSaveFormat": "MM/DD/YYYY"
-                      }
-                    },
-                    {
-                      "type": "Control",
-                      "scope": "#/properties/stringDate",
-                      "label": "Year and Month only",
-                      "options": {
-                        "format": "date",
-                        "dateFormat": "YYYY-MM",
-                        "dateSaveFormat": "YYYY-MM"
-                      }
-                    },
-                    {
-                      "type": "Control",
-                      "scope": "#/properties/stringYear",
-                      "label": "Year only",
-                      "options": {
-                        "format": "date",
-                        "dateFormat": "YYYY",
-                        "dateSaveFormat": "YYYY"
                       }
                     }
                   ]
@@ -110,34 +90,12 @@
                   "elements": [
                     {
                       "type": "Control",
-                      "scope": "#/properties/stringDateFull",
+                      "scope": "#/properties/stringDate",
                       "label": "Full Date",
                       "options": {
                         "format": "date",
                         "dateFormat": "MM/DD/YYYY",
                         "dateSaveFormat": "MM/DD/YYYY",
-                        "showActions": true
-                      }
-                    },
-                    {
-                      "type": "Control",
-                      "scope": "#/properties/stringDate",
-                      "label": "Year and Month only",
-                      "options": {
-                        "format": "date",
-                        "dateFormat": "YYYY-MM",
-                        "dateSaveFormat": "YYYY-MM",
-                        "showActions": true
-                      }
-                    },
-                    {
-                      "type": "Control",
-                      "scope": "#/properties/stringYear",
-                      "label": "Year only",
-                      "options": {
-                        "format": "date",
-                        "dateFormat": "YYYY",
-                        "dateSaveFormat": "YYYY",
                         "showActions": true
                       }
                     }
