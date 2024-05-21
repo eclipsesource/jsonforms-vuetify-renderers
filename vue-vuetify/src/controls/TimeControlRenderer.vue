@@ -67,8 +67,6 @@
                 :use-seconds="useSeconds"
                 :format="ampm ? 'ampm' : '24hr'"
                 :ampm-in-title="ampm ? true : false"
-                @click:minute="onMinute"
-                @click:second="onSecond"
               >
                 <template v-slot:actions v-if="showActions">
                   <component :is="actions"></component>
@@ -103,6 +101,7 @@ import {
   VMenu,
   VSpacer,
   VTextField,
+  VConfirmEdit,
 } from 'vuetify/components';
 import { VTimePicker } from 'vuetify/labs/VTimePicker';
 
@@ -136,6 +135,7 @@ const controlRenderer = defineComponent({
     VIcon,
     VSpacer,
     VBtn,
+    VConfirmEdit,
   },
   directives: { DisabledIconFocus },
   props: {
@@ -309,20 +309,6 @@ const controlRenderer = defineComponent({
     onPickerChange(value: string): void {
       const time = parseDateTime(value, this.useSeconds ? 'HH:mm:ss' : 'HH:mm');
       this.onChange(time ? time.format(this.timeSaveFormat) : value);
-    },
-    okHandler(): void {
-      (this.$refs.menu as any).save(this.pickerValue);
-      this.showMenu = false;
-    },
-    onMinute(): void {
-      if (!this.showActions && !this.useSeconds) {
-        this.okHandler();
-      }
-    },
-    onSecond(): void {
-      if (!this.showActions && this.useSeconds) {
-        this.okHandler();
-      }
     },
     clear(): void {
       this.onChange(null);

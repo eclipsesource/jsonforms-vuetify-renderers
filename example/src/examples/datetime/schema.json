@@ -7,6 +7,15 @@
     },
     "stringDateTime": {
       "type": "string"
+    },
+    "stringDateTimeFull": {
+      "type": "string"
+    },
+    "stringDateTimeWithZone": {
+      "type": "string"
+    },
+    "stringDateTimeFullWithZone": {
+      "type": "string"
     }
   }
 }
