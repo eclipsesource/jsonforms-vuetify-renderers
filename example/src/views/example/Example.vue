@@ -41,7 +41,7 @@ const myStyles = mergeStyles(defaultStyles, {
 
 provide('styles', myStyles);
 
-const example = ref<Example | undefined>(undefined);
+const example = shallowRef<Example | undefined>(undefined);
 const ajv = createAjv();
 const activeTab = ref(0);
 const errors = ref<
@@ -53,6 +53,7 @@ const snackbarTimeout = ref(3000);
 
 const route = useRoute();
 const formonly = computed(() => route.query?.view === 'form-only');
+
 const allRenderers = computed(() =>
   Object.freeze(
     (example.value?.input.renderers ?? []).concat(extendedVuetifyRenderers),
