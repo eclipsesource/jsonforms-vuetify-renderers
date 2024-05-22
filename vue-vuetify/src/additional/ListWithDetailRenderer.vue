@@ -58,7 +58,6 @@
           <v-virtual-scroll
             :items="control.data"
             :item-height="64"
-            bench="4"
             :min-height="`${4 * 64}`"
             :max-height="`${6 * 64}`"
             :min-width="appliedOptions.showSortButtons ? 350 : 250"
