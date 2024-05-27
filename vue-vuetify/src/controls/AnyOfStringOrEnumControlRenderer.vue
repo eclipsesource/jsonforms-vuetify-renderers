@@ -29,7 +29,7 @@
       :items="items"
       :clearable="control.enabled"
       v-bind="vuetifyProps('v-combobox')"
-      @update:modelValue="onChange"
+      @update:model-value="onChange"
       @focus="isFocused = true"
       @blur="isFocused = false"
     />
@@ -38,19 +38,19 @@
 
 <script lang="ts">
 import {
-  ControlElement,
-  JsonFormsRendererRegistryEntry,
+  type ControlElement,
+  type JsonFormsRendererRegistryEntry,
   rankWith,
   and,
   uiTypeIs,
   schemaMatches,
-  JsonSchema,
+  type JsonSchema,
 } from '@jsonforms/core';
 import { defineComponent } from 'vue';
 import {
   rendererProps,
   useJsonFormsControl,
-  RendererProps,
+  type RendererProps,
 } from '@jsonforms/vue';
 import { default as ControlWrapper } from './ControlWrapper.vue';
 import { useVuetifyControl } from '../util';

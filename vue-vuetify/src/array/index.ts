@@ -1,5 +1,5 @@
 import {
-  JsonFormsRendererRegistryEntry,
+  type JsonFormsRendererRegistryEntry,
   rankWith,
   schemaTypeIs,
 } from '@jsonforms/core';

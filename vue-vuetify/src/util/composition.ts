@@ -3,7 +3,7 @@ import {
   computeLabel,
   getFirstPrimitiveProp,
   isDescriptionHidden,
-  JsonFormsSubStates,
+  type JsonFormsSubStates,
   Resolve,
 } from '@jsonforms/core';
 import cloneDeep from 'lodash/cloneDeep';
@@ -12,30 +12,30 @@ import merge from 'lodash/merge';
 import get from 'lodash/get';
 import isPlainObject from 'lodash/isPlainObject';
 import { useStyles } from '../styles';
-import { computed, ComputedRef, inject, ref, provide } from 'vue';
+import { computed, type ComputedRef, inject, ref, provide } from 'vue';
 import Ajv from 'ajv';
 
 export const useControlAppliedOptions = <I extends { control: any }>(
-  input: I
+  input: I,
 ) => {
   return computed(() =>
     merge(
       {},
       cloneDeep(input.control.value.config),
-      cloneDeep(input.control.value.uischema.options)
-    )
+      cloneDeep(input.control.value.uischema.options),
+    ),
   );
 };
 
 export const useComputedLabel = <I extends { control: any }>(
   input: I,
-  appliedOptions: ComputedRef<any>
+  appliedOptions: ComputedRef<any>,
 ) => {
   return computed((): string => {
     return computeLabel(
       input.control.value.label,
       input.control.value.required,
-      !!appliedOptions.value?.hideRequiredAsterisk
+      !!appliedOptions.value?.hideRequiredAsterisk,
     );
   });
 };
@@ -49,8 +49,8 @@ export const useVuetifyLabel = <I extends { label: any }>(input: I) => {
     merge(
       {},
       cloneDeep(input.label.value.config),
-      cloneDeep(input.label.value.uischema.options)
-    )
+      cloneDeep(input.label.value.uischema.options),
+    ),
   );
   const vuetifyProps = (path: string) => {
     const props = get(appliedOptions.value?.vuetify, path);
@@ -69,11 +69,11 @@ export const useVuetifyLabel = <I extends { label: any }>(input: I) => {
  * Adds styles, isFocused, appliedOptions and onChange
  */
 export const useVuetifyControl = <
-  I extends { control: any; handleChange: any }
+  I extends { control: any; handleChange: any },
 >(
   input: I,
   adaptValue: (target: any) => any = (v) => v,
-  debounceWait?: number
+  debounceWait?: number,
 ) => {
   const changeEmitter =
     typeof debounceWait === 'number'
@@ -92,7 +92,7 @@ export const useVuetifyControl = <
       input.control.value.visible,
       input.control.value.description,
       isFocused.value,
-      !!appliedOptions.value?.showUnfocusedDescription
+      !!appliedOptions.value?.showUnfocusedDescription,
     );
   };
 
@@ -130,13 +130,13 @@ export const useTranslator = () => {
 
   if (!jsonforms) {
     throw new Error(
-      "'jsonforms couldn't be injected. Are you within JSON Forms?"
+      "'jsonforms couldn't be injected. Are you within JSON Forms?",
     );
   }
 
   if (!jsonforms.i18n || !jsonforms.i18n.translate) {
     throw new Error(
-      "'jsonforms i18n couldn't be injected. Are you within JSON Forms?"
+      "'jsonforms i18n couldn't be injected. Are you within JSON Forms?",
     );
   }
 
@@ -156,7 +156,7 @@ export const useVuetifyLayout = <I extends { layout: any }>(input: I) => {
     return merge(
       {},
       cloneDeep(input.layout.value.config),
-      cloneDeep(input.layout.value.uischema.options)
+      cloneDeep(input.layout.value.uischema.options),
     );
   });
 
@@ -178,7 +178,7 @@ export const useVuetifyLayout = <I extends { layout: any }>(input: I) => {
  * Adds styles, appliedOptions and childUiSchema
  */
 export const useVuetifyArrayControl = <I extends { control: any }>(
-  input: I
+  input: I,
 ) => {
   const appliedOptions = useControlAppliedOptions(input);
 
@@ -202,7 +202,7 @@ export const useVuetifyArrayControl = <I extends { control: any }>(
     }
     const labelValue = Resolve.data(
       input.control.value.data,
-      composePaths(`${index}`, childLabelProp)
+      composePaths(`${index}`, childLabelProp),
     );
     if (
       labelValue === undefined ||
@@ -227,7 +227,7 @@ export const useVuetifyArrayControl = <I extends { control: any }>(
  * Adds styles and appliedOptions
  */
 export const useVuetifyBasicControl = <I extends { control: any }>(
-  input: I
+  input: I,
 ) => {
   const appliedOptions = useControlAppliedOptions(input);
 
@@ -253,7 +253,7 @@ export const useAjv = () => {
 
   if (!jsonforms) {
     throw new Error(
-      "'jsonforms' couldn't be injected. Are you within JSON Forms?"
+      "'jsonforms' couldn't be injected. Are you within JSON Forms?",
     );
   }
 

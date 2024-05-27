@@ -10,16 +10,15 @@
 
 <script lang="ts">
 import {
-  JsonFormsRendererRegistryEntry,
+  type JsonFormsRendererRegistryEntry,
   rankWith,
   uiTypeIs,
-  LabelElement,
+  type LabelElement,
 } from '@jsonforms/core';
 import { defineComponent } from 'vue';
 import {
-  DispatchRenderer,
   rendererProps,
-  RendererProps,
+  type RendererProps,
   useJsonFormsLabel,
 } from '@jsonforms/vue';
 import { VLabel } from 'vuetify/components';
@@ -28,7 +27,6 @@ import { useVuetifyLabel } from '../util';
 const labelRenderer = defineComponent({
   name: 'label-renderer',
   components: {
-    DispatchRenderer,
     VLabel,
   },
   props: {

@@ -6,5 +6,5 @@
 
 ## Scripts
 
-- `npm run serve` to start the application
-- `npm run build` to build the application
+- `pnpm run dev` to start the application
+- `pnpm run build` to build the application

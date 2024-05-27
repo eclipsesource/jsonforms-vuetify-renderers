@@ -50,7 +50,7 @@
                 v-if="showMenu"
                 :model-value="showActions ? proxyModel.value : pickerValue"
                 @update:model-value="
-                  (val) => {
+                  (val: unknown) => {
                     if (showActions) {
                       proxyModel.value = val as Date;
                     } else {
@@ -78,17 +78,17 @@
 
 <script lang="ts">
 import {
-  ControlElement,
+  type ControlElement,
   isDateControl,
-  JsonFormsRendererRegistryEntry,
-  JsonSchema,
+  type JsonFormsRendererRegistryEntry,
+  type JsonSchema,
   rankWith,
 } from '@jsonforms/core';
 import { defineComponent, ref } from 'vue';
 
 import {
   rendererProps,
-  RendererProps,
+  type RendererProps,
   useJsonFormsControl,
 } from '@jsonforms/vue';
 import {

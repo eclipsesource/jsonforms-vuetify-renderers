@@ -6,7 +6,7 @@
       :path="path"
     />
 
-    <v-tabs v-model="tabIndex" @update:modelValue="handleTabChange">
+    <v-tabs v-model="tabIndex" @update:model-value="handleTabChange">
       <v-tab
         v-for="(oneOfRenderInfo, oneOfIndex) in oneOfRenderInfos"
         :key="`${control.path}-${oneOfIndex}`"
@@ -34,18 +34,23 @@
 
     <v-dialog v-model="dialog" persistent max-width="600" @keydown.esc="cancel">
       <v-card>
-        <v-card-title class="text-h5"> Clear form? </v-card-title>
+        <v-card-title class="text-h5">
+          {{ control.translations.clearDialogTitle }}
+        </v-card-title>
 
         <v-card-text>
-          Your data will be cleared if you navigate away from this tab. Do you
-          want to proceed?
+          {{ control.translations.clearDialogMessage }}
         </v-card-text>
 
         <v-card-actions>
           <v-spacer></v-spacer>
 
-          <v-btn variant="text" @click="cancel"> No </v-btn>
-          <v-btn variant="text" ref="confirm" @click="confirm"> Yes </v-btn>
+          <v-btn variant="text" @click="cancel">
+            {{ control.translations.clearDialogDecline }}
+          </v-btn>
+          <v-btn variant="text" ref="confirm" @click="confirm">
+            {{ control.translations.clearDialogAccept }}
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -55,19 +60,19 @@
 <script lang="ts">
 import {
   and,
-  CombinatorSubSchemaRenderInfo,
-  ControlElement,
+  type CombinatorSubSchemaRenderInfo,
+  type ControlElement,
   createCombinatorRenderInfos,
   createDefaultValue,
   isOneOfControl,
-  JsonFormsRendererRegistryEntry,
+  type JsonFormsRendererRegistryEntry,
   optionIs,
   rankWith,
 } from '@jsonforms/core';
 import {
   DispatchRenderer,
   rendererProps,
-  RendererProps,
+  type RendererProps,
   useJsonFormsOneOfControl,
 } from '@jsonforms/vue';
 import isEmpty from 'lodash/isEmpty';

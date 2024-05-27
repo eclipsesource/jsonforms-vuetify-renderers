@@ -2,7 +2,7 @@ import monaco, { type MonacoApi } from '@/core/monaco';
 import type { JsonSchema } from '@jsonforms/core';
 
 import { jsonSchemaDraft7, ruleSchema, uiSchema } from '../core/jsonschema';
-import { isEqual } from 'lodash';
+import isEqual from 'lodash/isEqual';
 
 /**
  * Register a new schema for the Json language, if it isn't already registered.

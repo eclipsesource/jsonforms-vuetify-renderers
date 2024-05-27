@@ -38,8 +38,8 @@
 
 <script lang="ts">
 import {
-  ControlElement,
-  JsonFormsRendererRegistryEntry,
+  type ControlElement,
+  type JsonFormsRendererRegistryEntry,
   rankWith,
   isStringControl,
   isMultiLineControl,
@@ -49,7 +49,7 @@ import { defineComponent } from 'vue';
 import {
   rendererProps,
   useJsonFormsControl,
-  RendererProps,
+  type RendererProps,
 } from '@jsonforms/vue';
 import { default as ControlWrapper } from './ControlWrapper.vue';
 import { useVuetifyControl } from '../util';

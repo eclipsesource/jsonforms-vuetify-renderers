@@ -22,7 +22,7 @@
                 variant="text"
                 elevation="0"
                 small
-                :aria-label="`Add to ${control.label}`"
+                :aria-label="control.translations.addTooltip"
                 v-bind="props"
                 :class="styles.listWithDetail.addButton"
                 @click="addButtonClick"
@@ -37,19 +37,14 @@
                 <v-icon>mdi-plus</v-icon>
               </v-btn>
             </template>
-
-            {{
-              t('Add to ${controlLabel}', 'Add to ${controlLabel}', {
-                controlLabel: control.label,
-              })
-            }}
+            {{ control.translations.addTooltip }}
           </v-tooltip>
         </v-toolbar>
       </v-col>
     </v-row>
     <v-row v-if="dataLength === 0" :class="styles.listWithDetail.noData">
       <v-col>
-        {{ t('No data', 'No data') }}
+        {{ control.translations.noDataMessage }}
       </v-col>
     </v-row>
     <v-row v-else>
@@ -107,15 +102,15 @@
                         elevation="0"
                         small
                         class="ma-0"
-                        aria-label="Move up"
+                        :aria-label="control.translations.upAriaLabel"
                         :disabled="index <= 0 || !control.enabled"
                         :class="styles.listWithDetail.itemMoveUp"
-                        @click.native="moveUpClick($event, index)"
+                        @click="moveUpClick($event, index)"
                       >
                         <v-icon class="notranslate">mdi-arrow-up</v-icon>
                       </v-btn>
                     </template>
-                    {{ t('Move Up', 'Move Up') }}
+                    {{ control.translations.up }}
                   </v-tooltip>
                   <v-tooltip bottom v-if="appliedOptions.showSortButtons">
                     <template v-slot:activator="{ props }">
@@ -126,15 +121,15 @@
                         elevation="0"
                         small
                         class="ma-0"
-                        aria-label="Move down"
+                        :aria-label="control.translations.downAriaLabel"
                         :disabled="index >= dataLength - 1 || !control.enabled"
                         :class="styles.listWithDetail.itemMoveDown"
-                        @click.native="moveDownClick($event, index)"
+                        @click="moveDownClick($event, index)"
                       >
                         <v-icon class="notranslate">mdi-arrow-down</v-icon>
                       </v-btn>
                     </template>
-                    {{ t('Move Down', 'Move Down') }}
+                    {{ control.translations.down }}
                   </v-tooltip>
                   <v-tooltip bottom>
                     <template v-slot:activator="{ props }">
@@ -145,9 +140,9 @@
                         elevation="0"
                         small
                         class="ma-0"
-                        aria-label="Delete"
+                        :aria-label="control.translations.removeAriaLabel"
                         :class="styles.listWithDetail.itemDelete"
-                        @click.native="removeItemsClick($event, [index])"
+                        @click="removeItemsClick($event, [index])"
                         :disabled="
                           !control.enabled ||
                           (appliedOptions.restrict &&
@@ -159,7 +154,7 @@
                         <v-icon class="notranslate">mdi-delete</v-icon>
                       </v-btn>
                     </template>
-                    {{ t('Delete', 'Delete') }}
+                    {{ control.translations.removeTooltip }}
                   </v-tooltip>
                 </template>
               </v-list-item>
@@ -168,7 +163,7 @@
         </v-list>
       </v-col>
       <v-col v-if="selectedIndex === undefined" class="flex-grow-1">
-        <span class="text-h6">{{ t('No Selection', 'No Selection') }}</span>
+        <span class="text-h6">{{ control.translations.noSelection }}</span>
       </v-col>
       <v-col
         v-else
@@ -189,8 +184,8 @@
 
 <script lang="ts">
 import {
-  JsonFormsRendererRegistryEntry,
-  ControlElement,
+  type JsonFormsRendererRegistryEntry,
+  type ControlElement,
   rankWith,
   composePaths,
   createDefaultValue,
@@ -198,23 +193,22 @@ import {
   uiTypeIs,
   isObjectArray,
   findUISchema,
-  UISchemaElement,
+  type UISchemaElement,
   Resolve,
-  JsonSchema,
+  type JsonSchema,
 } from '@jsonforms/core';
 import { defineComponent, ref } from 'vue';
 import {
   DispatchRenderer,
   rendererProps,
-  RendererProps,
+  type RendererProps,
   useJsonFormsArrayControl,
 } from '@jsonforms/vue';
-import { useTranslator, useVuetifyArrayControl } from '../util';
+import { useVuetifyArrayControl } from '../util';
 import {
   VList,
   VListItem,
   VListItemTitle,
-  VListItemAction,
   VRow,
   VCol,
   VContainer,
@@ -225,14 +219,10 @@ import {
   VBtn,
   VAvatar,
   VSpacer,
-  VExpansionPanels,
-  VExpansionPanel,
-  VExpansionPanelTitle,
-  VExpansionPanelText,
   VVirtualScroll,
 } from 'vuetify/components';
 import { ValidationIcon, ValidationBadge } from '../controls/components/index';
-import { ErrorObject } from 'ajv';
+import type { ErrorObject } from 'ajv';
 
 const controlRenderer = defineComponent({
   name: 'list-with-detail-renderer',
@@ -241,7 +231,6 @@ const controlRenderer = defineComponent({
     VList,
     VListItem,
     VListItemTitle,
-    VListItemAction,
     VAvatar,
     VRow,
     VCol,
@@ -251,10 +240,6 @@ const controlRenderer = defineComponent({
     VBtn,
     VIcon,
     VSpacer,
-    VExpansionPanels,
-    VExpansionPanel,
-    VExpansionPanelTitle,
-    VExpansionPanelText,
     VContainer,
     VVirtualScroll,
     ValidationIcon,
@@ -265,12 +250,10 @@ const controlRenderer = defineComponent({
   },
   setup(props: RendererProps<ControlElement>) {
     const selectedIndex = ref<number | undefined>(undefined);
-    const t = useTranslator();
 
     return {
       ...useVuetifyArrayControl(useJsonFormsArrayControl(props)),
       selectedIndex,
-      t,
     };
   },
   computed: {

@@ -30,9 +30,10 @@ Use Node v18.19+
 - Remove build artifacts: `pnpm run clean`
 - Run example app: `pnpm run example:dev`
 - Build example app for production: `pnpm run example:build`
+- Lint: `pnpm run lint`
 
 Recommendations:
 
 - For development use `pnpm run watch` combined with `pnpm run example:dev`.
 - To test production use `pnpm run build` combined with `pnpm run example:build`.
-  Then serve the built application from `example/dist` with a web server of your choice, e.g. `npx http-server example/dist`.
+  Then serve the built application from `example/dist` with a web server of your choice, e.g. `npx http-server example/dist` or use `pnpm run example:preview`

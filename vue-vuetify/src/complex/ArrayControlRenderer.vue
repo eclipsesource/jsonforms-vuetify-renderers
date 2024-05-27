@@ -17,7 +17,7 @@
               variant="text"
               elevation="0"
               small
-              :aria-label="`Add to ${control.label}`"
+              :aria-label="control.translations.addTooltip"
               v-bind="props"
               :class="styles.arrayList.addButton"
               :disabled="
@@ -32,11 +32,7 @@
               <v-icon>mdi-plus</v-icon>
             </v-btn>
           </template>
-          {{
-            t('Add to ${controlLabel}', 'Add to ${controlLabel}', {
-              controlLabel: control.label,
-            })
-          }}
+          {{ control.translations.addTooltip }}
         </v-tooltip>
       </v-toolbar>
     </v-card-title>
@@ -108,15 +104,15 @@
                         variant="text"
                         elevation="0"
                         small
-                        aria-label="Move up"
+                        :aria-label="control.translations.upAriaLabel"
                         :disabled="index <= 0 || !control.enabled"
                         :class="styles.arrayList.itemMoveUp"
-                        @click.native="moveUpClick($event, index)"
+                        @click="moveUpClick($event, index)"
                       >
                         <v-icon class="notranslate">mdi-arrow-up</v-icon>
                       </v-btn>
                     </template>
-                    {{ t('Move Up', 'Move Up') }}
+                    {{ control.translations.up }}
                   </v-tooltip>
                   <v-tooltip bottom>
                     <template v-slot:activator="{ props }">
@@ -127,15 +123,15 @@
                         variant="text"
                         elevation="0"
                         small
-                        aria-label="Move down"
+                        :aria-label="control.translations.downAriaLabel"
                         :disabled="index >= dataLength - 1 || !control.enabled"
                         :class="styles.arrayList.itemMoveDown"
-                        @click.native="moveDownClick($event, index)"
+                        @click="moveDownClick($event, index)"
                       >
                         <v-icon class="notranslate">mdi-arrow-down</v-icon>
                       </v-btn>
                     </template>
-                    {{ t('Move Down', 'Move Down') }}
+                    {{ control.translations.down }}
                   </v-tooltip>
                   <v-tooltip bottom>
                     <template v-slot:activator="{ props }">
@@ -145,7 +141,7 @@
                         variant="text"
                         elevation="0"
                         small
-                        aria-label="Delete"
+                        :aria-label="control.translations.removeAriaLabel"
                         :class="styles.arrayList.itemDelete"
                         :disabled="
                           !control.enabled ||
@@ -154,12 +150,12 @@
                             arraySchema.minItems !== undefined &&
                             dataLength <= arraySchema.minItems)
                         "
-                        @click.native="removeItemsClick($event, [index])"
+                        @click="removeItemsClick($event, [index])"
                       >
                         <v-icon class="notranslate">mdi-delete</v-icon>
                       </v-btn>
                     </template>
-                    {{ t('Delete', 'Delete') }}
+                    {{ control.translations.removeTooltip }}
                   </v-tooltip>
                 </td>
               </tr>
@@ -168,7 +164,7 @@
         </v-row>
       </v-container>
       <v-container v-if="dataLength === 0" :class="styles.arrayList.noData">
-        {{ t('No data', 'No data') }}
+        {{ control.translations.noDataMessage }}
       </v-container>
     </v-card-text>
   </v-card>
@@ -178,54 +174,48 @@
 import {
   isObjectArrayControl,
   isPrimitiveArrayControl,
-  JsonFormsRendererRegistryEntry,
+  type JsonFormsRendererRegistryEntry,
   or,
   rankWith,
   composePaths,
   createDefaultValue,
-  ControlElement,
-  JsonSchema,
+  type ControlElement,
+  type JsonSchema,
   Resolve,
 } from '@jsonforms/core';
 import startCase from 'lodash/startCase';
 import { defineComponent } from 'vue';
 import {
-  DispatchCell,
   DispatchRenderer,
   rendererProps,
   useJsonFormsArrayControl,
-  RendererProps,
+  type RendererProps,
 } from '@jsonforms/vue';
-import { useTranslator, useVuetifyArrayControl } from '../util';
+import { useVuetifyArrayControl } from '../util';
 import {
   VCard,
   VCardTitle,
   VCardText,
   VRow,
-  VCol,
   VContainer,
   VToolbar,
   VToolbarTitle,
   VTooltip,
   VIcon,
   VBtn,
-  VAvatar,
   VSpacer,
   VTable,
 } from 'vuetify/components';
-import { ValidationIcon, ValidationBadge } from '../controls/components/index';
+import { ValidationIcon } from '../controls/components/index';
 
 const controlRenderer = defineComponent({
   name: 'array-control-renderer',
   components: {
-    DispatchCell,
     DispatchRenderer,
     VCard,
     VCardTitle,
     VCardText,
-    VAvatar,
     VRow,
-    VCol,
     VToolbar,
     VToolbarTitle,
     VTooltip,
@@ -234,16 +224,13 @@ const controlRenderer = defineComponent({
     VSpacer,
     VContainer,
     ValidationIcon,
-    ValidationBadge,
     VTable,
   },
   props: {
     ...rendererProps<ControlElement>(),
   },
   setup(props: RendererProps<ControlElement>) {
-    const t = useTranslator();
-
-    return { ...useVuetifyArrayControl(useJsonFormsArrayControl(props)), t };
+    return useVuetifyArrayControl(useJsonFormsArrayControl(props));
   },
   computed: {
     arraySchema(): JsonSchema | undefined {

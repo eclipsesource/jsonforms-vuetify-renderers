@@ -1,22 +1,22 @@
 <template>
   <array-layout-renderer v-bind="$props">
     <template v-slot:toolbar-elements>{{ null }}</template>
-    <template v-slot:actions="actionsProps">
+    <template v-slot:actions="{ control, addClick, addDisabled, addClass }">
       <v-tooltip bottom>
         <template v-slot:activator="{ props }">
           <v-btn
             color="primary"
             rounded
-            :aria-label="actionsProps.labels.add"
+            :aria-label="control.translations.addTooltip"
             v-bind="props"
-            :class="actionsProps.styles.arrayList.addButton"
-            :disabled="actionsProps.addDisabled"
-            @click="actionsProps.addClick"
+            :class="addClass"
+            :disabled="addDisabled"
+            @click="addClick"
           >
-            <v-icon>mdi-plus</v-icon> {{ actionsProps.labels.add }}
+            <v-icon>mdi-plus</v-icon> {{ control.translations.addTooltip }}
           </v-btn>
         </template>
-        {{ actionsProps.labels.add }}
+        {{ control.translations.addTooltip }}
       </v-tooltip>
     </template>
   </array-layout-renderer>

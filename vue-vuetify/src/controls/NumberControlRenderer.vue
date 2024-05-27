@@ -31,8 +31,8 @@
 
 <script lang="ts">
 import {
-  ControlElement,
-  JsonFormsRendererRegistryEntry,
+  type ControlElement,
+  type JsonFormsRendererRegistryEntry,
   rankWith,
   isNumberControl,
 } from '@jsonforms/core';
@@ -40,11 +40,11 @@ import { defineComponent, ref, unref } from 'vue';
 import {
   rendererProps,
   useJsonFormsControl,
-  RendererProps,
+  type RendererProps,
 } from '@jsonforms/vue';
 import { default as ControlWrapper } from './ControlWrapper.vue';
 import { useVuetifyControl } from '../util';
-import { VHover, VTextField } from 'vuetify/components';
+import { VTextField } from 'vuetify/components';
 import { DisabledIconFocus } from './directives';
 
 const NUMBER_REGEX_TEST = /^[+-]?\d+([.]\d+)?([eE][+-]?\d+)?$/;
@@ -53,7 +53,6 @@ const controlRenderer = defineComponent({
   name: 'number-control-renderer',
   components: {
     ControlWrapper,
-    VHover,
     VTextField,
   },
   directives: {

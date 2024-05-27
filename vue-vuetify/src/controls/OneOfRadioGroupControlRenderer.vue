@@ -20,7 +20,7 @@
       :error-messages="control.errors"
       v-bind="vuetifyProps('v-radio-group')"
       :model-value="control.data"
-      @update:modelValue="onChange"
+      @update:model-value="onChange"
       @focus="isFocused = true"
       @blur="isFocused = false"
     >
@@ -37,8 +37,8 @@
 
 <script lang="ts">
 import {
-  ControlElement,
-  JsonFormsRendererRegistryEntry,
+  type ControlElement,
+  type JsonFormsRendererRegistryEntry,
   rankWith,
   isOneOfEnumControl,
   optionIs,
@@ -48,7 +48,7 @@ import { defineComponent } from 'vue';
 import {
   rendererProps,
   useJsonFormsOneOfEnumControl,
-  RendererProps,
+  type RendererProps,
 } from '@jsonforms/vue';
 import { default as ControlWrapper } from './ControlWrapper.vue';
 import { useVuetifyControl } from '../util';

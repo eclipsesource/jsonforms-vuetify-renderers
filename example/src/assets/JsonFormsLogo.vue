@@ -50,7 +50,7 @@ import { computed } from 'vue';
 import { useTheme } from 'vuetify';
 
 const theme = useTheme();
-const props = defineProps<{
+defineProps<{
   width: string | number;
   height: string | number;
 }>();

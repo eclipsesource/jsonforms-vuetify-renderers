@@ -7,12 +7,12 @@ import { getCustomThemes } from '@/plugins/vuetify';
 const appStore = useAppStore();
 
 // Define async components
-const DefaultAppBar = defineAsyncComponent(() => import('./AppBar.vue'));
-const DefaultDrawer = defineAsyncComponent(() => import('./Drawer.vue'));
+const DefaultAppBar = defineAsyncComponent(() => import('./DefaultAppBar.vue'));
+const DefaultDrawer = defineAsyncComponent(() => import('./DefaultDrawer.vue'));
 const DefaultSettings = defineAsyncComponent(
-  () => import('../../components/Settings.vue'),
+  () => import('../../components/AppSettings.vue'),
 );
-const DefaultView = defineAsyncComponent(() => import('./View.vue'));
+const DefaultView = defineAsyncComponent(() => import('./DefaultView.vue'));
 
 const route = useRoute();
 

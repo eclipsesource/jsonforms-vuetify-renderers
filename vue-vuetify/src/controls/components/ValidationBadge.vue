@@ -31,14 +31,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue';
+import { defineComponent, type PropType } from 'vue';
 import { VBadge, VTooltip } from 'vuetify/components';
-import { ErrorObject } from 'ajv';
+import type { ErrorObject } from 'ajv';
 import findIndex from 'lodash/findIndex';
 import {
   createControlElement,
   createLabelDescriptionFrom,
-  JsonSchema,
+  type JsonSchema,
 } from '@jsonforms/core';
 
 export default defineComponent({

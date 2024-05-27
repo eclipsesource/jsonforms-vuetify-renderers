@@ -20,10 +20,10 @@
       :clearable="control.enabled"
       :model-value="control.data"
       :items="control.options"
-      :item-title="(item) => t(item.label, item.label)"
+      :item-title="(item: EnumOption) => t(item.label, item.label)"
       item-value="value"
       v-bind="vuetifyProps('v-select')"
-      @update:modelValue="onChange"
+      @update:model-value="onChange"
       @focus="isFocused = true"
       @blur="isFocused = false"
     />
@@ -32,14 +32,15 @@
 
 <script lang="ts">
 import {
-  ControlElement,
+  type ControlElement,
   isOneOfEnumControl,
-  JsonFormsRendererRegistryEntry,
+  type JsonFormsRendererRegistryEntry,
   rankWith,
+  type EnumOption,
 } from '@jsonforms/core';
 import {
   rendererProps,
-  RendererProps,
+  type RendererProps,
   useJsonFormsOneOfEnumControl,
 } from '@jsonforms/vue';
 import { defineComponent } from 'vue';

@@ -20,7 +20,8 @@ import {
   mergeStyles,
 } from '@jsonforms/vue-vuetify';
 import type { ErrorObject } from 'ajv';
-import { cloneDeep, find } from 'lodash';
+import cloneDeep from 'lodash/cloneDeep';
+import find from 'lodash/find';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import {
   computed,
@@ -99,12 +100,12 @@ const reloadMonacoSchema = () => {
 const saveMonacoSchema = () => {
   saveMonacoModel(
     schemaModel,
-    (newJson) =>
+    (modelValue) =>
       (example.value = {
         ...example.value,
         input: {
           ...example.value!.input,
-          schema: newJson,
+          schema: JSON.parse(modelValue),
         },
       } as Example),
     'New schema applied',
@@ -137,12 +138,12 @@ const reloadMonacoUiSchema = () => {
 const saveMonacoUiSchema = () => {
   saveMonacoModel(
     uischemaModel,
-    (newJson) =>
+    (modelValue) =>
       (example.value = {
         ...example.value,
         input: {
           ...example.value!.input,
-          uischema: newJson,
+          uischema: JSON.parse(modelValue),
         },
       } as Example),
     'New UI schema applied',
@@ -164,12 +165,12 @@ const reloadMonacoData = () => {
 const saveMonacoData = () => {
   saveMonacoModel(
     dataModel,
-    (newJson) =>
+    (modelValue) =>
       (example.value = {
         ...example.value,
         input: {
           ...example.value!.input,
-          data: newJson ?? {},
+          data: modelValue,
         },
       } as Example),
     'New data applied',
@@ -191,12 +192,12 @@ const reloadMonacoI18N = () => {
 const saveMonacoI18N = () => {
   saveMonacoModel(
     i18nModel,
-    (newJson) =>
+    (modelValue) =>
       (example.value = {
         ...example.value,
         input: {
           ...example.value!.input,
-          i18n: newJson,
+          i18n: JSON.parse(modelValue),
         },
       } as Example),
     'New i18n applied',
@@ -205,17 +206,14 @@ const saveMonacoI18N = () => {
 
 const saveMonacoModel = (
   model: ShallowRef<monaco.editor.ITextModel | undefined>,
-  apply: (newJson: Record<string, any> | undefined) => void,
+  apply: (value: string) => void,
   successToast: string,
 ) => {
   if (model.value && example.value) {
-    const modelValue = model.value.getValue().trim();
-
-    let newJson: Record<string, any> | undefined = undefined;
+    const modelValue = model.value.getValue();
 
     try {
-      newJson = modelValue ? JSON.parse(modelValue) : undefined;
-      apply(newJson);
+      apply(modelValue);
       toast(successToast);
     } catch (error) {
       toast(`Error: ${error}`);
@@ -258,7 +256,9 @@ const updateMonacoModels = (example: Example) => {
 
   dataModel.value = getMonacoModelForUri(
     monaco.Uri.parse(toDataUri(example.id)),
-    example.input.data ? JSON.stringify(example.input.data, null, 2) : '',
+    Array.isArray(example.input.data) || typeof example.input.data === 'object'
+      ? JSON.stringify(example.input.data, null, 2)
+      : `${example.input.data}`,
   );
 
   i18nModel.value = getMonacoModelForUri(

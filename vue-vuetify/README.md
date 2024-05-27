@@ -73,7 +73,7 @@ export default defineComponent({
 </template>
 
 <style>
-@import '~@jsonforms/vue-vuetify/lib/jsonforms-vue-vuetify.esm.css';
+@import '@jsonforms/vue-vuetify/lib/jsonforms-vue-vuetify.css';
 </style>
 ```
 

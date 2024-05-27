@@ -1,3 +1,3 @@
-import Example from './Example.vue';
+import Example from './ExampleView.vue';
 
 export default Example;

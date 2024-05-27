@@ -68,8 +68,8 @@
 
 <script lang="ts">
 import {
-  ControlElement,
-  JsonFormsRendererRegistryEntry,
+  type ControlElement,
+  type JsonFormsRendererRegistryEntry,
   rankWith,
   isStringControl,
 } from '@jsonforms/core';
@@ -77,11 +77,11 @@ import { defineComponent } from 'vue';
 import {
   rendererProps,
   useJsonFormsControl,
-  RendererProps,
+  type RendererProps,
 } from '@jsonforms/vue';
 import { default as ControlWrapper } from './ControlWrapper.vue';
 import { useVuetifyControl } from '../util';
-import { VHover, VTextField, VCombobox } from 'vuetify/components';
+import { VTextField, VCombobox } from 'vuetify/components';
 import { DisabledIconFocus } from './directives';
 import isArray from 'lodash/isArray';
 import every from 'lodash/every';
@@ -91,7 +91,6 @@ const controlRenderer = defineComponent({
   name: 'string-control-renderer',
   components: {
     ControlWrapper,
-    VHover,
     VTextField,
     VCombobox,
   },

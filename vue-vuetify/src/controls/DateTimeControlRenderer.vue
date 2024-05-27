@@ -63,7 +63,7 @@
                         showActions ? proxyModel.value.date : pickerValue.date
                       "
                       @update:model-value="
-                        (val) => {
+                        (val: unknown) => {
                           if (showActions) {
                             proxyModel.value.date = val as Date;
                           } else {
@@ -84,7 +84,7 @@
                         showActions ? proxyModel.value.time : pickerValue.time
                       "
                       @update:model-value="
-                        (val) => {
+                        (val: string) => {
                           if (showActions) {
                             proxyModel.value.time = val;
                           } else {
@@ -111,7 +111,7 @@
                         showActions ? proxyModel.value.date : pickerValue.date
                       "
                       @update:model-value="
-                        (val) => {
+                        (val: unknown) => {
                           if (showActions) {
                             proxyModel.value.date = val as Date;
                           } else {
@@ -138,7 +138,7 @@
                         showActions ? proxyModel.value.time : pickerValue.time
                       "
                       @update:model-value="
-                        (val) => {
+                        (val: string) => {
                           if (showActions) {
                             proxyModel.value.time = val;
                           } else {
@@ -176,16 +176,16 @@
 
 <script lang="ts">
 import {
-  ControlElement,
+  type ControlElement,
   isDateTimeControl,
-  JsonFormsRendererRegistryEntry,
-  JsonSchema,
+  type JsonFormsRendererRegistryEntry,
+  type JsonSchema,
   rankWith,
 } from '@jsonforms/core';
 import { defineComponent, ref } from 'vue';
 import {
   rendererProps,
-  RendererProps,
+  type RendererProps,
   useJsonFormsControl,
 } from '@jsonforms/vue';
 import {
@@ -279,7 +279,10 @@ const controlRenderer = defineComponent({
         : 'mdi-calendar-clock';
     },
     useTabLayout(): boolean {
-      if (this.$vuetify.display.mobile) {
+      // use (this as any) even though on vscode editor this.$vuetify is resolve propertly during the build we get for now
+      // although the definition is part of the d.ts file inside vuetify
+      // error TS2339: Property '$vuetify' does not exist on type 'CreateComponentPublicInstance
+      if ((this as any).$vuetify.display.mobile) {
         return true;
       }
       return false;

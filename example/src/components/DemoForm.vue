@@ -51,7 +51,7 @@ const onChange = (event: JsonFormsChangeEvent): void => {
 
 watch(
   () => props.example,
-  (newExample, oldExample) => {
+  (newExample) => {
     resolveSchema(newExample.input.schema);
     i18n.translate = createTranslator(
       props.locale,

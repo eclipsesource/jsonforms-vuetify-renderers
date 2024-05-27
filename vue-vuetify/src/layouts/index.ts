@@ -1,5 +1,5 @@
 import {
-  JsonFormsRendererRegistryEntry,
+  type JsonFormsRendererRegistryEntry,
   rankWith,
   isLayout,
 } from '@jsonforms/core';

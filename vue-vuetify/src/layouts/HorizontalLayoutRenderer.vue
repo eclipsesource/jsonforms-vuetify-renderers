@@ -6,7 +6,7 @@
   >
     <v-row v-bind="vuetifyProps('v-row')">
       <v-col
-        v-for="(element, index) in layout.uischema.elements"
+        v-for="(element, index) in (layout.uischema as Layout).elements"
         :key="`${layout.path}-${index}`"
         :class="styles.horizontalLayout.item"
         :cols="cols[index]"
@@ -28,8 +28,8 @@
 <script lang="ts">
 import {
   uiTypeIs,
-  JsonFormsRendererRegistryEntry,
-  Layout,
+  type JsonFormsRendererRegistryEntry,
+  type Layout,
   rankWith,
 } from '@jsonforms/core';
 import { defineComponent } from 'vue';
@@ -37,7 +37,7 @@ import {
   DispatchRenderer,
   rendererProps,
   useJsonFormsLayout,
-  RendererProps,
+  type RendererProps,
 } from '@jsonforms/vue';
 import { useVuetifyLayout } from '../util';
 import { VContainer, VRow, VCol } from 'vuetify/components';
@@ -58,7 +58,10 @@ const layoutRenderer = defineComponent({
   },
   computed: {
     collapse() {
-      const { xs, sm, md, lg, xl } = this.$vuetify.display;
+      // use (this as any) even though on vscode editor this.$vuetify is resolve propertly during the build we get for now
+      // although the definition is part of the d.ts file inside vuetify
+      // error TS2339: Property '$vuetify' does not exist on type 'CreateComponentPublicInstance
+      const { xs, sm, md, lg, xl } = (this as any).$vuetify.display;
       if (this.appliedOptions.breakHorizontal === 'xs' && xs) {
         return true;
       }

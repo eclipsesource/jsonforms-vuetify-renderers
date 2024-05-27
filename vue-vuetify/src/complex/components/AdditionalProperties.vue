@@ -1,5 +1,5 @@
 <template>
-  <v-card v-if="control.visible" elevation="0">
+  <v-card v-if="control.visible" elevation="0" v-bind="vuetifyProps('v-card')">
     <v-card-title>
       <v-toolbar flat>
         <v-toolbar-title>{{ additionalPropertiesTitle }}</v-toolbar-title>
@@ -36,12 +36,12 @@
         </v-tooltip>
       </v-toolbar>
     </v-card-title>
-    <v-container>
+    <v-container v-bind="vuetifyProps('v-container')">
       <v-row
         v-for="(element, index) in additionalPropertyItems"
         :key="`${index}`"
       >
-        <v-col>
+        <v-col class="flex-shrink-0 flex-grow-1">
           <dispatch-renderer
             v-if="element.schema && element.uischema"
             :schema="element.schema"
@@ -51,7 +51,7 @@
             :renderers="control.renderers"
             :cells="control.cells"
         /></v-col>
-        <v-col v-if="control.enabled" class="flex-shrink-1">
+        <v-col v-if="control.enabled" class="flex-shrink-1 flex-grow-0">
           <v-tooltip bottom>
             <template v-slot:activator="{ props }">
               <v-btn
@@ -83,21 +83,21 @@ import {
   encode,
   Generate,
   getI18nKey,
-  GroupLayout,
-  JsonSchema,
-  JsonSchema7,
-  UISchemaElement,
+  type GroupLayout,
+  type JsonSchema,
+  type JsonSchema7,
+  type UISchemaElement,
   validate,
 } from '@jsonforms/core';
 import {
   DispatchRenderer,
   useJsonFormsControlWithDetail,
 } from '@jsonforms/vue';
-import Ajv, { ValidateFunction } from 'ajv';
+import Ajv, { type ValidateFunction } from 'ajv';
 import get from 'lodash/get';
 import isPlainObject from 'lodash/isPlainObject';
 import startCase from 'lodash/startCase';
-import { defineComponent, PropType, ref } from 'vue';
+import { defineComponent, type PropType, ref } from 'vue';
 import {
   VBtn,
   VCard,

@@ -5,9 +5,11 @@
     "build": "lerna run --scope '@jsonforms/vue-vuetify' build",
     "watch": "lerna run --scope '@jsonforms/vue-vuetify' watch",
     "test": "lerna run test",
+    "lint": "lerna run lint",
     "clean": "lerna run clean",
     "example:dev": "lerna run --scope 'example' dev",
-    "example:build": "lerna run --scope 'example' build"
+    "example:build": "lerna run --scope 'example' build",
+    "example:preview": "lerna run --scope 'example' preview"
   },
   "devDependencies": {
     "lerna": "8.1.2"

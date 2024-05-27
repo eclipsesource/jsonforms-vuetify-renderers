@@ -330,22 +330,22 @@ const breakHorizontals = [
           </v-tooltip>
         </v-col>
       </v-row>
-      <v-container>
-        <v-row>
-          <v-row><v-col>Break horizontal layouts</v-col></v-row>
-          <v-col>
-            <v-select
-              outlined
-              persistent-hint
-              dense
-              v-model="appStore.jsonforms.config.breakHorizontal"
-              :items="breakHorizontals"
-              item-title="text"
-              item-value="value"
-            ></v-select>
-          </v-col>
-        </v-row>
-      </v-container>
+      <v-row>
+        <v-col>Break horizontal layouts</v-col>
+      </v-row>
+      <v-row>
+        <v-col>
+          <v-select
+            outlined
+            persistent-hint
+            dense
+            v-model="appStore.jsonforms.config.breakHorizontal"
+            :items="breakHorizontals"
+            item-title="text"
+            item-value="value"
+          ></v-select>
+        </v-col>
+      </v-row>
     </v-container>
 
     <v-divider />

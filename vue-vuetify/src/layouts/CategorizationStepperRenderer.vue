@@ -12,6 +12,7 @@
         :title="visibleCategoryLabels[index]"
         v-for="(element, index) in visibleCategories"
         :value="index + 1"
+        :key="`${layout.path}-${index}`"
       >
         <v-card elevation="0">
           <dispatch-renderer
@@ -33,7 +34,10 @@
     >
       <template v-slot:default="{ prev, next }">
         <v-stepper-header>
-          <template v-for="(_, index) in visibleCategories" :key="index">
+          <template
+            v-for="(_, index) in visibleCategories"
+            :key="`${layout.path}-${index}`"
+          >
             <v-stepper-item :value="index + 1" editable>
               {{ visibleCategoryLabels[index] }}
             </v-stepper-item>
@@ -48,6 +52,7 @@
           <v-stepper-window-item
             v-for="(element, index) in visibleCategories"
             :value="index + 1"
+            :key="`${layout.path}-${index}`"
           >
             <v-card elevation="0">
               <dispatch-renderer
@@ -74,15 +79,15 @@
 
 <script lang="ts">
 import {
-  JsonFormsRendererRegistryEntry,
-  Layout,
+  type JsonFormsRendererRegistryEntry,
+  type Layout,
   rankWith,
   and,
   uiTypeIs,
-  Categorization,
-  Category,
+  type Categorization,
+  type Category,
   optionIs,
-  Tester,
+  type Tester,
   isVisible,
   categorizationHasCategory,
   deriveLabelForUISchemaElement,
@@ -92,7 +97,7 @@ import {
   DispatchRenderer,
   rendererProps,
   useJsonFormsLayout,
-  RendererProps,
+  type RendererProps,
 } from '@jsonforms/vue';
 import { useAjv, useTranslator, useVuetifyLayout } from '../util';
 import {
@@ -103,13 +108,11 @@ import {
   VStepperWindowItem,
   VStepperWindow,
   VStepperActions,
-  VSpacer,
   VCard,
 } from 'vuetify/components';
 import {
   VStepperVertical,
   VStepperVerticalItem,
-  VStepperVerticalActions,
 } from 'vuetify/labs/VStepperVertical';
 
 const layoutRenderer = defineComponent({
@@ -118,12 +121,10 @@ const layoutRenderer = defineComponent({
     DispatchRenderer,
     VStepperVertical,
     VStepperVerticalItem,
-    VStepperVerticalActions,
     VStepper,
     VStepperHeader,
     VStepperItem,
     VDivider,
-    VSpacer,
     VStepperWindowItem,
     VStepperWindow,
     VStepperActions,

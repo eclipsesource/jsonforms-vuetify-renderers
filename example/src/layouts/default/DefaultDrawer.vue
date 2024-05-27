@@ -2,7 +2,7 @@
 import { examples } from '@/examples';
 import { useAppStore } from '@/stores/app';
 import { useRoute, useRouter } from 'vue-router';
-import VuetifyLogo from '@/assets/vuetify.vue';
+import VuetifyLogo from '@/assets/VuetifyLogo.vue';
 
 const appStore = useAppStore();
 const route = useRoute();

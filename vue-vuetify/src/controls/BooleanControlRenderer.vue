@@ -19,7 +19,7 @@
       :indeterminate="control.data === undefined"
       :model-value="control.data"
       v-bind="vuetifyProps('v-checkbox')"
-      @update:modelValue="onChange"
+      @update:model-value="onChange"
       @focus="isFocused = true"
       @blur="isFocused = false"
     />
@@ -28,8 +28,8 @@
 
 <script lang="ts">
 import {
-  ControlElement,
-  JsonFormsRendererRegistryEntry,
+  type ControlElement,
+  type JsonFormsRendererRegistryEntry,
   rankWith,
   isBooleanControl,
 } from '@jsonforms/core';
@@ -37,7 +37,7 @@ import { defineComponent } from 'vue';
 import {
   rendererProps,
   useJsonFormsControl,
-  RendererProps,
+  type RendererProps,
 } from '@jsonforms/vue';
 import { default as ControlWrapper } from './ControlWrapper.vue';
 import { useVuetifyControl } from '../util';

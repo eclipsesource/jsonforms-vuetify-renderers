@@ -39,16 +39,16 @@
 <script lang="ts">
 import {
   and,
-  ControlElement,
+  type ControlElement,
   isStringControl,
-  JsonFormsRendererRegistryEntry,
+  type JsonFormsRendererRegistryEntry,
   rankWith,
-  Tester,
-  UISchemaElement,
+  type Tester,
+  type UISchemaElement,
 } from '@jsonforms/core';
 import {
   rendererProps,
-  RendererProps,
+  type RendererProps,
   useJsonFormsControl,
 } from '@jsonforms/vue';
 import isEmpty from 'lodash/isEmpty';
@@ -57,8 +57,8 @@ import { VTextField } from 'vuetify/components';
 import { useVuetifyControl } from '../util';
 import { default as ControlWrapper } from './ControlWrapper.vue';
 import { DisabledIconFocus } from './directives';
-import { MaskTokens, vMaska, Mask } from 'maska';
-import { cloneDeep } from 'lodash';
+import { type MaskTokens, vMaska, Mask } from 'maska';
+import cloneDeep from 'lodash/cloneDeep';
 
 const defaultTokens: MaskTokens = {
   '#': { pattern: /[0-9]/ },

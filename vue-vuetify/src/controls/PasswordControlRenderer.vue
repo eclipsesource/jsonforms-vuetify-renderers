@@ -38,8 +38,8 @@
 
 <script lang="ts">
 import {
-  ControlElement,
-  JsonFormsRendererRegistryEntry,
+  type ControlElement,
+  type JsonFormsRendererRegistryEntry,
   rankWith,
   isStringControl,
   and,
@@ -49,7 +49,7 @@ import { defineComponent, ref } from 'vue';
 import {
   rendererProps,
   useJsonFormsControl,
-  RendererProps,
+  type RendererProps,
 } from '@jsonforms/vue';
 import { default as ControlWrapper } from './ControlWrapper.vue';
 import { useVuetifyControl } from '../util';
@@ -71,7 +71,7 @@ const controlRenderer = defineComponent({
       ...useVuetifyControl(
         useJsonFormsControl(props),
         (value) => value || undefined,
-        300
+        300,
       ),
       passwordVisible,
     };

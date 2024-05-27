@@ -1,12 +1,11 @@
 import { createVuetify, type Blueprint, type ThemeDefinition } from 'vuetify';
 import { md1, md2, md3 } from 'vuetify/blueprints';
-import * as components from 'vuetify/components';
-import * as directives from 'vuetify/directives';
+// import * as components from 'vuetify/components';
+// import * as directives from 'vuetify/directives';
 
 import '@mdi/font/css/materialdesignicons.css';
 import 'vuetify/styles';
 import { useAppStore } from '@/stores/app';
-import type { App } from 'vue';
 import { watch } from 'vue';
 
 export function getCustomThemes(blueprint: string) {
@@ -148,8 +147,8 @@ function createVuetifyInstance(
   return createVuetify({
     blueprint: toBlueprint(blueprint),
 
-    components,
-    directives,
+    // components,
+    // directives,
     icons: {
       defaultSet: 'mdi',
     },
@@ -167,7 +166,7 @@ function createVuetifyInstance(
   });
 }
 
-export function initializeVuetify(app: App) {
+export function buildVuetify() {
   const appStore = useAppStore();
   const vuetify = createVuetifyInstance(
     appStore.dark,
@@ -231,4 +230,4 @@ export function initializeVuetify(app: App) {
   return vuetify;
 }
 
-export default initializeVuetify;
+export default buildVuetify;

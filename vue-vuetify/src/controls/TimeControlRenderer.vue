@@ -27,7 +27,6 @@
     >
       <template v-slot:prepend-inner>
         <v-menu
-          ref="menu"
           v-model="showMenu"
           :close-on-content-click="false"
           transition="scale-transition"
@@ -51,7 +50,7 @@
                 v-if="showMenu"
                 :model-value="showActions ? proxyModel.value : pickerValue"
                 @update:model-value="
-                  (val) => {
+                  (val: string) => {
                     if (showActions) {
                       proxyModel.value = val;
                     } else {
@@ -82,16 +81,16 @@
 
 <script lang="ts">
 import {
-  ControlElement,
+  type ControlElement,
   isTimeControl,
-  JsonFormsRendererRegistryEntry,
-  JsonSchema,
+  type JsonFormsRendererRegistryEntry,
+  type JsonSchema,
   rankWith,
 } from '@jsonforms/core';
 import { defineComponent, ref } from 'vue';
 import {
   rendererProps,
-  RendererProps,
+  type RendererProps,
   useJsonFormsControl,
 } from '@jsonforms/vue';
 import {

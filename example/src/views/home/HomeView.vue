@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import VuetifyLogo from '@/assets/vuetify.vue';
+import VuetifyLogo from '@/assets/VuetifyLogo.vue';
 </script>
 
 <template>

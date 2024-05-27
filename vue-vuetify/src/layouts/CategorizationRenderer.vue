@@ -71,14 +71,14 @@
 
 <script lang="ts">
 import {
-  JsonFormsRendererRegistryEntry,
-  Layout,
+  type JsonFormsRendererRegistryEntry,
+  type Layout,
   rankWith,
   and,
   uiTypeIs,
-  Categorization,
-  Category,
-  Tester,
+  type Categorization,
+  type Category,
+  type Tester,
   isVisible,
   categorizationHasCategory,
   deriveLabelForUISchemaElement,
@@ -88,7 +88,7 @@ import {
   DispatchRenderer,
   rendererProps,
   useJsonFormsLayout,
-  RendererProps,
+  type RendererProps,
 } from '@jsonforms/vue';
 import { useAjv, useTranslator, useVuetifyLayout } from '../util';
 import {
