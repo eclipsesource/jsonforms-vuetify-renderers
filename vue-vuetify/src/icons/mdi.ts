@@ -7,8 +7,8 @@ const aliases: IconAliases = {
   itemDelete: 'mdi-delete',
   calendarClock: 'mdi-calendar-clock',
   clock: 'mdi-clock-outline',
-  passwordHide: 'mdi-eye',
-  passwordShow: 'mdi-eye-off',
+  passwordHide: 'mdi-eye-off',
+  passwordShow: 'mdi-eye',
   validationError: 'mdi-alert-circle-outline',
 };
 
