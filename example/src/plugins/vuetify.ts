@@ -102,7 +102,11 @@ function toIconSetAliases(iconset: string) {
   // we can add vue-vuetify icons setoverrides here if needed or use the default provided base on the iconset
 
   if (iconset === 'fa') {
-    return { ...faAliases, ...appFaAliases };
+    // override vuetify calendar to use fa-regular calendar instead of fa-solid
+    return {
+      ...{ ...faAliases, ...{ calendar: 'far fa-calendar' } },
+      ...appFaAliases,
+    };
   }
 
   // default
