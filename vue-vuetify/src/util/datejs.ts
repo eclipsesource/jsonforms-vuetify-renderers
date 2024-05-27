@@ -1,10 +1,10 @@
 import dayjs from 'dayjs';
-import customParsing from 'dayjs/plugin/customParseFormat';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone'; // dependent on utc plugin
 
 // required for the custom save formats in the date, time and date-time pickers
-dayjs.extend(customParsing);
+dayjs.extend(customParseFormat);
 dayjs.extend(utc);
 dayjs.extend(timezone);
 

@@ -6,6 +6,9 @@ import '@fortawesome/fontawesome-free/css/all.css';
 
 import 'vuetify/styles';
 import { en, bg, de } from 'vuetify/locale';
+import bgLocale from 'dayjs/locale/bg';
+import deLocale from 'dayjs/locale/de';
+import enLocale from 'dayjs/locale/en';
 
 import { useAppStore } from '@/stores/app';
 import { watch } from 'vue';
@@ -13,6 +16,7 @@ import { aliases as mdiAliases, mdi } from 'vuetify/iconsets/mdi';
 import { aliases as faAliases, fa } from 'vuetify/iconsets/fa';
 import { aliases as appMdiAliases } from '@/icons/mdi';
 import { aliases as appFaAliases } from '@/icons/fa';
+import dayjs from 'dayjs';
 
 export function getCustomThemes(blueprint: string) {
   const getThemeColors = (blueprint: string) => {
@@ -167,6 +171,7 @@ function createVuetifyInstance(
         VCheckbox: { color: 'primary' },
       };
 
+  dayjs.locale(locale);
   return createVuetify({
     blueprint: toBlueprint(blueprint),
     locale: {
@@ -210,6 +215,7 @@ export function buildVuetify() {
     () => appStore.jsonforms.locale,
     (locale: string) => {
       vuetify.locale.current.value = locale;
+      dayjs.locale(locale);
     },
   );
 
