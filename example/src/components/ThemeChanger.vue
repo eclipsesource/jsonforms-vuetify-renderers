@@ -30,7 +30,7 @@ const setTheme = (theme: string) => {
               size="30"
               color="primary"
               v-bind="mergeProps(propsMenu, propsTooltip)"
-              >mdi-palette</v-icon
+              >$palette</v-icon
             >
           </v-btn>
         </template>
@@ -74,7 +74,7 @@ const setTheme = (theme: string) => {
                 size="30"
                 v-if="currentTheme.name.value === theme.name"
               >
-                <v-icon>mdi-check</v-icon>
+                <v-icon>$complete</v-icon>
               </v-avatar>
             </v-list-item-action>
           </v-list-item>

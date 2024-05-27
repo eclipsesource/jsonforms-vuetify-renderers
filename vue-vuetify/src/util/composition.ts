@@ -12,8 +12,22 @@ import merge from 'lodash/merge';
 import get from 'lodash/get';
 import isPlainObject from 'lodash/isPlainObject';
 import { useStyles } from '../styles';
-import { computed, type ComputedRef, inject, ref, provide } from 'vue';
+import {
+  computed,
+  type ComputedRef,
+  inject,
+  ref,
+  provide,
+  type InjectionKey,
+} from 'vue';
 import Ajv from 'ajv';
+import type { IconAliases } from '@/icons/icons';
+import { aliases as mdiIcons } from '@/icons/mdi';
+import { aliases as faIcons } from '@/icons/fa';
+import type { IconOptions } from 'vuetify';
+
+export const IconSymbol: InjectionKey<Required<IconOptions>> =
+  Symbol.for('vuetify:icons');
 
 export const useControlAppliedOptions = <I extends { control: any }>(
   input: I,
@@ -274,4 +288,24 @@ export const useNested = (element: false | 'array' | 'object'): NestedInfo => {
     });
   }
   return nestedInfo;
+};
+
+export const useIcons = () => {
+  const iconSet = computed<IconAliases>(() => {
+    const icons = inject(IconSymbol);
+    if (!icons) throw new Error('Missing Vuetify Icons provide!');
+
+    let result = mdiIcons; // default
+    const overrides = icons.aliases;
+
+    if (icons.defaultSet === 'fa') {
+      result = faIcons;
+    }
+
+    return overrides ? { ...result, ...overrides } : result;
+  });
+
+  return {
+    current: iconSet,
+  };
 };

@@ -21,6 +21,7 @@ const blueprints = [
   { text: 'Material Design 2', value: 'md2' },
   { text: 'Material Design 3', value: 'md3' },
 ];
+
 const variants = [
   {
     text: 'Regular',
@@ -55,6 +56,11 @@ const breakHorizontals = [
   { text: 'md', value: 'md' },
   { text: 'lg', value: 'lg' },
   { text: 'xl', value: 'xl' },
+];
+
+const iconsets = [
+  { text: 'Material Design', value: 'mdi' },
+  { text: 'Font Awesome', value: 'fa' },
 ];
 </script>
 
@@ -93,13 +99,13 @@ const breakHorizontals = [
             <v-btn :value="false">
               <span class="hidden-sm-and-down">Light</span>
 
-              <v-icon right> mdi-weather-sunny </v-icon>
+              <v-icon right> $light </v-icon>
             </v-btn>
 
             <v-btn :value="true">
               <span class="hidden-sm-and-down">Dark</span>
 
-              <v-icon right> mdi-weather-night </v-icon>
+              <v-icon right> $dark </v-icon>
             </v-btn>
           </v-btn-toggle>
         </v-col>
@@ -123,13 +129,13 @@ const breakHorizontals = [
             <v-btn :value="false">
               <span class="hidden-sm-and-down">LTR</span>
 
-              <v-icon right> mdi-format-textdirection-l-to-r</v-icon>
+              <v-icon right> $ltr</v-icon>
             </v-btn>
 
             <v-btn :value="true">
               <span class="hidden-sm-and-down">RTL</span>
 
-              <v-icon right> mdi-format-textdirection-r-to-l </v-icon>
+              <v-icon right> $rtl </v-icon>
             </v-btn>
           </v-btn-toggle>
         </v-col>
@@ -206,6 +212,25 @@ const breakHorizontals = [
             dense
             v-model="appStore.variant"
             :items="variants"
+            item-title="text"
+            item-value="value"
+          ></v-select>
+        </v-col>
+      </v-row>
+    </v-container>
+
+    <v-divider />
+
+    <v-container>
+      <v-row><v-col>Icon Set (need browser reload)</v-col></v-row>
+      <v-row>
+        <v-col>
+          <v-select
+            outlined
+            persistent-hint
+            dense
+            v-model="appStore.iconset"
+            :items="iconsets"
             item-title="text"
             item-value="value"
           ></v-select>

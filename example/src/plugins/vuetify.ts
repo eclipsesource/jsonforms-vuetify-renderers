@@ -1,12 +1,16 @@
 import { createVuetify, type Blueprint, type ThemeDefinition } from 'vuetify';
 import { md1, md2, md3 } from 'vuetify/blueprints';
-// import * as components from 'vuetify/components';
-// import * as directives from 'vuetify/directives';
 
 import '@mdi/font/css/materialdesignicons.css';
+import '@fortawesome/fontawesome-free/css/all.css';
+
 import 'vuetify/styles';
 import { useAppStore } from '@/stores/app';
 import { watch } from 'vue';
+import { aliases as mdiAliases, mdi } from 'vuetify/iconsets/mdi';
+import { aliases as faAliases, fa } from 'vuetify/iconsets/fa';
+import { aliases as appMdiAliases } from '@/icons/mdi';
+import { aliases as appFaAliases } from '@/icons/fa';
 
 export function getCustomThemes(blueprint: string) {
   const getThemeColors = (blueprint: string) => {
@@ -92,6 +96,17 @@ export function getCustomThemes(blueprint: string) {
   return customThemes;
 }
 
+function toIconSetAliases(iconset: string) {
+  // we can add vue-vuetify icons setoverrides here if needed or use the default provided base on the iconset
+
+  if (iconset === 'fa') {
+    return { ...faAliases, ...appFaAliases };
+  }
+
+  // default
+  return { ...mdiAliases, ...appMdiAliases };
+}
+
 function toBlueprint(value: string): Blueprint {
   if (value === 'md1') {
     return md1;
@@ -111,6 +126,7 @@ function createVuetifyInstance(
   dark: boolean,
   blueprint: string,
   variant: string,
+  iconset: string,
 ) {
   const defaults = variant
     ? {
@@ -147,10 +163,13 @@ function createVuetifyInstance(
   return createVuetify({
     blueprint: toBlueprint(blueprint),
 
-    // components,
-    // directives,
     icons: {
-      defaultSet: 'mdi',
+      defaultSet: iconset, // Set the default icon set
+      sets: {
+        mdi,
+        fa,
+      },
+      aliases: toIconSetAliases(iconset),
     },
     theme: {
       defaultTheme: dark ? 'dark' : 'light',
@@ -172,6 +191,7 @@ export function buildVuetify() {
     appStore.dark,
     appStore.blueprint,
     appStore.variant,
+    appStore.iconset,
   );
 
   // Watch for changes in the variant and update Vuetify

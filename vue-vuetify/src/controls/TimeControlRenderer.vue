@@ -104,7 +104,12 @@ import {
 } from 'vuetify/components';
 import { VTimePicker } from 'vuetify/labs/VTimePicker';
 
-import { parseDateTime, useTranslator, useVuetifyControl } from '../util';
+import {
+  parseDateTime,
+  useIcons,
+  useTranslator,
+  useVuetifyControl,
+} from '../util';
 import { default as ControlWrapper } from './ControlWrapper.vue';
 import { DisabledIconFocus } from './directives';
 
@@ -150,13 +155,15 @@ const controlRenderer = defineComponent({
 
     const adaptValue = (value: any) => value || undefined;
     const control = useVuetifyControl(useJsonFormsControl(props), adaptValue);
-    return { ...control, showMenu, mask, t, adaptValue };
+
+    const icons = useIcons();
+    return { ...control, showMenu, mask, t, adaptValue, icons };
   },
   computed: {
     pickerIcon(): string {
       return typeof this.appliedOptions.pickerIcon == 'string'
         ? this.appliedOptions.pickerIcon
-        : 'mdi-clock-outline';
+        : this.icons.current.value.clock;
     },
     timeFormat(): string {
       return typeof this.appliedOptions.timeFormat == 'string'

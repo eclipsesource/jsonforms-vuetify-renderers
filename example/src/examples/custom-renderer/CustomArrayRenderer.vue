@@ -1,7 +1,9 @@
 <template>
   <array-layout-renderer v-bind="$props">
     <template v-slot:toolbar-elements>{{ null }}</template>
-    <template v-slot:actions="{ control, addClick, addDisabled, addClass }">
+    <template
+      v-slot:actions="{ control, addClick, addDisabled, addClass, icons }"
+    >
       <v-tooltip bottom>
         <template v-slot:activator="{ props }">
           <v-btn
@@ -13,7 +15,8 @@
             :disabled="addDisabled"
             @click="addClick"
           >
-            <v-icon>mdi-plus</v-icon> {{ control.translations.addTooltip }}
+            <v-icon>{{ icons.current.value.itemAdd }}</v-icon>
+            {{ control.translations.addTooltip }}
           </v-btn>
         </template>
         {{ control.translations.addTooltip }}

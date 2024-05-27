@@ -22,6 +22,7 @@
           :control="control"
           :appliedOptions="appliedOptions"
           :styles="styles"
+          :icons="icons"
         >
           <v-tooltip bottom>
             <template v-slot:activator="{ props }">
@@ -36,7 +37,7 @@
                 :disabled="addDisabled"
                 @click="addButtonClick"
               >
-                <v-icon>mdi-plus</v-icon>
+                <v-icon>{{ icons.current.value.itemAdd }}</v-icon>
               </v-btn>
             </template>
             {{ control.translations.addTooltip }}
@@ -109,7 +110,9 @@
                             :class="styles.arrayList.itemMoveUp"
                             @click="moveUpClick($event, index)"
                           >
-                            <v-icon class="notranslate">mdi-arrow-up</v-icon>
+                            <v-icon class="notranslate">{{
+                              icons.current.value.itemMoveUp
+                            }}</v-icon>
                           </v-btn>
                         </template>
                         {{ control.translations.up }}
@@ -135,7 +138,9 @@
                             :class="styles.arrayList.itemMoveDown"
                             @click="moveDownClick($event, index)"
                           >
-                            <v-icon class="notranslate">mdi-arrow-down</v-icon>
+                            <v-icon class="notranslate">{{
+                              icons.current.value.itemMoveDown
+                            }}</v-icon>
                           </v-btn>
                         </template>
                         {{ control.translations.down }}
@@ -162,7 +167,9 @@
                             "
                             @click.stop="suggestToDelete = index"
                           >
-                            <v-icon class="notranslate">mdi-delete</v-icon>
+                            <v-icon class="notranslate">{{
+                              icons.current.value.itemDelete
+                            }}</v-icon>
                           </v-btn>
                         </template>
                         {{ control.translations.removeTooltip }}
@@ -198,6 +205,7 @@
         :control="control"
         :appliedOptions="appliedOptions"
         :styles="styles"
+        :icons="icons"
       >
       </slot>
     </v-card-actions>
@@ -261,7 +269,7 @@ import {
   useJsonFormsArrayControl,
   type RendererProps,
 } from '@jsonforms/vue';
-import { useNested, useVuetifyArrayControl } from '../util';
+import { useIcons, useNested, useVuetifyArrayControl } from '../util';
 import {
   VCard,
   VCardActions,
@@ -330,11 +338,15 @@ const controlRenderer = defineComponent({
     const suggestToDelete = ref<null | number>(null);
     // indicate to our child renderers that we are increasing the "nested" level
     useNested('array');
+
+    const icons = useIcons();
+
     return {
       ...control,
       currentlyExpanded,
       expansionPanelsProps,
       suggestToDelete,
+      icons,
     };
   },
   computed: {

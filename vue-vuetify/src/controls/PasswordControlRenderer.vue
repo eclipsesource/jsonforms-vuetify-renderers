@@ -6,9 +6,13 @@
     :appliedOptions="appliedOptions"
   >
     <v-text-field
-      :type="passwordVisible ? 'text' : 'password'"
-      :append-icon="passwordVisible ? 'mdi-eye' : 'mdi-eye-off'"
-      @click:append="() => (passwordVisible = !passwordVisible)"
+      :type="showPassword ? 'text' : 'password'"
+      :append-icon="
+        showPassword
+          ? icons.current.value.passwordHide
+          : icons.current.value.passwordShow
+      "
+      @click:append="() => (showPassword = !showPassword)"
       :id="control.id + '-input'"
       :class="styles.control.input"
       :disabled="!control.enabled"
@@ -52,7 +56,7 @@ import {
   type RendererProps,
 } from '@jsonforms/vue';
 import { default as ControlWrapper } from './ControlWrapper.vue';
-import { useVuetifyControl } from '../util';
+import { useIcons, useVuetifyControl } from '../util';
 import { VTextField } from 'vuetify/components';
 
 const controlRenderer = defineComponent({
@@ -65,7 +69,8 @@ const controlRenderer = defineComponent({
     ...rendererProps<ControlElement>(),
   },
   setup(props: RendererProps<ControlElement>) {
-    const passwordVisible = ref(false);
+    const showPassword = ref(false);
+    const icons = useIcons();
 
     return {
       ...useVuetifyControl(
@@ -73,7 +78,8 @@ const controlRenderer = defineComponent({
         (value) => value || undefined,
         300,
       ),
-      passwordVisible,
+      showPassword,
+      icons,
     };
   },
 });

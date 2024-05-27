@@ -38,7 +38,7 @@ const appStore = useAppStore();
                   v-bind="props"
                   @click="appStore.settings = !appStore.settings"
                 >
-                  <v-icon size="30" color="primary">mdi-cog</v-icon>
+                  <v-icon size="30" color="primary">$settings</v-icon>
                 </v-btn>
               </template>
               Settings

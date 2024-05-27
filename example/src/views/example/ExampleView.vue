@@ -334,7 +334,7 @@ onMounted(() => {
                           query: { view: 'form-only' },
                         }"
                       >
-                        <v-icon>mdi-dock-window</v-icon>
+                        <v-icon>$formOnly</v-icon>
                       </v-btn>
                     </template>
                     {{ `Show JsonForm Only` }}
@@ -365,7 +365,7 @@ onMounted(() => {
                   <v-tooltip bottom>
                     <template v-slot:activator="{ props }">
                       <v-btn icon @click="reloadMonacoSchema" v-bind="props">
-                        <v-icon>mdi-reload</v-icon>
+                        <v-icon>$reload</v-icon>
                       </v-btn>
                     </template>
                     {{ `Reload Example Schema` }}
@@ -373,7 +373,7 @@ onMounted(() => {
                   <v-tooltip bottom>
                     <template v-slot:activator="{ props }">
                       <v-btn icon @click="saveMonacoSchema" v-bind="props">
-                        <v-icon>mdi-content-save</v-icon>
+                        <v-icon>$save</v-icon>
                       </v-btn>
                     </template>
                     {{ `Apply Change To Example Schema` }}
@@ -398,7 +398,7 @@ onMounted(() => {
                   <v-tooltip bottom>
                     <template v-slot:activator="{ props }">
                       <v-btn icon @click="reloadMonacoUiSchema" v-bind="props">
-                        <v-icon>mdi-reload</v-icon>
+                        <v-icon>$reload</v-icon>
                       </v-btn>
                     </template>
                     {{ `Reload Example UI Schema` }}
@@ -406,7 +406,7 @@ onMounted(() => {
                   <v-tooltip bottom>
                     <template v-slot:activator="{ props }">
                       <v-btn icon @click="saveMonacoUiSchema" v-bind="props">
-                        <v-icon>mdi-content-save</v-icon>
+                        <v-icon>$save</v-icon>
                       </v-btn>
                     </template>
                     {{ `Apply Change To Example UI Schema` }}
@@ -431,7 +431,7 @@ onMounted(() => {
                   <v-tooltip bottom>
                     <template v-slot:activator="{ props }">
                       <v-btn icon @click="reloadMonacoData" v-bind="props">
-                        <v-icon>mdi-reload</v-icon>
+                        <v-icon>$reload</v-icon>
                       </v-btn>
                     </template>
                     {{ `Reload Example Data` }}
@@ -439,7 +439,7 @@ onMounted(() => {
                   <v-tooltip bottom>
                     <template v-slot:activator="{ props }">
                       <v-btn icon @click="saveMonacoData" v-bind="props">
-                        <v-icon>mdi-content-save</v-icon>
+                        <v-icon>$save</v-icon>
                       </v-btn>
                     </template>
                     {{ `Apply Change To Example Data` }}
@@ -464,7 +464,7 @@ onMounted(() => {
                   <v-tooltip bottom>
                     <template v-slot:activator="{ props }">
                       <v-btn icon @click="reloadMonacoI18N" v-bind="props">
-                        <v-icon>mdi-reload</v-icon>
+                        <v-icon>$reload</v-icon>
                       </v-btn>
                     </template>
                     {{ `Reload Example Internationalization` }}
@@ -472,7 +472,7 @@ onMounted(() => {
                   <v-tooltip bottom>
                     <template v-slot:activator="{ props }">
                       <v-btn icon @click="saveMonacoI18N" v-bind="props">
-                        <v-icon>mdi-content-save</v-icon>
+                        <v-icon>$save</v-icon>
                       </v-btn>
                     </template>
                     {{ `Apply Change To Example Data` }}

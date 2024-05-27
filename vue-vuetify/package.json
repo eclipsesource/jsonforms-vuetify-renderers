@@ -52,7 +52,6 @@
   "peerDependencies": {
     "@jsonforms/core": "3.2.1",
     "@jsonforms/vue": "3.2.1",
-    "@mdi/font": "^7.4.47",
     "ajv": "^8.6.1",
     "dayjs": "^1.10.6",
     "lodash": "^4.17.15",
@@ -63,7 +62,6 @@
   "devDependencies": {
     "@jsonforms/core": "3.2.1",
     "@jsonforms/vue": "3.2.1",
-    "@mdi/font": "^7.4.47",
     "@rushstack/eslint-patch": "^1.8.0",
     "@tsconfig/node20": "^20.1.4",
     "@types/jsdom": "^21.1.6",

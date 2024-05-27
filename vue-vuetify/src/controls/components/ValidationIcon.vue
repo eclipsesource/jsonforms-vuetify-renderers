@@ -4,7 +4,7 @@
     :errors="errors"
     floating
   >
-    <v-icon color="error">mdi-alert-circle-outline</v-icon>
+    <v-icon color="error">{{ icons.current.value.validationError }} </v-icon>
   </validation-badge>
 </template>
 
@@ -13,6 +13,7 @@ import { defineComponent, type PropType } from 'vue';
 import type { ErrorObject } from 'ajv';
 import { default as ValidationBadge } from './ValidationBadge.vue';
 import { VIcon } from 'vuetify/components';
+import { useIcons } from '@/util';
 
 export default defineComponent({
   name: 'validation-icon',
@@ -25,6 +26,11 @@ export default defineComponent({
       required: true,
       type: Array as PropType<ErrorObject[]>,
     },
+  },
+  setup() {
+    const icons = useIcons();
+
+    return { icons };
   },
 });
 </script>

@@ -34,7 +34,7 @@
                     dataLength >= arraySchema.maxItems)
                 "
               >
-                <v-icon>mdi-plus</v-icon>
+                <v-icon>{{ icons.current.value.itemAdd }}</v-icon>
               </v-btn>
             </template>
             {{ control.translations.addTooltip }}
@@ -107,7 +107,9 @@
                         :class="styles.listWithDetail.itemMoveUp"
                         @click="moveUpClick($event, index)"
                       >
-                        <v-icon class="notranslate">mdi-arrow-up</v-icon>
+                        <v-icon class="notranslate">{{
+                          icons.current.value.itemMoveUp
+                        }}</v-icon>
                       </v-btn>
                     </template>
                     {{ control.translations.up }}
@@ -126,7 +128,9 @@
                         :class="styles.listWithDetail.itemMoveDown"
                         @click="moveDownClick($event, index)"
                       >
-                        <v-icon class="notranslate">mdi-arrow-down</v-icon>
+                        <v-icon class="notranslate">{{
+                          icons.current.value.itemMoveDown
+                        }}</v-icon>
                       </v-btn>
                     </template>
                     {{ control.translations.down }}
@@ -151,7 +155,9 @@
                             dataLength <= arraySchema.minItems)
                         "
                       >
-                        <v-icon class="notranslate">mdi-delete</v-icon>
+                        <v-icon class="notranslate">{{
+                          icons.current.value.itemDelete
+                        }}</v-icon>
                       </v-btn>
                     </template>
                     {{ control.translations.removeTooltip }}
@@ -204,7 +210,7 @@ import {
   type RendererProps,
   useJsonFormsArrayControl,
 } from '@jsonforms/vue';
-import { useVuetifyArrayControl } from '../util';
+import { useIcons, useVuetifyArrayControl } from '../util';
 import {
   VList,
   VListItem,
@@ -250,10 +256,12 @@ const controlRenderer = defineComponent({
   },
   setup(props: RendererProps<ControlElement>) {
     const selectedIndex = ref<number | undefined>(undefined);
+    const icons = useIcons();
 
     return {
       ...useVuetifyArrayControl(useJsonFormsArrayControl(props)),
       selectedIndex,
+      icons,
     };
   },
   computed: {

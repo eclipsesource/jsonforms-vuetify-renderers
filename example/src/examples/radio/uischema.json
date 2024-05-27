@@ -5,7 +5,7 @@
     "format": "radio",
     "vuetify": {
       "v-radio-group": {
-        "prepend-icon": "mdi-palette",
+        "prepend-icon": "$palette",
         "column": false,
         "row": true
       },

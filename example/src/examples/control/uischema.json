@@ -7,7 +7,7 @@
       "options": {
         "vuetify": {
           "v-text-field": {
-            "prepend-icon": "mdi-format-text"
+            "prepend-icon": "$formatText"
           }
         }
       }

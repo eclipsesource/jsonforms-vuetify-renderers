@@ -29,7 +29,7 @@
               "
               @click="addButtonClick"
             >
-              <v-icon>mdi-plus</v-icon>
+              <v-icon>{{ icons.current.value.itemAdd }}</v-icon>
             </v-btn>
           </template>
           {{ control.translations.addTooltip }}
@@ -109,7 +109,9 @@
                         :class="styles.arrayList.itemMoveUp"
                         @click="moveUpClick($event, index)"
                       >
-                        <v-icon class="notranslate">mdi-arrow-up</v-icon>
+                        <v-icon class="notranslate">{{
+                          icons.current.value.itemMoveUp
+                        }}</v-icon>
                       </v-btn>
                     </template>
                     {{ control.translations.up }}
@@ -128,7 +130,9 @@
                         :class="styles.arrayList.itemMoveDown"
                         @click="moveDownClick($event, index)"
                       >
-                        <v-icon class="notranslate">mdi-arrow-down</v-icon>
+                        <v-icon class="notranslate">{{
+                          icons.current.value.itemMoveDown
+                        }}</v-icon>
                       </v-btn>
                     </template>
                     {{ control.translations.down }}
@@ -152,7 +156,9 @@
                         "
                         @click="removeItemsClick($event, [index])"
                       >
-                        <v-icon class="notranslate">mdi-delete</v-icon>
+                        <v-icon class="notranslate">{{
+                          icons.current.value.itemDelete
+                        }}</v-icon>
                       </v-btn>
                     </template>
                     {{ control.translations.removeTooltip }}
@@ -191,7 +197,7 @@ import {
   useJsonFormsArrayControl,
   type RendererProps,
 } from '@jsonforms/vue';
-import { useVuetifyArrayControl } from '../util';
+import { useIcons, useVuetifyArrayControl } from '../util';
 import {
   VCard,
   VCardTitle,
@@ -230,7 +236,12 @@ const controlRenderer = defineComponent({
     ...rendererProps<ControlElement>(),
   },
   setup(props: RendererProps<ControlElement>) {
-    return useVuetifyArrayControl(useJsonFormsArrayControl(props));
+    const icons = useIcons();
+
+    return {
+      ...useVuetifyArrayControl(useJsonFormsArrayControl(props)),
+      icons,
+    };
   },
   computed: {
     arraySchema(): JsonSchema | undefined {

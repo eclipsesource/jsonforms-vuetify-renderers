@@ -145,7 +145,8 @@ const controlRenderer = defineComponent({
         return this.appliedOptions.pickerIcon;
       }
 
-      return 'mdi-calendar';
+      // vuetify defined icon alias
+      return '$calendar';
     },
     dateFormat(): string {
       return typeof this.appliedOptions.dateFormat == 'string'

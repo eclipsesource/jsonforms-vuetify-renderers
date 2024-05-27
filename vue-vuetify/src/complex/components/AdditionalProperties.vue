@@ -29,7 +29,7 @@
               :disabled="addPropertyDisabled"
               @click="addProperty"
             >
-              <v-icon>mdi-plus</v-icon>
+              <v-icon>{{ icons.current.value.itemAdd }}</v-icon>
             </v-btn>
           </template>
           {{ addToLabel }}
@@ -64,7 +64,9 @@
                 :disabled="removePropertyDisabled"
                 @click="removeProperty(element.propertyName)"
               >
-                <v-icon class="notranslate">mdi-delete</v-icon>
+                <v-icon class="notranslate">{{
+                  icons.current.value.itemDelete
+                }}</v-icon>
               </v-btn>
             </template>
             {{ deleteLabel }}
@@ -114,7 +116,12 @@ import {
 } from 'vuetify/components';
 import { DisabledIconFocus } from '../../controls/directives';
 import { useStyles } from '../../styles';
-import { useAjv, useControlAppliedOptions, useTranslator } from '../../util';
+import {
+  useAjv,
+  useControlAppliedOptions,
+  useIcons,
+  useTranslator,
+} from '../../util';
 
 type Input = ReturnType<typeof useJsonFormsControlWithDetail>;
 interface AdditionalPropertyType {
@@ -279,6 +286,8 @@ export default defineComponent({
     };
 
     const t = useTranslator();
+    const icons = useIcons();
+
     return {
       t,
       vuetifyProps,
@@ -290,6 +299,7 @@ export default defineComponent({
       additionalPropertyItems,
       toAdditionalPropertyType,
       newPropertyName,
+      icons,
     };
   },
   computed: {

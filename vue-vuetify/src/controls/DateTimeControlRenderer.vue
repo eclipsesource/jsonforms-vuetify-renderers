@@ -48,11 +48,11 @@
               <v-card v-if="showMenu">
                 <v-tabs v-if="useTabLayout" v-model="activeTab">
                   <v-tab key="date" class="primary--text">
-                    <v-icon>mdi-calendar</v-icon>
+                    <v-icon>$calendar</v-icon>
                   </v-tab>
                   <v-spacer></v-spacer>
                   <v-tab key="time" class="primary--text">
-                    <v-icon>mdi-clock-outline</v-icon>
+                    <v-icon> {{ icons.current.value.clock }} </v-icon>
                   </v-tab>
                 </v-tabs>
 
@@ -209,9 +209,15 @@ import {
 } from 'vuetify/components';
 import { VTimePicker } from 'vuetify/labs/VTimePicker';
 
-import { parseDateTime, useTranslator, useVuetifyControl } from '../util';
+import {
+  parseDateTime,
+  useIcons,
+  useTranslator,
+  useVuetifyControl,
+} from '../util';
 import { default as ControlWrapper } from './ControlWrapper.vue';
 import { DisabledIconFocus } from './directives';
+import { useDisplay } from 'vuetify';
 
 const JSON_SCHEMA_DATE_TIME_FORMATS = [
   'YYYY-MM-DDTHH:mm:ss.SSSZ',
@@ -262,7 +268,10 @@ const controlRenderer = defineComponent({
     const adaptValue = (value: any) => value || undefined;
 
     const control = useVuetifyControl(useJsonFormsControl(props), adaptValue);
-    return { ...control, showMenu, t, adaptValue, activeTab };
+    const { mobile } = useDisplay();
+    const icons = useIcons();
+
+    return { ...control, showMenu, t, adaptValue, activeTab, mobile, icons };
   },
   watch: {
     showMenu(show) {
@@ -276,13 +285,10 @@ const controlRenderer = defineComponent({
     pickerIcon(): string {
       return typeof this.appliedOptions.pickerIcon == 'string'
         ? this.appliedOptions.pickerIcon
-        : 'mdi-calendar-clock';
+        : this.icons.current.value.calendarClock;
     },
     useTabLayout(): boolean {
-      // use (this as any) even though on vscode editor this.$vuetify is resolve propertly during the build we get for now
-      // although the definition is part of the d.ts file inside vuetify
-      // error TS2339: Property '$vuetify' does not exist on type 'CreateComponentPublicInstance
-      if ((this as any).$vuetify.display.mobile) {
+      if (this.mobile) {
         return true;
       }
       return false;

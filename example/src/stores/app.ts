@@ -8,6 +8,7 @@ export interface AppState {
   dark: boolean;
   theme: RemovableRef<string>;
   variant: RemovableRef<string>;
+  iconset: RemovableRef<string>;
   drawer: boolean;
   settings: boolean;
   jsonforms: {
@@ -35,6 +36,7 @@ export const useAppStore = defineStore('app', () => {
     dark: useLocalStorage('dark', false),
     theme: useLocalStorage('theme', 'light'),
     variant: useLocalStorage('variant', ''),
+    iconset: useLocalStorage('iconset', 'mdi'),
     blueprint: useLocalStorage('blueprint', 'md1'),
     drawer: true,
     settings: false,
@@ -53,7 +55,7 @@ export const useAppStore = defineStore('app', () => {
         hideArraySummaryValidation: false,
         vuetify: {},
       },
-      locale: 'en',
+      locale: useLocalStorage('locale', 'en'),
     },
   };
 });

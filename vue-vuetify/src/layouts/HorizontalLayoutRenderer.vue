@@ -41,6 +41,7 @@ import {
 } from '@jsonforms/vue';
 import { useVuetifyLayout } from '../util';
 import { VContainer, VRow, VCol } from 'vuetify/components';
+import { useDisplay } from 'vuetify';
 
 const layoutRenderer = defineComponent({
   name: 'horizontal-layout-renderer',
@@ -54,32 +55,42 @@ const layoutRenderer = defineComponent({
     ...rendererProps<Layout>(),
   },
   setup(props: RendererProps<Layout>) {
-    return useVuetifyLayout(useJsonFormsLayout(props));
+    const { xs, sm, md, lg, xl } = useDisplay();
+    return {
+      ...useVuetifyLayout(useJsonFormsLayout(props)),
+      xs,
+      sm,
+      md,
+      lg,
+      xl,
+    };
   },
   computed: {
     collapse() {
-      // use (this as any) even though on vscode editor this.$vuetify is resolve propertly during the build we get for now
-      // although the definition is part of the d.ts file inside vuetify
-      // error TS2339: Property '$vuetify' does not exist on type 'CreateComponentPublicInstance
-      const { xs, sm, md, lg, xl } = (this as any).$vuetify.display;
-      if (this.appliedOptions.breakHorizontal === 'xs' && xs) {
+      if (this.appliedOptions.breakHorizontal === 'xs' && this.xs) {
         return true;
       }
-      if (this.appliedOptions.breakHorizontal === 'sm' && (xs || sm)) {
+      if (
+        this.appliedOptions.breakHorizontal === 'sm' &&
+        (this.xs || this.sm)
+      ) {
         return true;
       }
-      if (this.appliedOptions.breakHorizontal === 'md' && (xs || sm || md)) {
+      if (
+        this.appliedOptions.breakHorizontal === 'md' &&
+        (this.xs || this.sm || this.md)
+      ) {
         return true;
       }
       if (
         this.appliedOptions.breakHorizontal === 'lg' &&
-        (xs || sm || md || lg)
+        (this.xs || this.sm || this.md || this.lg)
       ) {
         return true;
       }
       if (
         this.appliedOptions.breakHorizontal === 'xl' &&
-        (xs || sm || md || lg || xl)
+        (this.xs || this.sm || this.md || this.lg || this.xl)
       ) {
         return true;
       }
