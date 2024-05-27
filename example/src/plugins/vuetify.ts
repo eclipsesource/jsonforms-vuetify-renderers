@@ -5,6 +5,8 @@ import '@mdi/font/css/materialdesignicons.css';
 import '@fortawesome/fontawesome-free/css/all.css';
 
 import 'vuetify/styles';
+import { en, bg, de } from 'vuetify/locale';
+
 import { useAppStore } from '@/stores/app';
 import { watch } from 'vue';
 import { aliases as mdiAliases, mdi } from 'vuetify/iconsets/mdi';
@@ -127,6 +129,7 @@ function createVuetifyInstance(
   blueprint: string,
   variant: string,
   iconset: string,
+  locale: string,
 ) {
   const defaults = variant
     ? {
@@ -162,7 +165,11 @@ function createVuetifyInstance(
 
   return createVuetify({
     blueprint: toBlueprint(blueprint),
-
+    locale: {
+      locale: locale,
+      fallback: 'en',
+      messages: { en, bg, de },
+    },
     icons: {
       defaultSet: iconset, // Set the default icon set
       sets: {
@@ -192,6 +199,14 @@ export function buildVuetify() {
     appStore.blueprint,
     appStore.variant,
     appStore.iconset,
+    appStore.jsonforms.locale,
+  );
+
+  watch(
+    () => appStore.jsonforms.locale,
+    (locale: string) => {
+      vuetify.locale.current.value = locale;
+    },
   );
 
   // Watch for changes in the variant and update Vuetify
