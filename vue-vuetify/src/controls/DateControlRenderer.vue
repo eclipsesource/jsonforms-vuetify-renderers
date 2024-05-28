@@ -11,19 +11,19 @@
       :class="styles.control.input"
       :disabled="!control.enabled"
       :autofocus="appliedOptions.focus"
-      :placeholder="appliedOptions.placeholder"
+      :placeholder="appliedOptions.placeholder ?? dateFormat"
       :label="computedLabel"
       :hint="control.description"
       :persistent-hint="persistentHint()"
       :required="control.required"
       :error-messages="control.errors"
       v-bind="vuetifyProps('v-text-field')"
-      :model-value="inputValue"
-      @update:model-value="onInputChange"
+      v-model="inputModel"
       :clearable="control.enabled"
       @click:clear="clear"
       @focus="isFocused = true"
       @blur="isFocused = false"
+      v-maska:[options]
     >
       <template v-slot:prepend-inner>
         <v-menu
@@ -78,29 +78,35 @@
 
 <script lang="ts">
 import {
-  type ControlElement,
   isDateControl,
+  rankWith,
+  type ControlElement,
   type JsonFormsRendererRegistryEntry,
   type JsonSchema,
-  rankWith,
 } from '@jsonforms/core';
-import { defineComponent, ref } from 'vue';
+import { computed, defineComponent, ref } from 'vue';
 
 import {
   rendererProps,
-  type RendererProps,
   useJsonFormsControl,
+  type RendererProps,
 } from '@jsonforms/vue';
+import { vMaska, type MaskOptions, type MaskaDetail } from 'maska';
 import {
   VBtn,
+  VConfirmEdit,
   VDatePicker,
   VIcon,
   VMenu,
   VSpacer,
   VTextField,
-  VConfirmEdit,
 } from 'vuetify/components';
-import { parseDateTime, useTranslator, useVuetifyControl } from '../util';
+import {
+  parseDateTime,
+  convertDayjsToMaskaFormat,
+  useTranslator,
+  useVuetifyControl,
+} from '../util';
 import { default as ControlWrapper } from './ControlWrapper.vue';
 import { DisabledIconFocus } from './directives';
 
@@ -126,7 +132,7 @@ const controlRenderer = defineComponent({
     VBtn,
     VConfirmEdit,
   },
-  directives: { DisabledIconFocus },
+  directives: { DisabledIconFocus, maska: vMaska },
   props: {
     ...rendererProps<ControlElement>(),
   },
@@ -137,7 +143,29 @@ const controlRenderer = defineComponent({
 
     const adaptValue = (value: any) => value || undefined;
     const control = useVuetifyControl(useJsonFormsControl(props), adaptValue);
-    return { ...control, showMenu, t, adaptValue };
+
+    const dateFormat = computed<string>(() =>
+      typeof control.appliedOptions.value.dateFormat == 'string'
+        ? control.appliedOptions.value.dateFormat
+        : 'YYYY-MM-DD',
+    );
+
+    const state = computed(() => convertDayjsToMaskaFormat(dateFormat.value));
+
+    const options = computed<MaskOptions>(() => ({
+      mask: state.value.mask,
+      tokens: state.value.tokens,
+      tokensReplace: true,
+    }));
+
+    return {
+      ...control,
+      showMenu,
+      t,
+      adaptValue,
+      dateFormat,
+      options,
+    };
   },
   computed: {
     pickerIcon(): string {
@@ -147,11 +175,6 @@ const controlRenderer = defineComponent({
 
       // vuetify defined icon alias
       return '$calendar';
-    },
-    dateFormat(): string {
-      return typeof this.appliedOptions.dateFormat == 'string'
-        ? this.appliedOptions.dateFormat
-        : 'YYYY-MM-DD';
     },
     dateSaveFormat(): string {
       return typeof this.appliedOptions.dateSaveFormat == 'string'
@@ -205,10 +228,26 @@ const controlRenderer = defineComponent({
       }
       return undefined;
     },
-    inputValue(): string | undefined {
-      const value = this.control.data;
-      const date = parseDateTime(value, this.formats);
-      return date ? date.format(this.dateFormat) : value;
+    inputModel: {
+      get(): string | undefined {
+        const value = this.control.data;
+        const date = parseDateTime(value, this.formats);
+        return date ? date.format(this.dateFormat) : value;
+      },
+      set(val: string | undefined): void {
+        let value = val;
+        const date = parseDateTime(value, this.dateFormat);
+
+        if (date) {
+          value = date.format(this.dateSaveFormat);
+        }
+
+        if (this.adaptValue(value) !== this.control.data) {
+          // only invoke onChange when values are different since v-mask is also listening on input which lead to loop
+
+          this.onChange(value);
+        }
+      },
     },
     pickerValue: {
       get(): Date | undefined {
@@ -242,16 +281,6 @@ const controlRenderer = defineComponent({
     },
   },
   methods: {
-    onInputChange(value: string): void {
-      const date = parseDateTime(value, this.dateFormat);
-      let newdata: string | number = date
-        ? date.format(this.dateSaveFormat)
-        : value;
-
-      if (this.adaptValue(newdata) !== this.control.data) {
-        this.onChange(newdata);
-      }
-    },
     onPickerChange(value: Date): void {
       const date = parseDateTime(value, undefined);
       let newdata: string | number | undefined = date
@@ -261,7 +290,7 @@ const controlRenderer = defineComponent({
       this.onChange(newdata);
     },
     clear(): void {
-      this.onChange(null);
+      this.inputModel = undefined;
     },
   },
 });

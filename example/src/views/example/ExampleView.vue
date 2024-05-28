@@ -170,7 +170,11 @@ const saveMonacoData = () => {
         ...example.value,
         input: {
           ...example.value!.input,
-          data: modelValue,
+          data:
+            example.value?.input.schema?.type === 'object' ||
+            example.value?.input.schema?.type === 'array'
+              ? JSON.parse(modelValue)
+              : modelValue,
         },
       } as Example),
     'New data applied',
@@ -183,7 +187,10 @@ const reloadMonacoI18N = () => {
   if (example) {
     i18nModel.value = getMonacoModelForUri(
       monaco.Uri.parse(toI18NUri(example.id)),
-      example.input.i18n ? JSON.stringify(example.input.i18n, null, 2) : '',
+      Array.isArray(example.input.data) ||
+        typeof example.input.data === 'object'
+        ? JSON.stringify(example.input.data, null, 2)
+        : `${example.input.data}`,
     );
     toast('Original example i18n loaded. Apply it to take effect.');
   }
