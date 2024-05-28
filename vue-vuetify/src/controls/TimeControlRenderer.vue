@@ -11,19 +11,19 @@
       :class="styles.control.input"
       :disabled="!control.enabled"
       :autofocus="appliedOptions.focus"
-      :placeholder="appliedOptions.placeholder"
+      :placeholder="appliedOptions.placeholder ?? timeFormat"
       :label="computedLabel"
       :hint="control.description"
       :persistent-hint="persistentHint()"
       :required="control.required"
       :error-messages="control.errors"
       v-bind="vuetifyProps('v-text-field')"
-      :model-value="inputValue"
-      @update:model-value="onInputChange"
+      v-model="inputModel"
       :clearable="control.enabled"
       @click:clear="clear"
       @focus="isFocused = true"
       @blur="isFocused = false"
+      v-maska:[options]
     >
       <template v-slot:prepend-inner>
         <v-menu
@@ -87,7 +87,7 @@ import {
   type JsonSchema,
   rankWith,
 } from '@jsonforms/core';
-import { defineComponent, ref } from 'vue';
+import { computed, defineComponent, ref } from 'vue';
 import {
   rendererProps,
   type RendererProps,
@@ -103,8 +103,10 @@ import {
   VConfirmEdit,
 } from 'vuetify/components';
 import { VTimePicker } from 'vuetify/labs/VTimePicker';
+import { vMaska, type MaskTokens, type MaskOptions } from 'maska';
 
 import {
+  convertDayjsToMaskaFormat,
   parseDateTime,
   useIcons,
   useTranslator,
@@ -141,7 +143,7 @@ const controlRenderer = defineComponent({
     VBtn,
     VConfirmEdit,
   },
-  directives: { DisabledIconFocus },
+  directives: { DisabledIconFocus, maska: vMaska },
   props: {
     ...rendererProps<ControlElement>(),
   },
@@ -157,20 +159,45 @@ const controlRenderer = defineComponent({
     const control = useVuetifyControl(useJsonFormsControl(props), adaptValue);
 
     const icons = useIcons();
-    return { ...control, showMenu, mask, t, adaptValue, icons };
+
+    const ampm = computed(() => control.appliedOptions.value.ampm === true);
+
+    const timeFormat = computed(() =>
+      typeof control.appliedOptions.value.timeFormat == 'string'
+        ? control.appliedOptions.value.timeFormat
+        : ampm.value
+          ? 'hh:mm a'
+          : 'HH:mm',
+    );
+
+    const useMask = control.appliedOptions.value.mask !== false;
+    const state = computed(() => convertDayjsToMaskaFormat(timeFormat.value));
+
+    const options = useMask
+      ? computed<MaskOptions>(() => ({
+          mask: state.value.mask,
+          tokens: state.value.tokens,
+          tokensReplace: true,
+        }))
+      : null;
+
+    return {
+      ...control,
+      showMenu,
+      mask,
+      t,
+      adaptValue,
+      icons,
+      ampm,
+      timeFormat,
+      options,
+    };
   },
   computed: {
     pickerIcon(): string {
       return typeof this.appliedOptions.pickerIcon == 'string'
         ? this.appliedOptions.pickerIcon
         : this.icons.current.value.clock;
-    },
-    timeFormat(): string {
-      return typeof this.appliedOptions.timeFormat == 'string'
-        ? this.appliedOptions.timeFormat
-        : this.ampm
-          ? 'hh:mm a'
-          : 'HH:mm';
     },
     timeSaveFormat(): string {
       return typeof this.appliedOptions.timeSaveFormat == 'string'
@@ -186,9 +213,6 @@ const controlRenderer = defineComponent({
     },
     useSeconds(): boolean {
       return this.timeFormat.includes('s') ? true : false;
-    },
-    ampm(): boolean {
-      return this.appliedOptions.ampm === true;
     },
     minTime(): string | undefined {
       if (typeof this.vuetifyProps('v-time-picker').min === 'string') {
@@ -256,10 +280,24 @@ const controlRenderer = defineComponent({
       }
       return undefined;
     },
-    inputValue(): string | undefined {
-      const value = this.control.data;
-      const time = parseDateTime(value, this.formats);
-      return time ? time.format(this.timeFormat) : value;
+    inputModel: {
+      get(): string | undefined {
+        const value = this.control.data;
+        const time = parseDateTime(value, this.formats);
+        return time ? time.format(this.timeFormat) : value;
+      },
+      set(val: string | undefined): void {
+        let value = val;
+        const time = parseDateTime(value, this.timeFormat);
+
+        if (time) {
+          value = time.format(this.timeSaveFormat);
+        }
+
+        if (this.adaptValue(value) !== this.control.data) {
+          this.onChange(value);
+        }
+      },
     },
     pickerValue: {
       get(): string | undefined {
@@ -305,19 +343,12 @@ const controlRenderer = defineComponent({
     },
   },
   methods: {
-    onInputChange(value: string): void {
-      const time = parseDateTime(value, this.timeFormat);
-      const newdata = time ? time.format(this.timeSaveFormat) : value;
-      if (this.adaptValue(newdata) !== this.control.data) {
-        this.onChange(newdata);
-      }
-    },
     onPickerChange(value: string): void {
       const time = parseDateTime(value, this.useSeconds ? 'HH:mm:ss' : 'HH:mm');
       this.onChange(time ? time.format(this.timeSaveFormat) : value);
     },
     clear(): void {
-      this.onChange(null);
+      this.inputModel = undefined;
     },
   },
 });

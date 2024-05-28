@@ -91,7 +91,7 @@ import {
   useJsonFormsControl,
   type RendererProps,
 } from '@jsonforms/vue';
-import { vMaska, type MaskOptions, type MaskaDetail } from 'maska';
+import { vMaska, type MaskOptions } from 'maska';
 import {
   VBtn,
   VConfirmEdit,
@@ -150,13 +150,16 @@ const controlRenderer = defineComponent({
         : 'YYYY-MM-DD',
     );
 
+    const useMask = control.appliedOptions.value.mask !== false;
     const state = computed(() => convertDayjsToMaskaFormat(dateFormat.value));
 
-    const options = computed<MaskOptions>(() => ({
-      mask: state.value.mask,
-      tokens: state.value.tokens,
-      tokensReplace: true,
-    }));
+    const options = useMask
+      ? computed<MaskOptions>(() => ({
+          mask: state.value.mask,
+          tokens: state.value.tokens,
+          tokensReplace: true,
+        }))
+      : null;
 
     return {
       ...control,

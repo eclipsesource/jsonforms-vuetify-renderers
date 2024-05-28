@@ -18,12 +18,12 @@
       :required="control.required"
       :error-messages="control.errors"
       v-bind="vuetifyProps('v-text-field')"
-      :model-value="inputValue"
-      @update:model-value="onInputChange"
+      v-model="inputModel"
       :clearable="control.enabled"
       @click:clear="clear"
       @focus="isFocused = true"
       @blur="isFocused = false"
+      v-maska:[options]
     >
       <template v-slot:prepend-inner>
         <v-menu
@@ -176,40 +176,43 @@
 
 <script lang="ts">
 import {
-  type ControlElement,
   isDateTimeControl,
+  rankWith,
+  type ControlElement,
   type JsonFormsRendererRegistryEntry,
   type JsonSchema,
-  rankWith,
 } from '@jsonforms/core';
-import { defineComponent, ref } from 'vue';
 import {
   rendererProps,
-  type RendererProps,
   useJsonFormsControl,
+  type RendererProps,
 } from '@jsonforms/vue';
+import { computed, defineComponent, ref } from 'vue';
 import {
   VBtn,
+  VCard,
+  VCardActions,
+  VCardTitle,
+  VCol,
+  VConfirmEdit,
   VDatePicker,
   VHover,
   VIcon,
   VMenu,
-  VSpacer,
-  VTextField,
   VRow,
-  VCol,
-  VCard,
-  VCardTitle,
-  VCardActions,
-  VTabs,
+  VSpacer,
   VTab,
+  VTabs,
+  VTextField,
   VWindow,
   VWindowItem,
-  VConfirmEdit,
 } from 'vuetify/components';
 import { VTimePicker } from 'vuetify/labs/VTimePicker';
 
+import { vMaska, type MaskOptions } from 'maska';
+import { useDisplay } from 'vuetify';
 import {
+  convertDayjsToMaskaFormat,
   parseDateTime,
   useIcons,
   useTranslator,
@@ -217,7 +220,6 @@ import {
 } from '../util';
 import { default as ControlWrapper } from './ControlWrapper.vue';
 import { DisabledIconFocus } from './directives';
-import { useDisplay } from 'vuetify';
 
 const JSON_SCHEMA_DATE_TIME_FORMATS = [
   'YYYY-MM-DDTHH:mm:ss.SSSZ',
@@ -257,7 +259,7 @@ const controlRenderer = defineComponent({
     VWindowItem,
     VConfirmEdit,
   },
-  directives: { DisabledIconFocus },
+  directives: { DisabledIconFocus, maska: vMaska },
   props: {
     ...rendererProps<ControlElement>(),
   },
@@ -271,7 +273,35 @@ const controlRenderer = defineComponent({
     const { mobile } = useDisplay();
     const icons = useIcons();
 
-    return { ...control, showMenu, t, adaptValue, activeTab, mobile, icons };
+    const dateTimeFormat = computed<string>(() =>
+      typeof control.appliedOptions.value.dateTimeFormat == 'string'
+        ? control.appliedOptions.value.dateTimeFormat
+        : 'YYYY-MM-DD HH:mm',
+    );
+
+    const useMask = control.appliedOptions.value.mask !== false;
+    const state = computed(() =>
+      convertDayjsToMaskaFormat(dateTimeFormat.value),
+    );
+    const options = useMask
+      ? computed<MaskOptions>(() => ({
+          mask: state.value.mask,
+          tokens: state.value.tokens,
+          tokensReplace: true,
+        }))
+      : null;
+
+    return {
+      ...control,
+      showMenu,
+      t,
+      adaptValue,
+      activeTab,
+      mobile,
+      icons,
+      dateTimeFormat,
+      options,
+    };
   },
   watch: {
     showMenu(show) {
@@ -292,11 +322,6 @@ const controlRenderer = defineComponent({
         return true;
       }
       return false;
-    },
-    dateTimeFormat(): string {
-      return typeof this.appliedOptions.dateTimeFormat == 'string'
-        ? this.appliedOptions.dateTimeFormat
-        : 'YYYY-MM-DD HH:mm';
     },
     dateTimeSaveFormat(): string {
       return typeof this.appliedOptions.dateTimeSaveFormat == 'string'
@@ -449,10 +474,24 @@ const controlRenderer = defineComponent({
       }
       return undefined;
     },
-    inputValue(): string | undefined {
-      const value = this.control.data;
-      const date = parseDateTime(value, this.formats);
-      return date ? date.format(this.dateTimeFormat) : value;
+    inputModel: {
+      get(): string | undefined {
+        const value = this.control.data;
+        const date = parseDateTime(value, this.formats);
+        return date ? date.format(this.dateTimeFormat) : value;
+      },
+      set(val: string | undefined): void {
+        let value = val;
+        const datetime = parseDateTime(value, this.dateTimeFormat);
+
+        if (datetime) {
+          value = datetime.format(this.dateTimeSaveFormat);
+        }
+
+        if (this.adaptValue(value) !== this.control.data) {
+          this.onChange(value);
+        }
+      },
     },
     pickerValue: {
       get(): { date: Date | undefined; time: string | undefined } {
@@ -502,13 +541,6 @@ const controlRenderer = defineComponent({
     },
   },
   methods: {
-    onInputChange(value: string): void {
-      const date = parseDateTime(value, this.dateTimeFormat);
-      const newdata = date ? date.format(this.dateTimeSaveFormat) : value;
-      if (this.adaptValue(newdata) !== this.control.data) {
-        this.onChange(newdata);
-      }
-    },
     onPickerChange(dateValue?: Date, timeValue?: string): void {
       const date = parseDateTime(dateValue, undefined);
       const time = parseDateTime(
@@ -529,7 +561,7 @@ const controlRenderer = defineComponent({
       }
     },
     clear(): void {
-      this.onChange(null);
+      this.inputModel = undefined;
     },
   },
 });
