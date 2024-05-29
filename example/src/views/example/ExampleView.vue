@@ -16,7 +16,6 @@ import type { JsonFormsChangeEvent } from '@jsonforms/vue';
 import {
   ValidationIcon,
   defaultStyles,
-  extendedVuetifyRenderers,
   mergeStyles,
 } from '@jsonforms/vue-vuetify';
 import type { ErrorObject } from 'ajv';
@@ -33,6 +32,11 @@ import {
   type ShallowRef,
 } from 'vue';
 import { useRoute } from 'vue-router';
+
+// dynamically import renderers so vite vue will not do tree shaking and removing the renderer functions from our components in production mode
+const { extendedVuetifyRenderers } = await import('@jsonforms/vue-vuetify');
+// load also the custom renderer to preserve its renderer functions as well
+await import('@/examples/custom-renderer/CustomArrayRenderer.vue');
 
 const appStore = useAppStore();
 
