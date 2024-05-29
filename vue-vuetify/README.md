@@ -34,10 +34,10 @@ Use the `json-forms` component for each form you want to render and hand over th
 ```vue
 <script>
 import { JsonForms } from '@jsonforms/vue';
-import { vuetifyRenderers } from '@jsonforms/vue-vuetify';
+const { extendedVuetifyRenderers } = await import('@jsonforms/vue-vuetify');
 
 const renderers = [
-  ...vuetifyRenderers,
+  ...extendedVuetifyRenderers,
   // here you can add custom renderers
 ];
 
