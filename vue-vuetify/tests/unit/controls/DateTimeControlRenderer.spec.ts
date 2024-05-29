@@ -19,6 +19,7 @@ describe('DateTimeControlRenderer.vue', () => {
     scope: '#',
     options: {
       placeholder: 'date-time placeholder',
+      dateTimeFormat: 'YYYY-MM-DDTHH:mm',
       dateTimeSaveFormat: 'YYYY-MM-DDTHH:mm:ss',
     },
   };

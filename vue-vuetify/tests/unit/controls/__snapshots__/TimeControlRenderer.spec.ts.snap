@@ -32,7 +32,7 @@ exports[`TimeControlRenderer.vue > should render component and match snapshot 1`
               </label><label class="v-label v-field-label" for="#-input">
                 <!---->My Time
               </label>
-              <!----><input placeholder="time placeholder" size="1" type="text" id="#-input" aria-describedby="#-input-messages" class="v-field__input">
+              <!----><input placeholder="time placeholder" size="1" type="text" id="#-input" aria-describedby="#-input-messages" class="v-field__input" data-maska-value="00:20:00">
               <!---->
             </div>
             <transition-stub name="expand-x-transition" appear="false" persisted="false" css="true">
@@ -93,7 +93,7 @@ exports[`TimeControlRenderer.vue > should render component and match snapshot wh
               </label><label class="v-label v-field-label" for="#-input">
                 <!---->My Time
               </label>
-              <!----><input placeholder="time placeholder" size="1" type="text" id="#-input" aria-describedby="#-input-messages" class="v-field__input">
+              <!----><input placeholder="time placeholder" size="1" type="text" id="#-input" aria-describedby="#-input-messages" class="v-field__input" data-maska-value="00:20:00">
               <!---->
             </div>
             <transition-stub name="expand-x-transition" appear="false" persisted="false" css="true">

@@ -32,7 +32,7 @@ exports[`DateTimeControlRenderer.vue > should render component and match snapsho
               </label><label class="v-label v-field-label" for="#-input">
                 <!---->My Date Time
               </label>
-              <!----><input placeholder="date-time placeholder" size="1" type="text" id="#-input" aria-describedby="#-input-messages" class="v-field__input">
+              <!----><input placeholder="date-time placeholder" size="1" type="text" id="#-input" aria-describedby="#-input-messages" class="v-field__input" data-maska-value="2021-03-09T21:54">
               <!---->
             </div>
             <transition-stub name="expand-x-transition" appear="false" persisted="false" css="true">
@@ -93,7 +93,7 @@ exports[`DateTimeControlRenderer.vue > should render component and match snapsho
               </label><label class="v-label v-field-label" for="#-input">
                 <!---->My Date Time
               </label>
-              <!----><input placeholder="date-time placeholder" size="1" type="text" id="#-input" aria-describedby="#-input-messages" class="v-field__input">
+              <!----><input placeholder="date-time placeholder" size="1" type="text" id="#-input" aria-describedby="#-input-messages" class="v-field__input" data-maska-value="2021-03-09T21:54">
               <!---->
             </div>
             <transition-stub name="expand-x-transition" appear="false" persisted="false" css="true">
