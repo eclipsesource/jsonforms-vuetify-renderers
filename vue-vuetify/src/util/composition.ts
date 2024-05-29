@@ -139,7 +139,7 @@ export const useVuetifyControl = <
   };
 };
 
-export const useTranslator = () => {
+export const useJsonForms = () => {
   const jsonforms = inject<JsonFormsSubStates>('jsonforms');
 
   if (!jsonforms) {
@@ -147,6 +147,12 @@ export const useTranslator = () => {
       "'jsonforms couldn't be injected. Are you within JSON Forms?",
     );
   }
+
+  return jsonforms;
+};
+
+export const useTranslator = () => {
+  const jsonforms = useJsonForms();
 
   if (!jsonforms.i18n || !jsonforms.i18n.translate) {
     throw new Error(
@@ -263,13 +269,7 @@ export const useVuetifyBasicControl = <I extends { control: any }>(
  * Extracts Ajv from JSON Forms
  */
 export const useAjv = () => {
-  const jsonforms = inject<JsonFormsSubStates>('jsonforms');
-
-  if (!jsonforms) {
-    throw new Error(
-      "'jsonforms' couldn't be injected. Are you within JSON Forms?",
-    );
-  }
+  const jsonforms = useJsonForms();
 
   // should always exist
   return jsonforms.core?.ajv as Ajv;
