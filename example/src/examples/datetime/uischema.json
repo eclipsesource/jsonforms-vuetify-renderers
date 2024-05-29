@@ -28,9 +28,8 @@
                     {
                       "type": "Control",
                       "scope": "#/properties/dateTime",
-                      "label": "Date with 24H Time",
+                      "label": "Date with Time (locale)",
                       "options": {
-                        "dateTimeFormat": "MM/DD/YYYY HH:mm:ss",
                         "dateTimeSaveFormat": "YYYY-MM-DDTHH:mm:ssZ"
                       }
                     }
@@ -59,10 +58,10 @@
                     {
                       "type": "Control",
                       "scope": "#/properties/stringDateTimeFullWithZone",
-                      "label": "Date with 24H Time and seconds",
+                      "label": "Date with Time and seconds (locale)",
                       "options": {
                         "format": "date-time",
-                        "dateTimeFormat": "MM/DD/YYYY HH:mm:ssZ",
+                        "dateTimeFormat": "L LTS",
                         "dateTimeSaveFormat": "YYYY-MM-DDTHH:mm:ssZ"
                       }
                     }

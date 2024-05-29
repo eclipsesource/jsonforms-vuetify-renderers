@@ -81,32 +81,34 @@
 
 <script lang="ts">
 import {
-  type ControlElement,
   isTimeControl,
+  rankWith,
+  type ControlElement,
   type JsonFormsRendererRegistryEntry,
   type JsonSchema,
-  rankWith,
 } from '@jsonforms/core';
-import { computed, defineComponent, ref } from 'vue';
 import {
   rendererProps,
-  type RendererProps,
   useJsonFormsControl,
+  type RendererProps,
 } from '@jsonforms/vue';
+import { vMaska, type MaskOptions, type MaskaDetail } from 'maska';
+import { computed, defineComponent, ref, unref } from 'vue';
 import {
   VBtn,
+  VConfirmEdit,
   VHover,
   VIcon,
   VMenu,
   VSpacer,
   VTextField,
-  VConfirmEdit,
 } from 'vuetify/components';
 import { VTimePicker } from 'vuetify/labs/VTimePicker';
-import { vMaska, type MaskTokens, type MaskOptions } from 'maska';
 
+import { useLocale } from 'vuetify';
 import {
   convertDayjsToMaskaFormat,
+  expandLocaleFormat,
   parseDateTime,
   useIcons,
   useTranslator,
@@ -151,9 +153,6 @@ const controlRenderer = defineComponent({
     const t = useTranslator();
 
     const showMenu = ref(false);
-    const mask = ref<((value: string) => (string | RegExp)[]) | undefined>(
-      undefined,
-    );
 
     const adaptValue = (value: any) => value || undefined;
     const control = useVuetifyControl(useJsonFormsControl(props), adaptValue);
@@ -162,35 +161,44 @@ const controlRenderer = defineComponent({
 
     const ampm = computed(() => control.appliedOptions.value.ampm === true);
 
-    const timeFormat = computed(() =>
-      typeof control.appliedOptions.value.timeFormat == 'string'
-        ? control.appliedOptions.value.timeFormat
-        : ampm.value
-          ? 'hh:mm a'
-          : 'HH:mm',
+    const timeFormat = computed(
+      () =>
+        typeof control.appliedOptions.value.timeFormat == 'string'
+          ? expandLocaleFormat(control.appliedOptions.value.timeFormat) ??
+            control.appliedOptions.value.timeFormat
+          : expandLocaleFormat('LT') ?? 'H:mm', // by default try to use localized default if unavailable then H:mm,
     );
 
     const useMask = control.appliedOptions.value.mask !== false;
+    const maskCompleted = ref(false);
+
     const state = computed(() => convertDayjsToMaskaFormat(timeFormat.value));
+    const locale = useLocale();
 
     const options = useMask
       ? computed<MaskOptions>(() => ({
           mask: state.value.mask,
           tokens: state.value.tokens,
           tokensReplace: true,
+          onMaska: (detail: MaskaDetail) =>
+            (maskCompleted.value = detail.completed),
+
+          //invoke the locale.current as side effect so that the computed will rerun if the locale changes since the mask could be dependent on the locale
+          _locale: unref(locale.current),
         }))
       : null;
 
     return {
       ...control,
       showMenu,
-      mask,
       t,
       adaptValue,
       icons,
       ampm,
       timeFormat,
       options,
+      useMask,
+      maskCompleted,
     };
   },
   computed: {
@@ -288,6 +296,18 @@ const controlRenderer = defineComponent({
       },
       set(val: string | undefined): void {
         let value = val;
+
+        if (
+          this.useMask &&
+          !this.maskCompleted &&
+          value !== null &&
+          value !== undefined
+        ) {
+          // the value is set not not yet completed so do not set that until the full mask is completed
+          // otherwise if the control.data is bound to another renderer with different dateTimeFormat then those will collide
+          return;
+        }
+
         const time = parseDateTime(value, this.timeFormat);
 
         if (time) {

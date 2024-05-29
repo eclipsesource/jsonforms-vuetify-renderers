@@ -30,7 +30,7 @@
                       "scope": "#/properties/time",
                       "label": "24H Time",
                       "options": {
-                        "timeFormat": "HH:mm:ss",
+                        "timeFormat": "LTS",
                         "timeSaveFormat": "HH:mm:ssZ"
                       }
                     }
@@ -106,11 +106,10 @@
                     {
                       "type": "Control",
                       "scope": "#/properties/stringTimeFull",
-                      "label": "12H Time with seconds",
+                      "label": "Time with seconds (locale)",
                       "options": {
                         "format": "time",
-                        "ampm": true,
-                        "timeFormat": "hh:mm:ss a",
+                        "timeFormat": "LTS",
                         "timeSaveFormat": "HH:mm:ss"
                       }
                     },
@@ -132,11 +131,10 @@
                     {
                       "type": "Control",
                       "scope": "#/properties/stringTime",
-                      "label": "12H Time no seconds",
+                      "label": "Time no seconds (locale)",
                       "options": {
                         "format": "time",
-                        "ampm": true,
-                        "timeFormat": "hh:mm a",
+                        "timeFormat": "LT",
                         "timeSaveFormat": "HH:mm"
                       }
                     },

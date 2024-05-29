@@ -84,14 +84,15 @@ import {
   type JsonFormsRendererRegistryEntry,
   type JsonSchema,
 } from '@jsonforms/core';
-import { computed, defineComponent, ref } from 'vue';
+import { computed, defineComponent, ref, unref } from 'vue';
 
 import {
   rendererProps,
   useJsonFormsControl,
   type RendererProps,
 } from '@jsonforms/vue';
-import { vMaska, type MaskOptions } from 'maska';
+import { vMaska, type MaskOptions, type MaskaDetail } from 'maska';
+import { useLocale } from 'vuetify';
 import {
   VBtn,
   VConfirmEdit,
@@ -102,8 +103,9 @@ import {
   VTextField,
 } from 'vuetify/components';
 import {
-  parseDateTime,
   convertDayjsToMaskaFormat,
+  expandLocaleFormat,
+  parseDateTime,
   useTranslator,
   useVuetifyControl,
 } from '../util';
@@ -144,20 +146,30 @@ const controlRenderer = defineComponent({
     const adaptValue = (value: any) => value || undefined;
     const control = useVuetifyControl(useJsonFormsControl(props), adaptValue);
 
-    const dateFormat = computed<string>(() =>
-      typeof control.appliedOptions.value.dateFormat == 'string'
-        ? control.appliedOptions.value.dateFormat
-        : 'YYYY-MM-DD',
+    const dateFormat = computed<string>(
+      () =>
+        typeof control.appliedOptions.value.dateFormat == 'string'
+          ? expandLocaleFormat(control.appliedOptions.value.dateFormat) ??
+            control.appliedOptions.value.dateFormat
+          : expandLocaleFormat('L') ?? 'YYYY-MM-DD', // by default try to use localized default if unavailable then YYYY-MM-DD
     );
 
     const useMask = control.appliedOptions.value.mask !== false;
+    const maskCompleted = ref(false);
+
     const state = computed(() => convertDayjsToMaskaFormat(dateFormat.value));
+    const locale = useLocale();
 
     const options = useMask
       ? computed<MaskOptions>(() => ({
           mask: state.value.mask,
           tokens: state.value.tokens,
           tokensReplace: true,
+          onMaska: (detail: MaskaDetail) =>
+            (maskCompleted.value = detail.completed),
+
+          //invoke the locale.current as side effect so that the computed will rerun if the locale changes since the mask could be dependent on the locale
+          _locale: unref(locale.current),
         }))
       : null;
 
@@ -168,6 +180,8 @@ const controlRenderer = defineComponent({
       adaptValue,
       dateFormat,
       options,
+      useMask,
+      maskCompleted,
     };
   },
   computed: {
@@ -239,6 +253,18 @@ const controlRenderer = defineComponent({
       },
       set(val: string | undefined): void {
         let value = val;
+
+        if (
+          this.useMask &&
+          !this.maskCompleted &&
+          value !== null &&
+          value !== undefined
+        ) {
+          // the value is set not not yet completed so do not set that until the full mask is completed
+          // otherwise if the control.data is bound to another renderer with different dateTimeFormat then those will collide
+          return;
+        }
+
         const date = parseDateTime(value, this.dateFormat);
 
         if (date) {
@@ -246,8 +272,6 @@ const controlRenderer = defineComponent({
         }
 
         if (this.adaptValue(value) !== this.control.data) {
-          // only invoke onChange when values are different since v-mask is also listening on input which lead to loop
-
           this.onChange(value);
         }
       },

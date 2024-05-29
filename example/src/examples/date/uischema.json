@@ -18,9 +18,8 @@
                     {
                       "type": "Control",
                       "scope": "#/properties/date",
-                      "label": "Date",
+                      "label": "Date (locale)",
                       "options": {
-                        "dateFormat": "MM/DD/YYYY",
                         "dateSaveFormat": "YYYY-MM-DD"
                       }
                     }
@@ -38,10 +37,10 @@
                     {
                       "type": "Control",
                       "scope": "#/properties/stringDate",
-                      "label": "Full Date",
+                      "label": "Date (locale)",
                       "options": {
                         "format": "date",
-                        "dateFormat": "MM/DD/YYYY",
+                        "dateFormat": "L",
                         "dateSaveFormat": "MM/DD/YYYY"
                       }
                     }
@@ -91,7 +90,7 @@
                     {
                       "type": "Control",
                       "scope": "#/properties/stringDate",
-                      "label": "Full Date",
+                      "label": "Date",
                       "options": {
                         "format": "date",
                         "dateFormat": "MM/DD/YYYY",

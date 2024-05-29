@@ -14,6 +14,23 @@ dayjs.extend(timezone);
 dayjs.extend(localeData);
 dayjs.extend(localizedFormat);
 
+export const expandLocaleFormat = (format: string): string => {
+  return format.replace(/\b(LT|LTS|L{1,4})\b/g, function (match, p1) {
+    // Replace each captured value with a specific value
+    switch (p1) {
+      case 'LT':
+      case 'LTS':
+      case 'L':
+      case 'LL':
+      case 'LLL':
+      case 'LLLL':
+        return dayjs.localeData().longDateFormat(p1);
+      default:
+        return match; // Return the match unchanged if not in the set
+    }
+  });
+};
+
 export const parseDateTime = (
   data: string | number | dayjs.Dayjs | Date | null | undefined,
   format: string | string[] | undefined,
@@ -28,17 +45,11 @@ export const parseDateTime = (
   return dayjsData;
 };
 
-function splitByTokens(str: string, tokens: string[]) {
-  const regex = new RegExp(`(${tokens.join('|')})`);
-
-  return str.split(regex).filter(Boolean);
-}
-
 export const convertDayjsToMaskaFormat = (
   dayjsFormat: string,
 ): { mask: MaskType; tokens: MaskTokens } => {
   function* nextKey(preservedKeys: string): Generator<string> {
-    let currentCharCode = '0'.charCodeAt(0);
+    let currentCharCode = 'A'.charCodeAt(0);
 
     while (currentCharCode <= 65535) {
       // Unicode character range
@@ -99,34 +110,39 @@ export const convertDayjsToMaskaFormat = (
     }
   }
 
-  // var localeData = require('dayjs/plugin/localeData')
-  // dayjs.extend(localeData)
-  // dayjs.longDateFormat('L')
-
+  // defintions from - https://day.js.org/docs/en/parse/string-format#list-of-all-available-parsing-tokens
   const dayjsTokens = [
-    'YYYY',
-    'YY',
-    'MMMM',
-    'MMM',
-    'MM',
-    'M',
-    'DD',
-    'D',
-    'HH',
-    'H',
-    'hh',
-    'h',
-    'mm',
-    'm',
-    'ss',
-    's',
-    'SSS',
-    'ZZ',
-    'Z',
-    'A',
-    'a',
-  ];
-  const parts = splitByTokens(dayjsFormat, dayjsTokens);
+    'YYYY', // Four-digit year - example: 2001
+    'YY', //Two-digit year - example: 01
+    'M', // Month, beginning at 1 - example: 1-12
+    'MM', // Month, 2-digits - example: 01-12
+    'MMM', // The abbreviated month name - example: Jan-Dec
+    'MMMM', // The full month name - example: January-December
+    'D', // Day of month - example: 1-31
+    'DD', // Day of month, 2-digits - example: 01-31
+    'H', // Hours - example: 0-23
+    'HH', // Hours, 2-digits - example: 00-23
+    'h', // Hours, 12-hour clock - example: 1-12
+    'hh', // Hours, 12-hour clock, 2-digits - example: 01-12
+    'm', // Minutes - example: 0-59
+    'mm', // Minutes, 2-digits - example: 00-59
+    's', // Seconds - example: 0-59
+    'ss', // Seconds, 2-digits - example: 00-59
+    'S', // Hundreds of milliseconds, 1-digit - example: 0-9
+    'SS', // Tens of milliseconds, 2-digits - example: 00-99
+    'SSS', // Milliseconds, 3-digits - example: 000-999
+    'Z', // Offset from UTC - example: -05:00
+    'ZZ', // Compact offset from UTC, 2-digits - example: -0500
+    'A', // Post or ante meridiem, upper-case - example: AM PM
+    'a', // Post or ante meridiem, lower-case - example: am pm,
+    'X', // Unix timestamp - example 1410715640.579,
+    'x', // Unix ms timestamp - example 1410715640579
+  ].sort((a, b) => b.length - a.length);
+
+  const parts = dayjsFormat
+    .split(new RegExp(`(${dayjsTokens.join('|')})`))
+    .filter(Boolean);
+
   const reservedChars = parts
     .filter((part) => !dayjsTokens.includes(part))
     .join('');
@@ -154,17 +170,20 @@ export const convertDayjsToMaskaFormat = (
   tokens.registerToken({ pattern: /[0-3]/ });
   tokens.registerToken({ pattern: /[0-3]/, optional: true });
   tokens.registerToken({ pattern: /[0-5]/ });
-  tokens.registerToken({ pattern: /[a|p]/ });
+  tokens.registerToken({ pattern: /[ap]/ });
   tokens.registerToken({ pattern: /m/ });
-  tokens.registerToken({ pattern: /[A|P]/ });
+  tokens.registerToken({ pattern: /[AP]/ });
   tokens.registerToken({ pattern: /M/ });
   tokens.registerToken({ pattern: /[+-]/ });
   tokens.registerToken({ pattern: /[0-4]/ });
   tokens.registerToken({ pattern: /:/ });
+  tokens.registerToken({ pattern: /[.]/ });
+  tokens.registerToken({ pattern: /[.]/, optional: true });
 
   const tokenFunction = (value: string): string => {
-    let mask = '';
     let index = 0;
+
+    const result: (string | MaskTokens[keyof MaskTokens])[] = [];
     for (const part of parts) {
       if (!part || part === '') {
         continue;
@@ -174,34 +193,33 @@ export const convertDayjsToMaskaFormat = (
       }
 
       if (part === 'YYYY') {
-        const key = tokens.getTokenKey({ pattern: /[0-9]/ });
-        mask += key + key + key + key;
+        result.push({ pattern: /[0-9]/ });
+        result.push({ pattern: /[0-9]/ });
+        result.push({ pattern: /[0-9]/ });
+        result.push({ pattern: /[0-9]/ });
         index += 4;
-      } else if (part === 'YY') {
-        const key = tokens.getTokenKey({ pattern: /[0-9]/ });
-        mask += key + key;
+      } else if (part === 'YY' || part == 'SS') {
+        result.push({ pattern: /[0-9]/ });
+        result.push({ pattern: /[0-9]/ });
         index += 2;
       } else if (part === 'M') {
-        mask += tokens.getTokenKey({ pattern: /1/ });
+        result.push({ pattern: /1/ });
         if (value.charAt(index) === '1') {
-          if (
-            value.charAt(index + 1) === '0' ||
-            value.charAt(index + 1) === '1' ||
-            value.charAt(index + 1) === '2'
-          ) {
-            mask += tokens.getTokenKey({ pattern: /[0-2]/ });
+          if (/[0-2]/.test(value.charAt(index + 1))) {
+            result.push({ pattern: /[0-2]/ });
             index += 1;
           } else if (value.charAt(index + 1) === '') {
-            mask += tokens.getTokenKey({ pattern: /[0-2]/, optional: true });
+            result.push({ pattern: /[0-2]/, optional: true });
           }
         }
         index += 1;
       } else if (part === 'MM' || part == 'hh') {
-        mask += tokens.getTokenKey({ pattern: /[0-1]/ });
-        mask +=
+        result.push({ pattern: /[0-1]/ });
+        result.push(
           value.charAt(index) === '0'
-            ? tokens.getTokenKey({ pattern: /[1-9]/ })
-            : tokens.getTokenKey({ pattern: /[0-2]/ });
+            ? { pattern: /[1-9]/ }
+            : { pattern: /[0-2]/ },
+        );
         index += 2;
       } else if (part === 'MMM') {
         const escapedMonths = dayjs
@@ -209,7 +227,7 @@ export const convertDayjsToMaskaFormat = (
           .map((month) => RegExpLiteral(month));
         const regexPattern = `\\b(${escapedMonths.join('|')})\\b`;
 
-        mask += tokens.getTokenKey({ pattern: new RegExp(regexPattern, 'i') });
+        result.push({ pattern: new RegExp(regexPattern, 'i') });
         let monthSpecified = false;
 
         for (const month of dayjs.monthsShort()) {
@@ -232,7 +250,7 @@ export const convertDayjsToMaskaFormat = (
           .map((month) => RegExpLiteral(month));
         const regexPattern = `\\b(${escapedMonths.join('|')})\\b`;
 
-        mask += tokens.getTokenKey({ pattern: new RegExp(regexPattern, 'i') });
+        result.push({ pattern: new RegExp(regexPattern, 'i') });
         let monthSpecified = false;
 
         for (const month of dayjs.months()) {
@@ -250,177 +268,168 @@ export const convertDayjsToMaskaFormat = (
           break;
         }
       } else if (part === 'D') {
-        mask += tokens.getTokenKey({ pattern: /[1-3]/ });
-        if (
-          value.charAt(index) === '1' ||
-          value.charAt(index) === '2' ||
-          value.charAt(index) === '3'
-        ) {
+        result.push({ pattern: /[1-9]/ });
+        if (/[1-3]/.test(value.charAt(index))) {
           if (value.charAt(index) === '3') {
-            if (
-              value.charAt(index + 1) === '0' ||
-              value.charAt(index + 1) === '1'
-            ) {
-              mask += tokens.getTokenKey({ pattern: /[0-1]/ });
+            if (/[0-1]/.test(value.charAt(index + 1))) {
+              result.push({ pattern: /[0-1]/ });
               index += 1;
             } else if (value.charAt(index + 1) === '') {
-              mask += tokens.getTokenKey({ pattern: /[0-1]/, optional: true });
+              result.push({ pattern: /[0-1]/, optional: true });
             }
           } else {
-            if (
-              value.charAt(index + 1) === '0' ||
-              value.charAt(index + 1) === '1' ||
-              value.charAt(index + 1) === '2' ||
-              value.charAt(index + 1) === '3' ||
-              value.charAt(index + 1) === '4' ||
-              value.charAt(index + 1) === '5' ||
-              value.charAt(index + 1) === '6' ||
-              value.charAt(index + 1) === '7' ||
-              value.charAt(index + 1) === '8' ||
-              value.charAt(index + 1) === '9'
-            ) {
-              mask += tokens.getTokenKey({ pattern: /[0-9]/ });
+            if (/\d/.test(value.charAt(index + 1))) {
+              result.push({ pattern: /[0-9]/ });
               index += 1;
             } else if (value.charAt(index + 1) === '') {
-              mask += tokens.getTokenKey({ pattern: /[0-9]/, optional: true });
+              result.push({ pattern: /[0-9]/, optional: true });
             }
           }
         }
         index += 1;
       } else if (part === 'DD') {
-        mask += tokens.getTokenKey({ pattern: /[0-3]/ });
-        mask +=
-          value.charAt(index) === '3'
-            ? tokens.getTokenKey({ pattern: /[0-1]/ })
-            : value.charAt(index) === '0'
-              ? tokens.getTokenKey({ pattern: /[1-9]/ })
-              : tokens.getTokenKey({ pattern: /[0-9]/ });
+        result.push({ pattern: /[0-3]/ });
+        if (value.charAt(index) === '3') {
+          result.push({ pattern: /[0-1]/ });
+        } else if (value.charAt(index) === '0') {
+          result.push({ pattern: /[1-9]/ });
+        } else {
+          result.push({ pattern: /[0-9]/ });
+        }
         index += 2;
       } else if (part == 'H') {
-        mask += tokens.getTokenKey({ pattern: /[0-9]/ });
+        result.push({ pattern: /[0-9]/ });
         if (value.charAt(index) === '2') {
-          if (
-            value.charAt(index + 1) === '0' ||
-            value.charAt(index + 1) === '1' ||
-            value.charAt(index + 1) === '2' ||
-            value.charAt(index + 1) === '3'
-          ) {
-            mask += tokens.getTokenKey({ pattern: /[0-3]/ });
+          if (/[0-3]/.test(value.charAt(index + 1))) {
+            result.push({ pattern: /[0-3]/ });
             index += 1;
           } else if (value.charAt(index + 1) === '') {
-            mask += tokens.getTokenKey({ pattern: /[0-3]/, optional: true });
+            result.push({ pattern: /[0-3]/, optional: true });
           }
         } else if (value.charAt(index) === '1') {
-          if (
-            value.charAt(index + 1) === '0' ||
-            value.charAt(index + 1) === '1' ||
-            value.charAt(index + 1) === '2' ||
-            value.charAt(index + 1) === '3' ||
-            value.charAt(index + 1) === '4' ||
-            value.charAt(index + 1) === '5' ||
-            value.charAt(index + 1) === '6' ||
-            value.charAt(index + 1) === '7' ||
-            value.charAt(index + 1) === '8' ||
-            value.charAt(index + 1) === '9'
-          ) {
-            mask += tokens.getTokenKey({ pattern: /[0-9]/ });
+          if (/\d/.test(value.charAt(index + 1))) {
+            result.push({ pattern: /[0-9]/ });
             index += 1;
           } else if (value.charAt(index + 1) === '') {
-            mask += tokens.getTokenKey({ pattern: /[0-9]/, optional: true });
+            result.push({ pattern: /[0-9]/, optional: true });
           }
         }
         index += 1;
       } else if (part == 'HH') {
-        mask += tokens.getTokenKey({ pattern: /[0-2]/ });
-        if (value.charAt(index) === '0' || value.charAt(index) === '1') {
-          mask += tokens.getTokenKey({ pattern: /[0-9]/ });
+        result.push({ pattern: /[0-2]/ });
+        if (/[0-1]/.test(value.charAt(index))) {
+          result.push({ pattern: /[0-9]/ });
         } else if (value.charAt(index) === '2') {
-          mask += tokens.getTokenKey({ pattern: /[0-3]/ });
+          result.push({ pattern: /[0-3]/ });
         }
         index += 2;
       } else if (part == 'h') {
-        mask += tokens.getTokenKey({ pattern: /[1-9]/ });
+        result.push({ pattern: /[1-9]/ });
         if (value.charAt(index) === '1') {
-          if (
-            value.charAt(index + 1) == '0' ||
-            value.charAt(index + 1) == '1' ||
-            value.charAt(index + 1) == '2'
-          ) {
-            mask += tokens.getTokenKey({ pattern: /[0-2]/ });
+          if (/[0-2]/.test(value.charAt(index + 1))) {
+            result.push({ pattern: /[0-2]/ });
             index += 1;
           } else if (value.charAt(index + 1) === '') {
-            mask += tokens.getTokenKey({ pattern: /[0-2]/, optional: true });
+            result.push({ pattern: /[0-2]/, optional: true });
           }
         }
         index += 1;
       } else if (part == 'm' || part == 's') {
-        mask += tokens.getTokenKey({ pattern: /[0-9]/ });
-        if (
-          value.charAt(index) === '1' ||
-          value.charAt(index) === '2' ||
-          value.charAt(index) === '3' ||
-          value.charAt(index) === '4' ||
-          value.charAt(index) === '5'
-        ) {
-          if (
-            value.charAt(index + 1) === '0' ||
-            value.charAt(index + 1) === '1' ||
-            value.charAt(index + 1) === '2' ||
-            value.charAt(index + 1) === '3' ||
-            value.charAt(index + 1) === '4' ||
-            value.charAt(index + 1) === '5' ||
-            value.charAt(index + 1) === '6' ||
-            value.charAt(index + 1) === '7' ||
-            value.charAt(index + 1) === '8' ||
-            value.charAt(index + 1) === '9'
-          ) {
-            mask += tokens.getTokenKey({ pattern: /[0-9]/ });
+        result.push({ pattern: /[0-9]/ });
+        if (/[1-5]/.test(value.charAt(index))) {
+          if (/\d/.test(value.charAt(index + 1))) {
+            result.push({ pattern: /[0-9]/ });
             index += 1;
           } else if (value.charAt(index + 1) === '') {
-            mask += tokens.getTokenKey({ pattern: /[0-9]/, optional: true });
+            result.push({ pattern: /[0-9]/, optional: true });
           }
         }
         index += 1;
       } else if (part == 'mm' || part == 'ss') {
-        mask += tokens.getTokenKey({ pattern: /[0-5]/ });
-        mask += tokens.getTokenKey({ pattern: /[0-9]/ });
+        result.push({ pattern: /[0-5]/ });
+        result.push({ pattern: /[0-9]/ });
         index += 2;
       } else if (part == 'a') {
-        mask += tokens.getTokenKey({ pattern: /[a|p]/ });
-        mask += tokens.getTokenKey({ pattern: /m/ });
+        result.push({ pattern: /[ap]/ });
+        result.push({ pattern: /m/ });
         index += 2;
       } else if (part == 'A') {
-        mask += tokens.getTokenKey({ pattern: /[A|P]/ });
-        mask += tokens.getTokenKey({ pattern: /M/ });
+        result.push({ pattern: /[AP]/ });
+        result.push({ pattern: /M/ });
         index += 2;
       } else if (part == 'Z' || part == 'ZZ') {
         //GMT-12 to GMT+14
-        mask += tokens.getTokenKey({ pattern: /[+-]/ });
-        mask += tokens.getTokenKey({ pattern: /[0-1]/ });
+        result.push({ pattern: /[+-]/ });
+        result.push({ pattern: /[0-1]/ });
 
         if (value.charAt(index + 1) === '0') {
-          mask += tokens.getTokenKey({ pattern: /[0-9]/ });
+          result.push({ pattern: /[0-9]/ });
         } else if (value.charAt(index + 1) === '1') {
-          mask +=
+          result.push(
             value.charAt(index) === '+'
-              ? tokens.getTokenKey({ pattern: /[0-4]/ })
-              : tokens.getTokenKey({ pattern: /[0-2]/ });
+              ? { pattern: /[0-4]/ }
+              : { pattern: /[0-2]/ },
+          );
         }
         if (part === 'Z') {
-          mask += tokens.getTokenKey({ pattern: /:/ });
+          result.push({ pattern: /:/ });
+          index += 1;
         }
-        mask += tokens.getTokenKey({ pattern: /[0-5]/ });
-        mask += tokens.getTokenKey({ pattern: /[0-9]/ });
-        index += part === 'Z' ? 6 : 5;
+        result.push({ pattern: /[0-5]/ });
+        result.push({ pattern: /[0-9]/ });
+        index += 5;
+      } else if (part == 'S') {
+        result.push({ pattern: /[0-9]/ });
+        index += 1;
       } else if (part == 'SSS') {
-        const key = tokens.getTokenKey({ pattern: /[0-9]/ });
-        mask += key + key + key;
+        result.push({ pattern: /[0-9]/ });
+        result.push({ pattern: /[0-9]/ });
+        result.push({ pattern: /[0-9]/ });
         index += 3;
+      } else if (part == 'X') {
+        // number of digits 13
+        const times = 13;
+        for (let i = 0; i < times; i++) {
+          result.push({ pattern: /[0-9]/ });
+        }
+        index += times;
+      } else if (part == 'x') {
+        // number of digits 10 for seconds
+        const times = 10;
+        for (let i = 0; i < times; i++) {
+          result.push({ pattern: /[0-9]/ });
+        }
+
+        if (value.charAt(index + times) === '.') {
+          result.push({ pattern: /[.]/ });
+          index += 1;
+
+          // check for optional 3 digits after .
+          for (let i = 0; i < 3; i++) {
+            if (/\d/.test(value.charAt(index + times + 1 + i))) {
+              result.push({ pattern: /[0-9]/ });
+              index += 1;
+            } else if (value.charAt(index + times + 1 + i) === '') {
+              result.push({ pattern: /[0-9]/, optional: true });
+              break;
+            }
+          }
+        } else if (value.charAt(index + times) === '') {
+          result.push({ pattern: /[.]/, optional: true });
+        }
+
+        index += times;
       } else {
-        mask += part;
+        result.push(part);
         index += part.length;
       }
     }
+
+    const mask = result
+      .map((part) =>
+        typeof part === 'string' ? part : tokens.getTokenKey(part),
+      )
+      .join('');
 
     return mask;
   };

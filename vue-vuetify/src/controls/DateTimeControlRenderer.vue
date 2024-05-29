@@ -11,7 +11,7 @@
       :class="styles.control.input"
       :disabled="!control.enabled"
       :autofocus="appliedOptions.focus"
-      :placeholder="appliedOptions.placeholder"
+      :placeholder="appliedOptions.placeholder ?? dateTimeFormat"
       :label="computedLabel"
       :hint="control.description"
       :persistent-hint="persistentHint()"
@@ -187,7 +187,7 @@ import {
   useJsonFormsControl,
   type RendererProps,
 } from '@jsonforms/vue';
-import { computed, defineComponent, ref } from 'vue';
+import { computed, defineComponent, ref, unref } from 'vue';
 import {
   VBtn,
   VCard,
@@ -209,10 +209,11 @@ import {
 } from 'vuetify/components';
 import { VTimePicker } from 'vuetify/labs/VTimePicker';
 
-import { vMaska, type MaskOptions } from 'maska';
-import { useDisplay } from 'vuetify';
+import { vMaska, type MaskOptions, type MaskaDetail } from 'maska';
+import { useDisplay, useLocale } from 'vuetify';
 import {
   convertDayjsToMaskaFormat,
+  expandLocaleFormat,
   parseDateTime,
   useIcons,
   useTranslator,
@@ -266,7 +267,7 @@ const controlRenderer = defineComponent({
   setup(props: RendererProps<ControlElement>) {
     const t = useTranslator();
     const showMenu = ref(false);
-    const activeTab = ref('date');
+    const activeTab = ref<'date' | 'time'>('date');
     const adaptValue = (value: any) => value || undefined;
 
     const control = useVuetifyControl(useJsonFormsControl(props), adaptValue);
@@ -275,19 +276,29 @@ const controlRenderer = defineComponent({
 
     const dateTimeFormat = computed<string>(() =>
       typeof control.appliedOptions.value.dateTimeFormat == 'string'
-        ? control.appliedOptions.value.dateTimeFormat
-        : 'YYYY-MM-DD HH:mm',
+        ? expandLocaleFormat(control.appliedOptions.value.dateTimeFormat) ??
+          control.appliedOptions.value.dateTimeFormat
+        : expandLocaleFormat('L LT') ?? 'YYYY-MM-DD H:mm',
     );
 
     const useMask = control.appliedOptions.value.mask !== false;
+    const maskCompleted = ref(false);
+
     const state = computed(() =>
       convertDayjsToMaskaFormat(dateTimeFormat.value),
     );
+    const locale = useLocale();
+
     const options = useMask
       ? computed<MaskOptions>(() => ({
           mask: state.value.mask,
           tokens: state.value.tokens,
           tokensReplace: true,
+          onMaska: (detail: MaskaDetail) =>
+            (maskCompleted.value = detail.completed),
+
+          //invoke the locale.current as side effect so that the computed will rerun if the locale changes since the mask could be dependent on the locale
+          _locale: unref(locale.current),
         }))
       : null;
 
@@ -301,6 +312,8 @@ const controlRenderer = defineComponent({
       icons,
       dateTimeFormat,
       options,
+      useMask,
+      maskCompleted,
     };
   },
   watch: {
@@ -482,6 +495,18 @@ const controlRenderer = defineComponent({
       },
       set(val: string | undefined): void {
         let value = val;
+
+        if (
+          this.useMask &&
+          !this.maskCompleted &&
+          value !== null &&
+          value !== undefined
+        ) {
+          // the value is set not not yet completed so do not set that until the full mask is completed
+          // otherwise if the control.data is bound to another renderer with different dateTimeFormat then those will collide
+          return;
+        }
+
         const datetime = parseDateTime(value, this.dateTimeFormat);
 
         if (datetime) {
