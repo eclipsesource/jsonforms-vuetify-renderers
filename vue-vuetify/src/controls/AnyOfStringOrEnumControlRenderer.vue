@@ -38,23 +38,23 @@
 
 <script lang="ts">
 import {
+  and,
+  rankWith,
+  schemaMatches,
+  uiTypeIs,
   type ControlElement,
   type JsonFormsRendererRegistryEntry,
-  rankWith,
-  and,
-  uiTypeIs,
-  schemaMatches,
   type JsonSchema,
 } from '@jsonforms/core';
-import { defineComponent } from 'vue';
 import {
   rendererProps,
   useJsonFormsControl,
   type RendererProps,
 } from '@jsonforms/vue';
-import { default as ControlWrapper } from './ControlWrapper.vue';
-import { useVuetifyControl } from '../util';
+import { defineComponent } from 'vue';
 import { VCombobox } from 'vuetify/components';
+import { useVuetifyControl } from '../util';
+import { default as ControlWrapper } from './ControlWrapper.vue';
 import { DisabledIconFocus } from './directives';
 
 const controlRenderer = defineComponent({

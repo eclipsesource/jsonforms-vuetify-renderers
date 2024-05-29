@@ -79,41 +79,41 @@
 
 <script lang="ts">
 import {
-  type JsonFormsRendererRegistryEntry,
-  type Layout,
-  rankWith,
   and,
+  categorizationHasCategory,
+  deriveLabelForUISchemaElement,
+  isVisible,
+  optionIs,
+  rankWith,
   uiTypeIs,
   type Categorization,
   type Category,
-  optionIs,
+  type JsonFormsRendererRegistryEntry,
+  type Layout,
   type Tester,
-  isVisible,
-  categorizationHasCategory,
-  deriveLabelForUISchemaElement,
 } from '@jsonforms/core';
-import { defineComponent, ref } from 'vue';
 import {
   DispatchRenderer,
   rendererProps,
   useJsonFormsLayout,
   type RendererProps,
 } from '@jsonforms/vue';
-import { useAjv, useTranslator, useVuetifyLayout } from '../util';
+import { defineComponent, ref } from 'vue';
 import {
+  VCard,
+  VDivider,
   VStepper,
+  VStepperActions,
   VStepperHeader,
   VStepperItem,
-  VDivider,
-  VStepperWindowItem,
   VStepperWindow,
-  VStepperActions,
-  VCard,
+  VStepperWindowItem,
 } from 'vuetify/components';
 import {
   VStepperVertical,
   VStepperVerticalItem,
 } from 'vuetify/labs/VStepperVertical';
+import { useAjv, useTranslator, useVuetifyLayout } from '../util';
 
 const layoutRenderer = defineComponent({
   name: 'categorization-stepper-renderer',

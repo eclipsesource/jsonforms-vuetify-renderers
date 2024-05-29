@@ -7,7 +7,6 @@
   >
     <v-text-field
       v-disabled-icon-focus
-      ref="input"
       :step="step"
       :id="control.id + '-input'"
       :class="styles.control.input"
@@ -31,20 +30,20 @@
 
 <script lang="ts">
 import {
+  isNumberControl,
+  rankWith,
   type ControlElement,
   type JsonFormsRendererRegistryEntry,
-  rankWith,
-  isNumberControl,
 } from '@jsonforms/core';
-import { defineComponent, ref, unref } from 'vue';
 import {
   rendererProps,
   useJsonFormsControl,
   type RendererProps,
 } from '@jsonforms/vue';
-import { default as ControlWrapper } from './ControlWrapper.vue';
-import { useVuetifyControl } from '../util';
+import { defineComponent, ref, unref } from 'vue';
 import { VTextField } from 'vuetify/components';
+import { useVuetifyControl } from '../util';
+import { default as ControlWrapper } from './ControlWrapper.vue';
 import { DisabledIconFocus } from './directives';
 
 const NUMBER_REGEX_TEST = /^[+-]?\d+([.]\d+)?([eE][+-]?\d+)?$/;

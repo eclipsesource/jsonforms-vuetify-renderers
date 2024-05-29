@@ -56,16 +56,16 @@
 
 <script lang="ts">
 import {
-  type ControlElement,
   isEnumControl,
-  type JsonFormsRendererRegistryEntry,
   rankWith,
+  type ControlElement,
   type EnumOption,
+  type JsonFormsRendererRegistryEntry,
 } from '@jsonforms/core';
 import {
   rendererProps,
-  type RendererProps,
   useJsonFormsEnumControl,
+  type RendererProps,
 } from '@jsonforms/vue';
 import { defineComponent } from 'vue';
 import { VAutocomplete, VSelect } from 'vuetify/components';

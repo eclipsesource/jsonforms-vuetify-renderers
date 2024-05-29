@@ -33,22 +33,22 @@
 
 <script lang="ts">
 import {
-  type JsonFormsRendererRegistryEntry,
-  type Layout,
-  rankWith,
   and,
   isLayout,
+  rankWith,
   uiTypeIs,
+  type JsonFormsRendererRegistryEntry,
+  type Layout,
 } from '@jsonforms/core';
-import { defineComponent } from 'vue';
 import {
   DispatchRenderer,
   rendererProps,
   useJsonFormsLayout,
   type RendererProps,
 } from '@jsonforms/vue';
+import { defineComponent } from 'vue';
+import { VCard, VCardText, VCardTitle } from 'vuetify/components';
 import { useVuetifyLayout } from '../util';
-import { VCard, VCardTitle, VCardText } from 'vuetify/components';
 
 const layoutRenderer = defineComponent({
   name: 'group-renderer',

@@ -1,7 +1,7 @@
 import {
-  type JsonFormsRendererRegistryEntry,
-  rankWith,
   isLayout,
+  rankWith,
+  type JsonFormsRendererRegistryEntry,
 } from '@jsonforms/core';
 
 import { entry as arrayLayoutRendererEntry } from './ArrayLayoutRenderer.vue';

@@ -30,20 +30,20 @@
 
 <script lang="ts">
 import {
+  rankWith,
   uiTypeIs,
   type JsonFormsRendererRegistryEntry,
   type Layout,
-  rankWith,
 } from '@jsonforms/core';
-import { defineComponent } from 'vue';
 import {
   DispatchRenderer,
   rendererProps,
   useJsonFormsLayout,
   type RendererProps,
 } from '@jsonforms/vue';
+import { defineComponent } from 'vue';
+import { VCol, VContainer, VRow } from 'vuetify/components';
 import { useVuetifyLayout } from '../util';
-import { VContainer, VRow, VCol } from 'vuetify/components';
 
 const layoutRenderer = defineComponent({
   name: 'vertical-layout-renderer',

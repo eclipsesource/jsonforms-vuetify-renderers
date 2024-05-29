@@ -68,24 +68,24 @@
 
 <script lang="ts">
 import {
+  isStringControl,
+  rankWith,
   type ControlElement,
   type JsonFormsRendererRegistryEntry,
-  rankWith,
-  isStringControl,
 } from '@jsonforms/core';
-import { defineComponent } from 'vue';
 import {
   rendererProps,
   useJsonFormsControl,
   type RendererProps,
 } from '@jsonforms/vue';
-import { default as ControlWrapper } from './ControlWrapper.vue';
-import { useVuetifyControl } from '../util';
-import { VTextField, VCombobox } from 'vuetify/components';
-import { DisabledIconFocus } from './directives';
-import isArray from 'lodash/isArray';
 import every from 'lodash/every';
+import isArray from 'lodash/isArray';
 import isString from 'lodash/isString';
+import { defineComponent } from 'vue';
+import { VCombobox, VTextField } from 'vuetify/components';
+import { useVuetifyControl } from '../util';
+import { default as ControlWrapper } from './ControlWrapper.vue';
+import { DisabledIconFocus } from './directives';
 
 const controlRenderer = defineComponent({
   name: 'string-control-renderer',

@@ -37,22 +37,22 @@
 
 <script lang="ts">
 import {
-  type ControlElement,
-  type JsonFormsRendererRegistryEntry,
-  rankWith,
+  and,
   isOneOfEnumControl,
   optionIs,
-  and,
+  rankWith,
+  type ControlElement,
+  type JsonFormsRendererRegistryEntry,
 } from '@jsonforms/core';
-import { defineComponent } from 'vue';
 import {
   rendererProps,
   useJsonFormsOneOfEnumControl,
   type RendererProps,
 } from '@jsonforms/vue';
-import { default as ControlWrapper } from './ControlWrapper.vue';
+import { defineComponent } from 'vue';
+import { VLabel, VRadio, VRadioGroup } from 'vuetify/components';
 import { useVuetifyControl } from '../util';
-import { VRadioGroup, VRadio, VLabel } from 'vuetify/components';
+import { default as ControlWrapper } from './ControlWrapper.vue';
 
 const controlRenderer = defineComponent({
   name: 'oneof-radio-group-control-renderer',

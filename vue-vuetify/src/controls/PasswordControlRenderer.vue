@@ -42,22 +42,22 @@
 
 <script lang="ts">
 import {
-  type ControlElement,
-  type JsonFormsRendererRegistryEntry,
-  rankWith,
-  isStringControl,
   and,
   formatIs,
+  isStringControl,
+  rankWith,
+  type ControlElement,
+  type JsonFormsRendererRegistryEntry,
 } from '@jsonforms/core';
-import { defineComponent, ref } from 'vue';
 import {
   rendererProps,
   useJsonFormsControl,
   type RendererProps,
 } from '@jsonforms/vue';
-import { default as ControlWrapper } from './ControlWrapper.vue';
-import { useIcons, useVuetifyControl } from '../util';
+import { defineComponent, ref } from 'vue';
 import { VTextField } from 'vuetify/components';
+import { useIcons, useVuetifyControl } from '../util';
+import { default as ControlWrapper } from './ControlWrapper.vue';
 
 const controlRenderer = defineComponent({
   name: 'password-control-renderer',

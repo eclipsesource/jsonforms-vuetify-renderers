@@ -71,35 +71,35 @@
 
 <script lang="ts">
 import {
-  type JsonFormsRendererRegistryEntry,
-  type Layout,
-  rankWith,
-  and,
-  uiTypeIs,
-  type Categorization,
-  type Category,
-  type Tester,
-  isVisible,
-  categorizationHasCategory,
-  deriveLabelForUISchemaElement,
+and,
+categorizationHasCategory,
+deriveLabelForUISchemaElement,
+isVisible,
+rankWith,
+uiTypeIs,
+type Categorization,
+type Category,
+type JsonFormsRendererRegistryEntry,
+type Layout,
+type Tester,
 } from '@jsonforms/core';
+import {
+DispatchRenderer,
+rendererProps,
+useJsonFormsLayout,
+type RendererProps,
+} from '@jsonforms/vue';
 import { defineComponent, ref } from 'vue';
 import {
-  DispatchRenderer,
-  rendererProps,
-  useJsonFormsLayout,
-  type RendererProps,
-} from '@jsonforms/vue';
-import { useAjv, useTranslator, useVuetifyLayout } from '../util';
-import {
-  VContainer,
-  VTabs,
-  VTab,
-  VWindow,
-  VWindowItem,
-  VRow,
-  VCol,
+VCol,
+VContainer,
+VRow,
+VTab,
+VTabs,
+VWindow,
+VWindowItem,
 } from 'vuetify/components';
+import { useAjv, useTranslator, useVuetifyLayout } from '../util';
 
 const layoutRenderer = defineComponent({
   name: 'categorization-renderer',

@@ -1,30 +1,30 @@
+import { aliases as faIcons } from '@/icons/fa';
+import type { IconAliases } from '@/icons/icons';
+import { aliases as mdiIcons } from '@/icons/mdi';
 import {
+  Resolve,
   composePaths,
   computeLabel,
   getFirstPrimitiveProp,
   isDescriptionHidden,
   type JsonFormsSubStates,
-  Resolve,
 } from '@jsonforms/core';
+import Ajv from 'ajv';
 import cloneDeep from 'lodash/cloneDeep';
 import debounce from 'lodash/debounce';
-import merge from 'lodash/merge';
 import get from 'lodash/get';
 import isPlainObject from 'lodash/isPlainObject';
-import { useStyles } from '../styles';
+import merge from 'lodash/merge';
 import {
   computed,
-  type ComputedRef,
   inject,
-  ref,
   provide,
+  ref,
+  type ComputedRef,
   type InjectionKey,
 } from 'vue';
-import Ajv from 'ajv';
-import type { IconAliases } from '@/icons/icons';
-import { aliases as mdiIcons } from '@/icons/mdi';
-import { aliases as faIcons } from '@/icons/fa';
 import type { IconOptions } from 'vuetify';
+import { useStyles } from '../styles';
 
 export const IconSymbol: InjectionKey<Required<IconOptions>> =
   Symbol.for('vuetify:icons');

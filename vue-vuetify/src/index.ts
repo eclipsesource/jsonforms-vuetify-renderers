@@ -4,6 +4,6 @@ export * from './complex';
 export * from './controls';
 export * from './extended';
 export * from './layouts';
+export * from './renderers';
 export * from './styles';
 export * from './util';
-export * from './renderers';

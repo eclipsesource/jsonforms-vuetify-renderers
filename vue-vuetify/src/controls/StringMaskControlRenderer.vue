@@ -11,7 +11,7 @@
       :class="styles.control.input"
       :disabled="!control.enabled"
       :autofocus="appliedOptions.focus"
-      :placeholder="appliedOptions.placeholder"
+      :placeholder="appliedOptions.placeholder ?? appliedOptions.mask"
       :label="computedLabel"
       :hint="control.description"
       :persistent-hint="persistentHint()"

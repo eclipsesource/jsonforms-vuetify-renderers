@@ -15,9 +15,9 @@ import {
   type Layout,
   type UISchemaElement,
 } from '@jsonforms/core';
-import omit from 'lodash/omit';
-import { type PropType, defineComponent } from 'vue';
 import { DispatchRenderer } from '@jsonforms/vue';
+import omit from 'lodash/omit';
+import { defineComponent, type PropType } from 'vue';
 
 interface CombinatorProps {
   schema: JsonSchema;

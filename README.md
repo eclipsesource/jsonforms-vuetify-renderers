@@ -30,7 +30,8 @@ Use Node v18.19+
 - Remove build artifacts: `pnpm run clean`
 - Run example app: `pnpm run example:dev`
 - Build example app for production: `pnpm run example:build`
-- Lint: `pnpm run lint`
+- Run Tests: `pnpm run test`
+- Linting: `pnpm run lint`
 
 Recommendations:
 

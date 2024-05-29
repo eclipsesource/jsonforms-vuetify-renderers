@@ -1,6 +1,6 @@
 import type { UISchemaElement } from '@jsonforms/core';
-import { inject } from 'vue';
 import merge from 'lodash/merge';
+import { inject } from 'vue';
 import { defaultStyles } from './defaultStyles';
 
 const createEmptyStyles = (): Styles => ({

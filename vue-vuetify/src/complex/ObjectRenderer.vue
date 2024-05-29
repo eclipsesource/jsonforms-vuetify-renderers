@@ -18,20 +18,20 @@
 
 <script lang="ts">
 import {
-  type ControlElement,
-  findUISchema,
   Generate,
-  type GroupLayout,
+  findUISchema,
   isObjectControl,
-  type JsonFormsRendererRegistryEntry,
   rankWith,
+  type ControlElement,
+  type GroupLayout,
+  type JsonFormsRendererRegistryEntry,
   type UISchemaElement,
 } from '@jsonforms/core';
 import {
   DispatchRenderer,
   rendererProps,
-  type RendererProps,
   useJsonFormsControlWithDetail,
+  type RendererProps,
 } from '@jsonforms/vue';
 import cloneDeep from 'lodash/cloneDeep';
 import isEmpty from 'lodash/isEmpty';

@@ -178,41 +178,41 @@
 
 <script lang="ts">
 import {
-  isObjectArrayControl,
-  isPrimitiveArrayControl,
-  type JsonFormsRendererRegistryEntry,
-  or,
-  rankWith,
+  Resolve,
   composePaths,
   createDefaultValue,
+  isObjectArrayControl,
+  isPrimitiveArrayControl,
+  or,
+  rankWith,
   type ControlElement,
+  type JsonFormsRendererRegistryEntry,
   type JsonSchema,
-  Resolve,
 } from '@jsonforms/core';
-import startCase from 'lodash/startCase';
-import { defineComponent } from 'vue';
 import {
   DispatchRenderer,
   rendererProps,
   useJsonFormsArrayControl,
   type RendererProps,
 } from '@jsonforms/vue';
-import { useIcons, useVuetifyArrayControl } from '../util';
+import startCase from 'lodash/startCase';
+import { defineComponent } from 'vue';
 import {
+  VBtn,
   VCard,
-  VCardTitle,
   VCardText,
-  VRow,
+  VCardTitle,
   VContainer,
+  VIcon,
+  VRow,
+  VSpacer,
+  VTable,
   VToolbar,
   VToolbarTitle,
   VTooltip,
-  VIcon,
-  VBtn,
-  VSpacer,
-  VTable,
 } from 'vuetify/components';
 import { ValidationIcon } from '../controls/components/index';
+import { useIcons, useVuetifyArrayControl } from '../util';
 
 const controlRenderer = defineComponent({
   name: 'array-control-renderer',

@@ -7,7 +7,6 @@
   >
     <v-text-field
       v-disabled-icon-focus
-      ref="input"
       :step="step"
       :id="control.id + '-input'"
       :class="styles.control.input"

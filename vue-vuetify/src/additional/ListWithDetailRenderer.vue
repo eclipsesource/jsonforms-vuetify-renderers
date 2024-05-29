@@ -190,45 +190,45 @@
 
 <script lang="ts">
 import {
-  type JsonFormsRendererRegistryEntry,
-  type ControlElement,
-  rankWith,
+  Resolve,
+  and,
   composePaths,
   createDefaultValue,
-  and,
-  uiTypeIs,
-  isObjectArray,
   findUISchema,
-  type UISchemaElement,
-  Resolve,
+  isObjectArray,
+  rankWith,
+  uiTypeIs,
+  type ControlElement,
+  type JsonFormsRendererRegistryEntry,
   type JsonSchema,
+  type UISchemaElement,
 } from '@jsonforms/core';
-import { defineComponent, ref } from 'vue';
 import {
   DispatchRenderer,
   rendererProps,
-  type RendererProps,
   useJsonFormsArrayControl,
+  type RendererProps,
 } from '@jsonforms/vue';
-import { useIcons, useVuetifyArrayControl } from '../util';
+import type { ErrorObject } from 'ajv';
+import { defineComponent, ref } from 'vue';
 import {
+  VAvatar,
+  VBtn,
+  VCol,
+  VContainer,
+  VIcon,
   VList,
   VListItem,
   VListItemTitle,
   VRow,
-  VCol,
-  VContainer,
+  VSpacer,
   VToolbar,
   VToolbarTitle,
   VTooltip,
-  VIcon,
-  VBtn,
-  VAvatar,
-  VSpacer,
   VVirtualScroll,
 } from 'vuetify/components';
-import { ValidationIcon, ValidationBadge } from '../controls/components/index';
-import type { ErrorObject } from 'ajv';
+import { ValidationBadge, ValidationIcon } from '../controls/components/index';
+import { useIcons, useVuetifyArrayControl } from '../util';
 
 const controlRenderer = defineComponent({
   name: 'list-with-detail-renderer',

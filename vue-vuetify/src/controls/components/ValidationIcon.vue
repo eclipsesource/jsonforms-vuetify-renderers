@@ -9,11 +9,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, type PropType } from 'vue';
-import type { ErrorObject } from 'ajv';
-import { default as ValidationBadge } from './ValidationBadge.vue';
-import { VIcon } from 'vuetify/components';
 import { useIcons } from '@/util';
+import type { ErrorObject } from 'ajv';
+import { defineComponent, type PropType } from 'vue';
+import { VIcon } from 'vuetify/components';
+import { default as ValidationBadge } from './ValidationBadge.vue';
 
 export default defineComponent({
   name: 'validation-icon',

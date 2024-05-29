@@ -34,20 +34,20 @@
 
 <script lang="ts">
 import {
-  type CombinatorSubSchemaRenderInfo,
-  type ControlElement,
   createCombinatorRenderInfos,
   findMatchingUISchema,
   isAllOfControl,
-  type JsonFormsRendererRegistryEntry,
   rankWith,
+  type CombinatorSubSchemaRenderInfo,
+  type ControlElement,
+  type JsonFormsRendererRegistryEntry,
   type UISchemaElement,
 } from '@jsonforms/core';
 import {
   DispatchRenderer,
   rendererProps,
-  type RendererProps,
   useJsonFormsAllOfControl,
+  type RendererProps,
 } from '@jsonforms/vue';
 import { defineComponent } from 'vue';
 import { useVuetifyControl } from '../util';

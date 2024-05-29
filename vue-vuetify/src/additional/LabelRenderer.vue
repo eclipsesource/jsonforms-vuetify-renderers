@@ -10,17 +10,17 @@
 
 <script lang="ts">
 import {
-  type JsonFormsRendererRegistryEntry,
   rankWith,
   uiTypeIs,
+  type JsonFormsRendererRegistryEntry,
   type LabelElement,
 } from '@jsonforms/core';
-import { defineComponent } from 'vue';
 import {
   rendererProps,
-  type RendererProps,
   useJsonFormsLabel,
+  type RendererProps,
 } from '@jsonforms/vue';
+import { defineComponent } from 'vue';
 import { VLabel } from 'vuetify/components';
 import { useVuetifyLabel } from '../util';
 

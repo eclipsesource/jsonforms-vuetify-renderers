@@ -32,16 +32,16 @@
 
 <script lang="ts">
 import {
-  type ControlElement,
   isOneOfEnumControl,
-  type JsonFormsRendererRegistryEntry,
   rankWith,
+  type ControlElement,
   type EnumOption,
+  type JsonFormsRendererRegistryEntry,
 } from '@jsonforms/core';
 import {
   rendererProps,
-  type RendererProps,
   useJsonFormsOneOfEnumControl,
+  type RendererProps,
 } from '@jsonforms/vue';
 import { defineComponent } from 'vue';
 import { VSelect } from 'vuetify/components';

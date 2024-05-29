@@ -1,6 +1,6 @@
-import type { Styles } from './styles';
 import cloneDeep from 'lodash/cloneDeep';
 import mergeWith from 'lodash/mergeWith';
+import type { Styles } from './styles';
 
 export const classes = (
   strings: TemplateStringsArray,
