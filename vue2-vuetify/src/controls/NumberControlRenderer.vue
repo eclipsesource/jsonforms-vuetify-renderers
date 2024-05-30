@@ -24,7 +24,7 @@
         v-bind="vuetifyProps('v-text-field', { type: 'number' })"
         @input="onInputChange"
         @focus="isFocused = true"
-        @blur="isFocused = false"
+        @blur="onBlur"
       ></v-text-field>
     </v-hover>
   </control-wrapper>
@@ -86,7 +86,7 @@ const controlRenderer = defineComponent({
 
         const numberAsString = inputStringIsInExponentForm
           ? result.toExponential()
-          : result.toPrecision();
+          : result.toString();
 
         const numberIsInExponentForm =
           numberAsString.includes('E') || numberAsString.includes('e');
@@ -100,6 +100,10 @@ const controlRenderer = defineComponent({
       }
       this.onChange(result);
     },
+    onBlur() : void {
+      isFocused = false
+      this.inputValue = Number(this.inputValue).toString();
+    }
     toNumberOrString(value: string): number | string {
       // have a regex test before parseFloat to make sure that invalid input won't be ignored and will lead to errors, parseFloat will parse invalid input such 7.22m6 as 7.22
       if (NUMBER_REGEX_TEST.test(value)) {
