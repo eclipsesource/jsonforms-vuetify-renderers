@@ -24,7 +24,7 @@
         v-bind="vuetifyProps('v-text-field', { type: 'number' })"
         @input="onInputChange"
         @focus="isFocused = true"
-        @blur="onBlur"
+        @blur="isFocused = false; onBlur()"
       ></v-text-field>
     </v-hover>
   </control-wrapper>
@@ -101,7 +101,6 @@ const controlRenderer = defineComponent({
       this.onChange(result);
     },
     onBlur() : void {
-      isFocused = false
       this.inputValue = Number(this.inputValue).toString();
     }
     toNumberOrString(value: string): number | string {
