@@ -1,4 +1,4 @@
 {
   "packages": ["vue-vuetify", "example"],
-  "version": "3.3.0-beta.1"
+  "version": "3.3.0-preview.0"
 }
