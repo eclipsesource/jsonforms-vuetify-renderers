@@ -231,15 +231,17 @@ export default defineComponent({
           (propUiSchema as GroupLayout).label =
             propSchema.title ?? startCase(propName);
         } else {
-          propUiSchema = createControlElement(
-            control.value.path + '/' + encode(propName)
+          const encodedPath = composePaths(
+            control.value.path,
+            encode(propName)
           );
+          propUiSchema = createControlElement(encodedPath);
         }
       }
 
       return {
         propertyName: propName,
-        path: composePaths(control.value.path, propName),
+        path: composePaths(control.value.path, encode(propName)),
         schema: propSchema,
         uischema: propUiSchema,
       };
