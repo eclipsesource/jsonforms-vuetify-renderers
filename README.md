@@ -1,5 +1,13 @@
 # JSON Forms Vuetify renderers
 
+> [!CAUTION]
+> This repository is no longer maintained.
+> JSON Forms no longer supports Vue 2 since June 2023.<br/><br/>
+> The last version of JSON Forms supporting Vue 2 is `3.1.0` with `@jsonforms/vue2-vuetify` in version `3.1.0-alpha.3`.<br/>
+> The last stable version of `@jsonforms/vue2-vuetify` is `3.0.0` which needs to be combined with JSON Forms `3.0.0`<br/><br/>
+> Since then the Vue 2 Vuetify renderers were ported to Vue 3 and are now located in the [main repository](https://github.com/eclipsesource/jsonforms).<br/>
+> See [jsonforms.io](https://jsonforms.io) for more information about JSON Forms.
+
 This is a monorepo containing the JSON Forms Vue 2 Vuetify renderers and an example application.
 
 See [jsonforms-vuetify-renderers.netlify.app](https://jsonforms-vuetify-renderers.netlify.app) for the deployed example application.
